@@ -1,6 +1,10 @@
+parserOptions: # Поправим файл настроек eslintrc, чтобы eslint понимал модули
+  sourceType: 'module'
+  ecmaVersion: 2015
+
 env:
   es6: true
   browser: true
-  commonjs: true
+  # вот этот код commonjs: true Отключим поддержку commonjs-модулей, чтобы require() остались только для webpack
 
 extends: 'htmlacademy/es6'
