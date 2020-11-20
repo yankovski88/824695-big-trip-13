@@ -1,10 +1,11 @@
-import {createTripMainTripInfo} from "./view/trip-main-trip-info.js";
+import {createTripInfo} from "./view/trip-info.js";
 import {createTripInfoCost} from "./view/trip-info-cost.js";
-import {createTripControlsTripTab} from "./view/trip-controls-trip-tab.js";
+import {createTripMenu} from "./view/trip-menu.js";
 import {createTripFilter} from "./view/trip-filter.js";
-import {createTripEventsTripSort} from "./view/trip-events-trip-sort.js";
+import {createTripEventsSort} from "./view/trip-events-sort.js";
+import {createTripEventEditForm} from "./view/trip-event-edit-form.js";
 import {createTripEventsList} from "./view/trip-events-list.js";
-import {createTripEventsItem} from "./view/trip-events-item.js";
+import {createTripEventItem} from "./view/trip-event-item.js";
 
 const POINT_COUNT = 3;
 // файл в котором будем рендерить все модули
@@ -17,7 +18,7 @@ const render = (container, content, position) => {
 };
 
 const tripMainElement = document.querySelector(`.trip-main`);
-render(tripMainElement, createTripMainTripInfo(), `afterBegin`); // рендер маршрута
+render(tripMainElement, createTripInfo(), `afterBegin`); // рендер маршрута
 
 const tripInfoElement = tripMainElement.querySelector(`.trip-main__trip-info`);
 render(tripInfoElement, createTripInfoCost(), `beforeEnd`); // рендер цены
@@ -25,16 +26,18 @@ render(tripInfoElement, createTripInfoCost(), `beforeEnd`); // рендер це
 const tripControlsElement = tripMainElement.querySelector(`.trip-main__trip-controls`);
 const visuallyHiddenElement = tripControlsElement.querySelector(`.visually-hidden`);
 
-render(visuallyHiddenElement, createTripControlsTripTab(), `afterEnd`); // рендер меню
+render(visuallyHiddenElement, createTripMenu(), `afterEnd`); // рендер меню
 
 render(tripControlsElement, createTripFilter(), `beforeEnd`); // рендер фильтр хедер
 
 const tripEventElement = document.querySelector(`.trip-events`);
-render(tripEventElement, createTripEventsTripSort(), `beforeEnd`); // рендер сортировки
+render(tripEventElement, createTripEventsSort(), `beforeEnd`); // рендер сортировки
+
+render(tripEventElement, createTripEventEditForm(), `beforeEnd`); // рендер формы нового предложения
 
 render(tripEventElement, createTripEventsList(), `beforeEnd`); // рендер формы нового предложения
 
 const tripEventsListElement = tripEventElement.querySelector(`.trip-events__list`);
 for (let i = 0; i < POINT_COUNT; i++) {
-  render(tripEventsListElement, createTripEventsItem(), `beforeEnd`); // рендер точек маршрута
+  render(tripEventsListElement, createTripEventItem(), `beforeEnd`); // рендер точек маршрута
 }
