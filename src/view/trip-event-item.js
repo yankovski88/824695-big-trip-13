@@ -1,21 +1,30 @@
-const createTripEventItem = () => {
+import dayjs from "dayjs";
+
+const createTripEventItem = (dataItems) => {
+
+  const {type, destination, price, dateStart, dateFinish, description, photoType} = dataItems;
+
+  const dateS = dayjs(dateStart).format(`HH:mm`);
+  const dateF = dayjs(dateFinish).format(`HH:mm`);
+  const dateStartDay = dayjs(dateStart).format(`MMM DD`);
   return `<li class="trip-events__item">
               <div class="event">
-                <time class="event__date" datetime="2019-03-18">MAR 18</time>
+                <time class="event__date" datetime="2019-03-18">${dateStartDay}</time>
                 <div class="event__type">
-                  <img class="event__type-icon" width="42" height="42" src="img/icons/drive.png" alt="Event type icon">
+                  <img class="event__type-icon" width="42" height="42" src="${photoType}" alt="Event type icon">
                 </div>
-                <h3 class="event__title">Drive Chamonix</h3>
+                <h3 class="event__title">${type}</h3>
                 <div class="event__schedule">
                   <p class="event__time">
-                    <time class="event__start-time" datetime="2019-03-18T14:30">14:30</time>
+                    <time class="event__start-time" datetime="2019-03-18T14:30">${dateS}</time>
                     &mdash;
-                    <time class="event__end-time" datetime="2019-03-18T16:05">16:05</time>
+                    <time class="event__end-time" datetime="2019-03-18T16:05">${dateF}</time>
                   </p>
                   <p class="event__duration">1H 35M</p>
                 </div>
                 <p class="event__price">
-                  &euro;&nbsp;<span class="event__price-value">160</span>
+                  &euro;&nbsp;<span class="event__price-value">${price}</span> 
+                  <!--160-->
                 </p>
                 <h4 class="visually-hidden">Offers:</h4>
                 <ul class="event__selected-offers">
