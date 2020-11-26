@@ -1,5 +1,27 @@
+import dayjs from "dayjs"
+
+// функция по установке времени в форме
+const createFieldTime = (dateStart, dateFinish) => {
+  // установка формата времени
+  const startTime = dayjs(dateStart).format(`YY/MM/DD HH:mm`);
+  const finishTime = dayjs(dateFinish).format(`YY/MM/DD HH:mm`);
+
+  return `<div class="event__field-group  event__field-group--time">
+    <label class="visually-hidden" for="event-start-time-1">From</label>
+    <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${startTime}">
+    &mdash;
+<label class="visually-hidden" for="event-end-time-1">To</label>
+    <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${finishTime}">
+    </div>`
+};
+
+
+
+
+
+
 const createTripEventEditForm = (dataItems) => { // сюда попадают данные и запоняется шаблон
-  const {type, destination, price, dateStart, dateFinish, description, photoType, photo, additionalOffer, offers} = dataItems;
+  const {description, photo, additionalOffer, dateStart, dateFinish} = dataItems;
 
   // функция по отрисовке фрагмента всех преимуществ
   const createOffer = () => {
@@ -20,6 +42,10 @@ const createTripEventEditForm = (dataItems) => { // сюда попадают д
     }
     return fragment;
   };
+
+console.log(`${dateStart}`);
+  const createTime = createFieldTime(`${dateStart}`, `${dateFinish}`);
+
 
   return `<li class="trip-events__item">
               <form class="event event--edit" action="#" method="post">
@@ -100,13 +126,8 @@ const createTripEventEditForm = (dataItems) => { // сюда попадают д
                     </datalist>
                   </div>
 
-                  <div class="event__field-group  event__field-group--time">
-                    <label class="visually-hidden" for="event-start-time-1">From</label>
-                    <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="19/03/19 00:00">
-                    &mdash;
-                    <label class="visually-hidden" for="event-end-time-1">To</label>
-                    <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="19/03/19 00:00">
-                  </div>
+${createTime}
+                 <!---->
 
                   <div class="event__field-group  event__field-group--price">
                     <label class="event__label" for="event-price-1">

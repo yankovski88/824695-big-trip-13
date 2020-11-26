@@ -114,36 +114,7 @@ const getAdditionalOffer = () => {
   }
   return arr;
 };
-// const additionalOffer = [
-//   {
-//     id: 1,
-//     offer: `Add luggage`,
-//     price: 30,
-//   },
-//   {
-//     id: 2,
-//     offer: `Switch to comfort class`,
-//     price: 100,
-//   },
-//   {
-//     id: 3,
-//     offer: `Add meal`,
-//     price: 15,
-//   },
-//   {
-//     id: 4,
-//     offer: `Choose seats`,
-//     price: 5,
-//   },
-//   {
-//     id: 5,
-//     offer: `Travel by train`,
-//     price: 40,
-//   },
-// ];
 
-// console.log(additionalOffer);
-// const additionalOffer = getAdditionalOffer();
 // функция которая возвращает объект со всеми данным для точки маршрута
 export const tripEventItem = () => {
 
