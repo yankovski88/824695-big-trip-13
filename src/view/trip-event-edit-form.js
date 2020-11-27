@@ -1,4 +1,4 @@
-import dayjs from "dayjs"
+import dayjs from "dayjs";
 
 // функция по установке времени в форме
 const createFieldTime = (dateStart, dateFinish) => {
@@ -12,22 +12,29 @@ const createFieldTime = (dateStart, dateFinish) => {
     &mdash;
 <label class="visually-hidden" for="event-end-time-1">To</label>
     <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${finishTime}">
-    </div>`
+    </div>`;
 };
 
 
-
-
-
-
 const createTripEventEditForm = (dataItems) => { // сюда попадают данные и запоняется шаблон
-  const {description, photo, additionalOffer, dateStart, dateFinish} = dataItems;
+  const {description, photos, additionalOffer, dateStart, dateFinish} = dataItems;
+
+  // генерирует разметку фоток
+  const createEventFoto = function () {
+    const photoItems = [];
+    for (let i = 0; i < photos.length; i++) {
+      photoItems.push(`<img class="event__photo" src="${photos[i]}" alt="Event photo">`);
+    }
+    const photoItem = photoItems.join(` `);
+    return photoItem;
+  };
+
 
   // функция по отрисовке фрагмента всех преимуществ
   const createOffer = () => {
-    const fragment = document.createDocumentFragment(); // создаем фрагмент т.к. без него не вставим
+    const offerItems = [];
     for (let i = 0; i < additionalOffer.length; i++) {
-      const tem = `<div class="event__available-offers">
+      offerItems.push(`
                       <div class="event__offer-selector">
                         <input class="event__offer-checkbox  visually-hidden" id="event-offer-luggage-1" type="checkbox" name="event-offer-luggage" checked>
                         <label class="event__offer-label" for="event-offer-luggage-1">
@@ -35,15 +42,13 @@ const createTripEventEditForm = (dataItems) => { // сюда попадают д
                           &plus;&euro;&nbsp;
                           <span class="event__offer-price">${additionalOffer[i].price}</span>
                         </label>
-                      </div>`; // в созданный фрагмент вставляем все наши метки
-      const div = document.createElement(`div`);
-      div.innerHTML = tem;
-      fragment.appendChild(div);
+                      </div>`); // в созданный фрагмент вставляем все наши метки
     }
-    return fragment;
+    const offerItem = offerItems.join(` `);
+
+    return offerItem;
   };
 
-console.log(`${dateStart}`);
   const createTime = createFieldTime(`${dateStart}`, `${dateFinish}`);
 
 
@@ -147,7 +152,6 @@ ${createTime}
                     <div class="event__available-offers">
                     
                     ${createOffer()}
-                    
                     </div>
                   </section>
 
@@ -157,11 +161,8 @@ ${createTime}
 
                     <div class="event__photos-container">
                       <div class="event__photos-tape">
-                        <img class="event__photo" src="${photo[0]}" alt="Event photo">
-                        <img class="event__photo" src="${photo[1]}" alt="Event photo">
-                        <img class="event__photo" src="${photo[2]}" alt="Event photo">
-                        <img class="event__photo" src="${photo[3]}" alt="Event photo">
-                        <img class="event__photo" src="${photo[4]}" alt="Event photo">
+                      ${createEventFoto()}
+                  
                       </div>
                     </div>
                   </section>

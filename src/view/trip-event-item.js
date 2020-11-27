@@ -2,11 +2,17 @@ import dayjs from "dayjs";
 
 const createTripEventItem = (dataItems) => {
 
-  const {type, destination, price, dateStart, dateFinish, description, photoType} = dataItems;
+  const {type, price, dateStart, dateFinish, photoType} = dataItems;
 
   const dateS = dayjs(dateStart).format(`HH:mm`);
   const dateF = dayjs(dateFinish).format(`HH:mm`);
   const dateStartDay = dayjs(dateStart).format(`MMM DD`);
+
+
+  // console.log(`${dayjs(dateFinish)}`);
+  // console.log(`${dayjs(dateStart)}`);
+  // console.log(`${dayjs(dateFinish).subtract(dayjs(dateStart)).format(`HH: mm`)}`);
+
   return `<li class="trip-events__item">
               <div class="event">
                 <time class="event__date" datetime="2019-03-18">${dateStartDay}</time>
@@ -20,7 +26,9 @@ const createTripEventItem = (dataItems) => {
                     &mdash;
                     <time class="event__end-time" datetime="2019-03-18T16:05">${dateF}</time>
                   </p>
-                  <p class="event__duration">1H 35M</p>
+               
+
+                  <p class="event__duration">${dayjs(dateFinish).subtract(dayjs(dateStart)).format(`HH:mm`)}</p>
                 </div>
                 <p class="event__price">
                   &euro;&nbsp;<span class="event__price-value">${price}</span> 

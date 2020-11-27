@@ -1,10 +1,9 @@
 import dayjs from "dayjs";
 
 const createTripInfo = (dataItems) => {
-  const {type, destinations, price, dateStart, dateFinish, description, photoType, photo, additionalOffer, offers} = dataItems;
+  const {destinations, dateStart, dateFinish} = dataItems;
   const dateStartDay = dayjs(dateStart).format(`MMM DD`);
   const dateFinishDay = dayjs(dateFinish).format(`DD`);
-
 
   return `<section class="trip-main__trip-info  trip-info">
   <div class="trip-info__main">

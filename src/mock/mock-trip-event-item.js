@@ -1,16 +1,7 @@
 import dayjs from "dayjs";
 
-// - Опишем статичный объект с данными
-// - Попробуем сгенерировать описание задачи случайным образом
-
-// Для создания новой точки маршрута пользователь заполняет:
-
-//   Тип точки маршрута (один из: Taxi, Bus, Train, Ship, Transport, Drive, Flight, Check-in, Sightseeng, Restaurant).
-// Пункт назначения. Выбирается из списка предложенных значений, полученных с сервера. Пользователь не может ввести свой вариант для пункта назначения.
-//   Дата и время начала события. Выбор времени и даты осуществляется с помощью библиотеки flatpickr.js. Выбранная дата и время отображаются в поле в формате: день/месяц/год часы:минуты (например «25/12/2019 16:00»).
-// Дата и время окончания события. Формат и требования аналогичны дате начала. Дата окончания не может быть меньше даты начала события.
-//   Стоимость. Целое число.
-//   Дополнительные опции. В зависимости от типа точки маршрута пользователь может выбрать дополнительные опции (offers).
+// массив из которого выберится случайный тип маршрута
+const TYPES = [`Taxi`, `Bus`, `Train`, `Ship`, `Transport`, `Drive`, `Flight`, `Check-in`, `Sightseeng`, `Restaurant`];
 
 // - Объявим функцию-генератор создаем объект со всеми рандомными данными
 const getRandomInteger = (a = 0, b = 1) => {
@@ -20,11 +11,6 @@ const getRandomInteger = (a = 0, b = 1) => {
   return Math.floor(lower + Math.random() * (upper - lower + 1));
 };
 
-// массив из которого выберится случайный тип маршрута
-const types = [`Taxi`, `Bus`, `Train`, `Ship`, `Transport`, `Drive`, `Flight`, `Check-in`, `Sightseeng`, `Restaurant`];
-
-// пункт назанчения
-const destinations = [`Amsterdam`, `Chamonix`, `Geneva`];
 
 // дата начала и конца поездки
 const generateDate = () => {
@@ -47,7 +33,7 @@ const generateDateStart = () => {
 
 const dateStart = generateDateStart();
 const dateFinish = generateDate();
-// console.log(dateStart);
+
 // цена
 const prices = [500, 1000, 2000];
 
@@ -63,25 +49,26 @@ const descriptions = [`Lorem ipsum dolor sit amet, consectetur adipiscing elit.`
   `Aliquam erat volutpat.`,
   `Nunc fermentum tortor ac porta dapibus. In rutrum ac purus sit amet tempus.`];
 
-const getDescriptions = (items) => {
-  const arr = [];
+const getDescription = (items) => {
+  const descriptionItems = [];
   for (let i = 0; i < getRandomInteger(0, 5); i++) {
-    arr.push(items[i]);
+    descriptionItems.push(items[i]);
   }
-  return arr;
+  const description = descriptionItems.join(` `);
+  return description;
 };
 
-const getPhoto = () => {
+const getPhotos = () => {
   const photos = [];
   const PHOTO_COUNT = 5;
-  for (let i = 0; i < PHOTO_COUNT; i++) {
+  for (let i = 0; i < getRandomInteger(1, PHOTO_COUNT); i++) {
     photos.push(`http://picsum.photos/248/152?r=${Math.random(i)}`);
   }
   return photos;
 };
 
-const getAdditionalOffer = () => {
-  const arr = [];
+const getAdditionalOffers = () => {
+  const items = [];
   const additionalOffer = [
     {
       id: 1,
@@ -110,25 +97,23 @@ const getAdditionalOffer = () => {
     },
   ];
   for (let i = 0; i < getRandomInteger(0, 5); i++) {
-    arr.push(additionalOffer[i]);
+    items.push(additionalOffer[i]);
   }
-  return arr;
+  return items;
 };
 
 // функция которая возвращает объект со всеми данным для точки маршрута
-export const tripEventItem = () => {
+export const getTripEventItem = () => {
 
   return {
-    type: types[getRandomInteger(1, types.length - 1)],
-    destinations,
+    type: TYPES[getRandomInteger(1, TYPES.length - 1)],
     price: prices[getRandomInteger(0, prices.length - 1)],
     dateStart,
     dateFinish,
-    description: getDescriptions(descriptions),
+    description: getDescription(descriptions),
     photoType: `http://picsum.photos/248/152?r=${Math.random(3)}`,
-    photo: getPhoto(),
-    sortItems: [`EVENT`, `TIME`, `PRICE`, `OFFERS`],
-    additionalOffer: getAdditionalOffer(),
+    photos: getPhotos(),
+    additionalOffer: getAdditionalOffers(),
   };
 
 };
