@@ -35,7 +35,7 @@ const dateStart = generateDateStart();
 const dateFinish = generateDate();
 
 // цена
-const prices = [500, 1000, 2000];
+const prices = [20, 50, 160, 180];
 
 // описание от 1 до 5 предложений из текста
 const descriptions = [`Lorem ipsum dolor sit amet, consectetur adipiscing elit.`,
@@ -67,40 +67,53 @@ const getPhotos = () => {
   return photos;
 };
 
+const additionalOffer = [
+  {
+    id: 1,
+    offer: `Add luggage`,
+    price: 30,
+  },
+  {
+    id: 2,
+    offer: `Switch to comfort class`,
+    price: 100,
+  },
+  {
+    id: 3,
+    offer: `Add meal`,
+    price: 15,
+  },
+  {
+    id: 4,
+    offer: `Choose seats`,
+    price: 5,
+  },
+  {
+    id: 5,
+    offer: `Travel by train`,
+    price: 40,
+  },
+];
+
+
 const getAdditionalOffers = () => {
   const items = [];
-  const additionalOffer = [
-    {
-      id: 1,
-      offer: `Add luggage`,
-      price: 30,
-    },
-    {
-      id: 2,
-      offer: `Switch to comfort class`,
-      price: 100,
-    },
-    {
-      id: 3,
-      offer: `Add meal`,
-      price: 15,
-    },
-    {
-      id: 4,
-      offer: `Choose seats`,
-      price: 5,
-    },
-    {
-      id: 5,
-      offer: `Travel by train`,
-      price: 40,
-    },
-  ];
+
   for (let i = 0; i < getRandomInteger(0, 5); i++) {
     items.push(additionalOffer[i]);
   }
   return items;
 };
+
+const getAdditionalOfferItems = () => {
+  const items = [];
+
+  for (let i = 0; i < getRandomInteger(0, additionalOffer.length); i++) {
+    items.push(additionalOffer[i]);
+  }
+  return items;
+};
+
 
 // функция которая возвращает объект со всеми данным для точки маршрута
 export const getTripEventItem = () => {
@@ -114,7 +127,7 @@ export const getTripEventItem = () => {
     photoType: `http://picsum.photos/248/152?r=${Math.random(3)}`,
     photos: getPhotos(),
     additionalOffer: getAdditionalOffers(),
+    addOfferItem: getAdditionalOfferItems(),
   };
-
 };
 

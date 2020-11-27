@@ -1,17 +1,28 @@
 import dayjs from "dayjs";
 
-const createTripEventItem = (dataItems) => {
 
-  const {type, price, dateStart, dateFinish, photoType} = dataItems;
+const createTripEventItem = (dataItems) => {
+  const {type, price, dateStart, dateFinish, photoType, addOfferItem} = dataItems;
+
+  const getAdditionalOffer = () => {
+    const additionalOffers = [];
+    for (let i = 0; i < addOfferItem.length; i++) {
+      additionalOffers.push(`
+     <li class="event__offer">
+                    <span class="event__offer-title">${addOfferItem[i].offer}</span>
+                    &plus;&euro;&nbsp;
+                    <span class="event__offer-price">${addOfferItem[i].price}</span>
+                  </li>
+  `);
+    }
+    const additionalOfferItem = additionalOffers.join(` `);
+    return additionalOfferItem;
+  };
+
 
   const dateS = dayjs(dateStart).format(`HH:mm`);
   const dateF = dayjs(dateFinish).format(`HH:mm`);
   const dateStartDay = dayjs(dateStart).format(`MMM DD`);
-
-
-  // console.log(`${dayjs(dateFinish)}`);
-  // console.log(`${dayjs(dateStart)}`);
-  // console.log(`${dayjs(dateFinish).subtract(dayjs(dateStart)).format(`HH: mm`)}`);
 
   return `<li class="trip-events__item">
               <div class="event">
@@ -36,11 +47,8 @@ const createTripEventItem = (dataItems) => {
                 </p>
                 <h4 class="visually-hidden">Offers:</h4>
                 <ul class="event__selected-offers">
-                  <li class="event__offer">
-                    <span class="event__offer-title">Rent a car</span>
-                    &plus;&euro;&nbsp;
-                    <span class="event__offer-price">200</span>
-                  </li>
+                ${getAdditionalOffer()}
+               
                 </ul>
                 <button class="event__favorite-btn  event__favorite-btn--active" type="button">
                   <span class="visually-hidden">Add to favorite</span>
