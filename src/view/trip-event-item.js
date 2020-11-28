@@ -1,5 +1,5 @@
 import dayjs from "dayjs";
-
+import {getRandomInteger} from "../mock/util.js";
 
 const createTripEventItem = (dataItems) => {
   const {type, price, dateStart, dateFinish, photoType, addOfferItem} = dataItems;
@@ -22,8 +22,8 @@ const createTripEventItem = (dataItems) => {
 
   const dateS = dayjs(dateStart).format(`HH:mm`);
   const dateF = dayjs(dateFinish).format(`HH:mm`);
-  const dateStartDay = dayjs(dateStart).format(`MMM DD`);
 
+  const dateStartDay = dayjs(dateStart).add(getRandomInteger(-3, 3), `day`).format(`MMM DD`);
   return `<li class="trip-events__item">
               <div class="event">
                 <time class="event__date" datetime="2019-03-18">${dateStartDay}</time>

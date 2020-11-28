@@ -36,8 +36,7 @@ const render = (container, content, position) => {
 const tripMainElement = document.querySelector(`.trip-main`);
 render(tripMainElement, createTripInfo(tripInfo[0]), `afterBegin`); // рендер маршрута
 
-const tripInfoElement = tripMainElement.querySelector(`.trip-main__trip-info`);
-render(tripInfoElement, createTripInfoCost(), `beforeEnd`); // рендер цены
+
 
 const tripControlsElement = tripMainElement.querySelector(`.trip-main__trip-controls`);
 const visuallyHiddenElement = tripControlsElement.querySelector(`.visually-hidden`);
@@ -54,6 +53,17 @@ render(tripEventElement, createTripEventEditForm(tripTotalItems[0]), `beforeEnd`
 render(tripEventElement, createTripEventsList(), `beforeEnd`); // рендер формы нового предложения
 
 const tripEventsListElement = tripEventElement.querySelector(`.trip-events__list`);
+let totalPrice = 0;
+let totalPriceAddantion = 0;
 for (let i = 0; i < POINT_COUNT; i++) {
   render(tripEventsListElement, createTripEventItem(tripItems[i]), `beforeEnd`); // рендер точек маршрута
+  totalPrice += tripItems[i].price; // затраты на точки маршрута
+
+  for(let item of tripItems[i].addOfferItem){ // обошел веь массив через of
+    totalPriceAddantion += item.price; // дополнительные затраты
+  }
 }
+const tripInfoElement = tripMainElement.querySelector(`.trip-main__trip-info`);
+render(tripInfoElement, createTripInfoCost(), `beforeEnd`); // рендер цены
+
+export {totalPrice, totalPriceAddantion};
