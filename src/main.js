@@ -6,7 +6,7 @@ import {createTripEventsSort} from "./view/trip-events-sort.js";
 import {createTripEventEditForm} from "./view/trip-event-edit-form.js";
 
 import {createTripEventsList} from "./view/trip-events-list.js";
-import {createTripEventItems} from "./view/trip-event-item.js";
+import {createTripEventItem} from "./view/trip-event-item.js";
 import {getTripEventItem} from "./mock/mock-trip-event-item.js";
 import {getTripEventsSort} from "./mock/mock-trip-events-sort.js";
 import {getRandomInteger} from "./mock/util";
@@ -21,7 +21,8 @@ const tripItems = new Array(DATA_COUNT).fill().map(getTripEventItem);
 // fill() метод заполняет эти элементы массива, теперь внутри там underfine
 // map(tripEventItem) заполняет эти массивы методом map();
 
-const tripEventsSort = new Array(1).fill().map(getTripEventsSort); // создал один массив с одним объектом для сортировки
+const tripEventsSort = new Array(1).fill().map(getTripEventsSort); // создал один массив с одним объектом для
+// сортировки
 
 // container = место куда вставляем разметку;
 // content = text разметки;
@@ -50,15 +51,14 @@ render(tripEventElement, createTripEventsList(), `beforeEnd`); // рендер �
 
 const tripEventsListElement = tripEventElement.querySelector(`.trip-events__list`);
 let totalPriceItem = 0;
-let totalPriceAddantion = 0;
 let destinations = [];
 let startDateInfo = [];
 for (let i = 1; i <= POINT_COUNT; i++) {
-  render(tripEventsListElement, createTripEventItems(tripItems[i]), `beforeEnd`); // рендер точек маршрута
+  render(tripEventsListElement, createTripEventItem(tripItems[i]), `beforeEnd`); // рендер точек маршрута
   totalPriceItem += tripItems[i].price; // затраты на точки маршрута
 
   for (let item of tripItems[i].additionalOffers) { // обошел веь массив через of
-    totalPriceAddantion += item.price; // дополнительные затраты
+    totalPriceItem += item.price; // дополнительные затраты
   }
   destinations.push(tripItems[i].destinationItem); // закинул все города которые были в точке маршрута
   startDateInfo.push(tripItems[i].dateStart);
@@ -66,6 +66,5 @@ for (let i = 1; i <= POINT_COUNT; i++) {
 
 render(tripMainElement, createTripInfo(destinations, startDateInfo), `afterBegin`); // рендер маршрута tripInfo[0]
 
-const totalPrice = totalPriceItem + totalPriceAddantion;
 const tripInfoElement = tripMainElement.querySelector(`.trip-main__trip-info`);
-render(tripInfoElement, createTripInfoCost(totalPrice), `beforeEnd`); // рендер цены
+render(tripInfoElement, createTripInfoCost(totalPriceItem), `beforeEnd`); // рендер цены

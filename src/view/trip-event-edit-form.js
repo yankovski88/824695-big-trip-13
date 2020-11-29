@@ -1,5 +1,4 @@
 import dayjs from "dayjs";
-
 // функция по установке времени в форме
 const createFieldTime = (dateStart, dateFinish) => {
   // установка формата времени
@@ -16,8 +15,8 @@ const createFieldTime = (dateStart, dateFinish) => {
 };
 
 
-const createTripEventEditForm = (dataItems) => { // сюда попадают данные и запоняется шаблон
-  const {description, photos, additionalOffers, dateStart, dateFinish} = dataItems;
+const createTripEventEditForm = (dataItem) => { // сюда попадают данные и запоняется шаблон
+  const {description, photos, additionalOffers, dateStart, dateFinish} = dataItem;
 
   // генерирует разметку фоток
   const createEventPhotoTemplate = () => {
@@ -42,7 +41,7 @@ const createTripEventEditForm = (dataItems) => { // сюда попадают д
   };
 
 
-  const createTime = createFieldTime(`${dateStart}`, `${dateFinish}`);
+  const createTime = createFieldTime(dateStart, dateFinish);
 
 
   return `<li class="trip-events__item">

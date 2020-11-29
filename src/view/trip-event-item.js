@@ -1,6 +1,7 @@
 import dayjs from "dayjs";
+import {getDateDiff} from "../mock/util.js";
 
-const createTripEventItems = (dataItems) => {
+const createTripEventItem = (dataItems) => {
   const {type, price, dateStart, dateFinish, additionalOffers, destinationItem} = dataItems;
 
   const getAdditionalOffers = () => {
@@ -20,34 +21,22 @@ const createTripEventItems = (dataItems) => {
 
   const dateStartDay = dayjs(dateStart).format(`MMM DD`); // дата в item
 
-  const getTimeDifference = () => {
-    const timeDifference = dayjs(dateFinish).subtract(dayjs(dateStart)).subtract(3, `hour`).format(`HH:mm`);
-
-    const timeDifferenceFormat = dayjs(dateFinish).subtract(dayjs(dateStart)).subtract(3, `hour`);
-    const hour = dayjs(1).subtract(2, `hour`).format(`HH:mm`);
-    if (timeDifference < hour) {
-      return timeDifferenceFormat.format(`m`) + `M`;
-    } else {
-      return timeDifferenceFormat.format(`HH:mm`);
-    }
-  };
-  getTimeDifference();
   return `<li class="trip-events__item">
               <div class="event">
-                <time class="event__date" datetime="2019-03-18">${dateStartDay}</time>
+                <time class="event__date" datetime=${dateStartDay}>${dateStartDay}</time>
                 <div class="event__type">
                   <img class="event__type-icon" width="42" height="42" src="img/icons/drive.png" alt="Event type icon">
                 </div>
                 <h3 class="event__title">${type} ${destinationItem}</h3>
                 <div class="event__schedule">
                   <p class="event__time">
-                    <time class="event__start-time" datetime="2019-03-18T14:30">${startDate}</time>
+                    <time class="event__start-time" datetime=${startDate}>${startDate}</time>
                     &mdash;
-                    <time class="event__end-time" datetime="2019-03-18T16:05">${finishDate}</time>
+                    <time class="event__end-time" datetime=${finishDate}>${finishDate}</time>
                   </p>
                
 
-                  <p class="event__duration">${getTimeDifference()}</p>
+                  <p class="event__duration">${getDateDiff(dayjs(dateStart), dayjs(dateFinish))}</p>
                 </div>
                 <p class="event__price">
                   &euro;&nbsp;<span class="event__price-value">${price}</span> 
@@ -70,4 +59,4 @@ const createTripEventItems = (dataItems) => {
             </li>`;
 };
 
-export {createTripEventItems};
+export {createTripEventItem};
