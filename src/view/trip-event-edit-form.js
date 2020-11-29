@@ -3,8 +3,8 @@ import dayjs from "dayjs";
 // функция по установке времени в форме
 const createFieldTime = (dateStart, dateFinish) => {
   // установка формата времени
-  const startTime = dayjs(dateStart).format(`YY/MM/DD HH:mm`);
-  const finishTime = dayjs(dateFinish).format(`YY/MM/DD HH:mm`);
+  const startTime = dayjs(dateStart).format(`DD/MM/YY HH:mm`);
+  const finishTime = dayjs(dateFinish).format(`DD/MM/YY HH:mm`);
 
   return `<div class="event__field-group  event__field-group--time">
     <label class="visually-hidden" for="event-start-time-1">From</label>
@@ -17,37 +17,30 @@ const createFieldTime = (dateStart, dateFinish) => {
 
 
 const createTripEventEditForm = (dataItems) => { // сюда попадают данные и запоняется шаблон
-  const {description, photos, additionalOffer, dateStart, dateFinish} = dataItems;
+  const {description, photos, additionalOffers, dateStart, dateFinish} = dataItems;
 
   // генерирует разметку фоток
-  const createEventFoto = function () {
-    const photoItems = [];
-    for (let i = 0; i < photos.length; i++) {
-      photoItems.push(`<img class="event__photo" src="${photos[i]}" alt="Event photo">`);
-    }
-    const photoItem = photoItems.join(` `);
-    return photoItem;
+  const createEventPhotoTemplate = () => {
+    return photos.reduce((total, element) => { // перебрал все элементы photos и присоединил их в total
+      return total + `<img class="event__photo" src="${element}" alt="Event photo">`;
+    }, ``);
   };
 
-
   // функция по отрисовке фрагмента всех преимуществ
-  const createOffer = () => {
-    const offerItems = [];
-    for (let i = 0; i < additionalOffer.length; i++) {
-      offerItems.push(`
+  const getOffersTemplate = () => {
+    return additionalOffers.reduce((total, element)=>{
+      return total + `
                       <div class="event__offer-selector">
                         <input class="event__offer-checkbox  visually-hidden" id="event-offer-luggage-1" type="checkbox" name="event-offer-luggage" checked>
                         <label class="event__offer-label" for="event-offer-luggage-1">
-                          <span class="event__offer-title">${additionalOffer[i].offer}</span>
+                          <span class="event__offer-title">${element.offer}</span>
                           &plus;&euro;&nbsp;
-                          <span class="event__offer-price">${additionalOffer[i].price}</span>
+                          <span class="event__offer-price">${element.price}</span>
                         </label>
-                      </div>`); // в созданный фрагмент вставляем все наши метки
-    }
-    const offerItem = offerItems.join(` `);
-
-    return offerItem;
+                      </div>`;
+    }, ``);
   };
+
 
   const createTime = createFieldTime(`${dateStart}`, `${dateFinish}`);
 
@@ -132,7 +125,7 @@ const createTripEventEditForm = (dataItems) => { // сюда попадают д
                   </div>
 
 ${createTime}
-                 <!---->
+              
 
                   <div class="event__field-group  event__field-group--price">
                     <label class="event__label" for="event-price-1">
@@ -151,7 +144,7 @@ ${createTime}
 
                     <div class="event__available-offers">
                     
-                    ${createOffer()}
+                    ${getOffersTemplate()}
                     </div>
                   </section>
 
@@ -161,7 +154,7 @@ ${createTime}
 
                     <div class="event__photos-container">
                       <div class="event__photos-tape">
-                      ${createEventFoto()}
+                      ${createEventPhotoTemplate()}
                   
                       </div>
                     </div>

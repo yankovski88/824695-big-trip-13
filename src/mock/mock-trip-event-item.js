@@ -1,16 +1,7 @@
 import dayjs from "dayjs";
-
+import {getRandomInteger} from "./util.js";
 // массив из которого выберится случайный тип маршрута
 const TYPES = [`Taxi`, `Bus`, `Train`, `Ship`, `Transport`, `Drive`, `Flight`, `Check-in`, `Sightseeng`, `Restaurant`];
-
-// - Объявим функцию-генератор создаем объект со всеми рандомными данными
-const getRandomInteger = (a = 0, b = 1) => {
-  const lower = Math.ceil(Math.min(a, b));
-  const upper = Math.floor(Math.max(a, b));
-
-  return Math.floor(lower + Math.random() * (upper - lower + 1));
-};
-
 
 // дата начала и конца поездки
 const generateDate = () => {
@@ -22,17 +13,20 @@ const generateDate = () => {
 
   const maxHoursGap = 4;
   const hoursGap = getRandomInteger(1, maxHoursGap);
-
-  return dayjs().add(hoursGap, `hour`).toDate();
+  const dateFinish = dayjs().add(hoursGap, `day`).add(hoursGap, `hour`).add(-hoursGap, `minute`).toDate(); // рандом
+  // день
+  return dateFinish;
 };
 
 // функция действующего времени
 const generateDateStart = () => {
-  return dayjs().toDate();
-};
 
-const dateStart = generateDateStart();
-const dateFinish = generateDate();
+  const maxDaysGap = 3;
+  const daysGap = getRandomInteger(-maxDaysGap, 1);
+  const dateStart = dayjs().add(daysGap, `day`).add(daysGap, `hour`).add(-maxDaysGap, `minute`).toDate();
+
+  return dateStart;
+};
 
 // цена
 const prices = [20, 50, 160, 180];
@@ -67,7 +61,7 @@ const getPhotos = () => {
   return photos;
 };
 
-const additionalOffer = [
+const additionalOffers = [
   {
     id: 1,
     offer: `Add luggage`,
@@ -100,34 +94,26 @@ const getAdditionalOffers = () => {
   const items = [];
 
   for (let i = 0; i < getRandomInteger(0, 5); i++) {
-    items.push(additionalOffer[i]);
+    items.push(additionalOffers[i]);
   }
   return items;
 };
 
-const getAdditionalOfferItems = () => {
-  const items = [];
-
-  for (let i = 0; i < getRandomInteger(0, additionalOffer.length); i++) {
-    items.push(additionalOffer[i]);
-  }
-  return items;
-};
+// пункт назанчения
+const destinationItems = [`Amsterdam`, `Chamonix`, `Geneva`, `Minsk`];
 
 
 // функция которая возвращает объект со всеми данным для точки маршрута
 export const getTripEventItem = () => {
-
   return {
     type: TYPES[getRandomInteger(1, TYPES.length - 1)],
     price: prices[getRandomInteger(0, prices.length - 1)],
-    dateStart,
-    dateFinish,
+    dateStart: generateDateStart(),
+    dateFinish: generateDate(),
     description: getDescription(descriptions),
-    photoType: `http://picsum.photos/248/152?r=${Math.random(3)}`,
     photos: getPhotos(),
-    additionalOffer: getAdditionalOffers(),
-    addOfferItem: getAdditionalOfferItems(),
+    additionalOffers: getAdditionalOffers(),
+    destinationItem: destinationItems[getRandomInteger(0, destinationItems.length - 1)]
   };
 };
 

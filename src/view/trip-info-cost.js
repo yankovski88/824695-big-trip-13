@@ -1,7 +1,6 @@
-import {totalPrice, totalPriceAddantion} from "../main";
-const createTripInfoCost = () => {
+const createTripInfoCost = (price) => {
   return `<p class="trip-info__cost">
-    Total: &euro;&nbsp;<span class="trip-info__cost-value">${totalPrice + totalPriceAddantion}</span>
+    Total: &euro;&nbsp;<span class="trip-info__cost-value">${price}</span>
     </p>`;
 };
 

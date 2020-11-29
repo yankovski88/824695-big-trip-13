@@ -1,53 +1,60 @@
 import dayjs from "dayjs";
-import {getRandomInteger} from "../mock/util.js";
 
-const createTripEventItem = (dataItems) => {
-  const {type, price, dateStart, dateFinish, photoType, addOfferItem} = dataItems;
+const createTripEventItems = (dataItems) => {
+  const {type, price, dateStart, dateFinish, additionalOffers, destinationItem} = dataItems;
 
-  const getAdditionalOffer = () => {
-    const additionalOffers = [];
-    for (let i = 0; i < addOfferItem.length; i++) {
-      additionalOffers.push(`
+  const getAdditionalOffers = () => {
+    return additionalOffers.reduce((total, element) => {
+      return total + `
      <li class="event__offer">
-                    <span class="event__offer-title">${addOfferItem[i].offer}</span>
+                    <span class="event__offer-title">${element.offer}</span>
                     &plus;&euro;&nbsp;
-                    <span class="event__offer-price">${addOfferItem[i].price}</span>
+                    <span class="event__offer-price">${element.price}</span>
                   </li>
-  `);
-    }
-    const additionalOfferItem = additionalOffers.join(` `);
-    return additionalOfferItem;
+  `;
+    }, ``);
   };
 
+  const startDate = dayjs(dateStart).format(`HH:mm`); // часы в item
+  const finishDate = dayjs(dateFinish).format(`HH:mm`);
 
-  const dateS = dayjs(dateStart).format(`HH:mm`);
-  const dateF = dayjs(dateFinish).format(`HH:mm`);
+  const dateStartDay = dayjs(dateStart).format(`MMM DD`); // дата в item
 
-  const dateStartDay = dayjs(dateStart).add(getRandomInteger(-3, 3), `day`).format(`MMM DD`);
+  const getTimeDifference = () => {
+    const timeDifference = dayjs(dateFinish).subtract(dayjs(dateStart)).subtract(3, `hour`).format(`HH:mm`);
+
+    const timeDifferenceFormat = dayjs(dateFinish).subtract(dayjs(dateStart)).subtract(3, `hour`);
+    const hour = dayjs(1).subtract(2, `hour`).format(`HH:mm`);
+    if (timeDifference < hour) {
+      return timeDifferenceFormat.format(`m`) + `M`;
+    } else {
+      return timeDifferenceFormat.format(`HH:mm`);
+    }
+  };
+  getTimeDifference();
   return `<li class="trip-events__item">
               <div class="event">
                 <time class="event__date" datetime="2019-03-18">${dateStartDay}</time>
                 <div class="event__type">
-                  <img class="event__type-icon" width="42" height="42" src="${photoType}" alt="Event type icon">
+                  <img class="event__type-icon" width="42" height="42" src="img/icons/drive.png" alt="Event type icon">
                 </div>
-                <h3 class="event__title">${type}</h3>
+                <h3 class="event__title">${type} ${destinationItem}</h3>
                 <div class="event__schedule">
                   <p class="event__time">
-                    <time class="event__start-time" datetime="2019-03-18T14:30">${dateS}</time>
+                    <time class="event__start-time" datetime="2019-03-18T14:30">${startDate}</time>
                     &mdash;
-                    <time class="event__end-time" datetime="2019-03-18T16:05">${dateF}</time>
+                    <time class="event__end-time" datetime="2019-03-18T16:05">${finishDate}</time>
                   </p>
                
 
-                  <p class="event__duration">${dayjs(dateFinish).subtract(dayjs(dateStart)).format(`HH:mm`)}</p>
+                  <p class="event__duration">${getTimeDifference()}</p>
                 </div>
                 <p class="event__price">
                   &euro;&nbsp;<span class="event__price-value">${price}</span> 
-                  <!--160-->
                 </p>
                 <h4 class="visually-hidden">Offers:</h4>
                 <ul class="event__selected-offers">
-                ${getAdditionalOffer()}
+                ${getAdditionalOffers()}
                
                 </ul>
                 <button class="event__favorite-btn  event__favorite-btn--active" type="button">
@@ -63,4 +70,4 @@ const createTripEventItem = (dataItems) => {
             </li>`;
 };
 
-export {createTripEventItem};
+export {createTripEventItems};
