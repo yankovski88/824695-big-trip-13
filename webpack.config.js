@@ -3,7 +3,7 @@ const path = require('path'); // нужно импортировать т.к. н
 module.exports = { // экспортируем
   entry: './src/main.js', // из папку src файла main.js
   output: { // в
-    filename: 'bundle', // в файл boundle.js
+    filename: 'bundle.js', // в файл boundle.js
     path: path.resolve(__dirname, 'public'), // путь для файла указываем корневой плюс папка public в нее и
     // сохранится файл
   },
