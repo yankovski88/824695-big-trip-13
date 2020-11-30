@@ -1,5 +1,50 @@
-const createTripEventEditForm = () => {
-  return `<!--<li class="trip-events__item">-->
+import dayjs from "dayjs";
+// функция по установке времени в форме
+const createFieldTime = (dateStart, dateFinish) => {
+  // установка формата времени
+  const startTime = dayjs(dateStart).format(`DD/MM/YY HH:mm`);
+  const finishTime = dayjs(dateFinish).format(`DD/MM/YY HH:mm`);
+
+  return `<div class="event__field-group  event__field-group--time">
+    <label class="visually-hidden" for="event-start-time-1">From</label>
+    <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${startTime}">
+    &mdash;
+<label class="visually-hidden" for="event-end-time-1">To</label>
+    <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${finishTime}">
+    </div>`;
+};
+
+
+const createTripEventEditForm = (dataItem) => { // сюда попадают данные и запоняется шаблон
+  const {description, photos, additionalOffers, dateStart, dateFinish} = dataItem;
+
+  // генерирует разметку фоток
+  const createEventPhotoTemplate = () => {
+    return photos.reduce((total, element) => { // перебрал все элементы photos и присоединил их в total
+      return total + `<img class="event__photo" src="${element}" alt="Event photo">`;
+    }, ``);
+  };
+
+  // функция по отрисовке фрагмента всех преимуществ
+  const getOffersTemplate = () => {
+    return additionalOffers.reduce((total, element)=>{
+      return total + `
+                      <div class="event__offer-selector">
+                        <input class="event__offer-checkbox  visually-hidden" id="event-offer-luggage-1" type="checkbox" name="event-offer-luggage" checked>
+                        <label class="event__offer-label" for="event-offer-luggage-1">
+                          <span class="event__offer-title">${element.offer}</span>
+                          &plus;&euro;&nbsp;
+                          <span class="event__offer-price">${element.price}</span>
+                        </label>
+                      </div>`;
+    }, ``);
+  };
+
+
+  const createTime = createFieldTime(dateStart, dateFinish);
+
+
+  return `<li class="trip-events__item">
               <form class="event event--edit" action="#" method="post">
                 <header class="event__header">
                   <div class="event__type-wrapper">
@@ -78,13 +123,8 @@ const createTripEventEditForm = () => {
                     </datalist>
                   </div>
 
-                  <div class="event__field-group  event__field-group--time">
-                    <label class="visually-hidden" for="event-start-time-1">From</label>
-                    <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="19/03/19 00:00">
-                    &mdash;
-                    <label class="visually-hidden" for="event-end-time-1">To</label>
-                    <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="19/03/19 00:00">
-                  </div>
+${createTime}
+              
 
                   <div class="event__field-group  event__field-group--price">
                     <label class="event__label" for="event-price-1">
@@ -102,70 +142,25 @@ const createTripEventEditForm = () => {
                     <h3 class="event__section-title  event__section-title--offers">Offers</h3>
 
                     <div class="event__available-offers">
-                      <div class="event__offer-selector">
-                        <input class="event__offer-checkbox  visually-hidden" id="event-offer-luggage-1" type="checkbox" name="event-offer-luggage" checked>
-                        <label class="event__offer-label" for="event-offer-luggage-1">
-                          <span class="event__offer-title">Add luggage</span>
-                          &plus;&euro;&nbsp;
-                          <span class="event__offer-price">30</span>
-                        </label>
-                      </div>
-
-                      <div class="event__offer-selector">
-                        <input class="event__offer-checkbox  visually-hidden" id="event-offer-comfort-1" type="checkbox" name="event-offer-comfort" checked>
-                        <label class="event__offer-label" for="event-offer-comfort-1">
-                          <span class="event__offer-title">Switch to comfort class</span>
-                          &plus;&euro;&nbsp;
-                          <span class="event__offer-price">100</span>
-                        </label>
-                      </div>
-
-                      <div class="event__offer-selector">
-                        <input class="event__offer-checkbox  visually-hidden" id="event-offer-meal-1" type="checkbox" name="event-offer-meal">
-                        <label class="event__offer-label" for="event-offer-meal-1">
-                          <span class="event__offer-title">Add meal</span>
-                          &plus;&euro;&nbsp;
-                          <span class="event__offer-price">15</span>
-                        </label>
-                      </div>
-
-                      <div class="event__offer-selector">
-                        <input class="event__offer-checkbox  visually-hidden" id="event-offer-seats-1" type="checkbox" name="event-offer-seats">
-                        <label class="event__offer-label" for="event-offer-seats-1">
-                          <span class="event__offer-title">Choose seats</span>
-                          &plus;&euro;&nbsp;
-                          <span class="event__offer-price">5</span>
-                        </label>
-                      </div>
-
-                      <div class="event__offer-selector">
-                        <input class="event__offer-checkbox  visually-hidden" id="event-offer-train-1" type="checkbox" name="event-offer-train">
-                        <label class="event__offer-label" for="event-offer-train-1">
-                          <span class="event__offer-title">Travel by train</span>
-                          &plus;&euro;&nbsp;
-                          <span class="event__offer-price">40</span>
-                        </label>
-                      </div>
+                    
+                    ${getOffersTemplate()}
                     </div>
                   </section>
 
                   <section class="event__section  event__section--destination">
                     <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-                    <p class="event__destination-description">Geneva is a city in Switzerland that lies at the southern tip of expansive Lac Léman (Lake Geneva). Surrounded by the Alps and Jura mountains, the city has views of dramatic Mont Blanc.</p>
+                    <p class="event__destination-description">${description}</p>
 
                     <div class="event__photos-container">
                       <div class="event__photos-tape">
-                        <img class="event__photo" src="img/photos/1.jpg" alt="Event photo">
-                        <img class="event__photo" src="img/photos/2.jpg" alt="Event photo">
-                        <img class="event__photo" src="img/photos/3.jpg" alt="Event photo">
-                        <img class="event__photo" src="img/photos/4.jpg" alt="Event photo">
-                        <img class="event__photo" src="img/photos/5.jpg" alt="Event photo">
+                      ${createEventPhotoTemplate()}
+                  
                       </div>
                     </div>
                   </section>
                 </section>
               </form>
-            <!--</li>-->
+            </li>
 `;
 };
 

@@ -4,11 +4,25 @@ import {createTripMenu} from "./view/trip-menu.js";
 import {createTripFilter} from "./view/trip-filter.js";
 import {createTripEventsSort} from "./view/trip-events-sort.js";
 import {createTripEventEditForm} from "./view/trip-event-edit-form.js";
+
 import {createTripEventsList} from "./view/trip-events-list.js";
 import {createTripEventItem} from "./view/trip-event-item.js";
+import {getTripEventItem} from "./mock/mock-trip-event-item.js";
+import {getTripEventsSort} from "./mock/mock-trip-events-sort.js";
+import {getRandomInteger} from "./mock/util";
 
 const POINT_COUNT = 3;
+const DATA_COUNT = 15;
 // файл в котором будем рендерить все модули
+
+const tripItems = new Array(DATA_COUNT).fill().map(getTripEventItem);
+// Array создаем массив
+// DATA_COUNT колличество эллементов в массиве, все они пустые и нужно их заполнить
+// fill() метод заполняет эти элементы массива, теперь внутри там underfine
+// map(tripEventItem) заполняет эти массивы методом map();
+
+const tripEventsSort = new Array(1).fill().map(getTripEventsSort); // создал один массив с одним объектом для
+// сортировки
 
 // container = место куда вставляем разметку;
 // content = text разметки;
@@ -18,10 +32,6 @@ const render = (container, content, position) => {
 };
 
 const tripMainElement = document.querySelector(`.trip-main`);
-render(tripMainElement, createTripInfo(), `afterBegin`); // рендер маршрута
-
-const tripInfoElement = tripMainElement.querySelector(`.trip-main__trip-info`);
-render(tripInfoElement, createTripInfoCost(), `beforeEnd`); // рендер цены
 
 const tripControlsElement = tripMainElement.querySelector(`.trip-main__trip-controls`);
 const visuallyHiddenElement = tripControlsElement.querySelector(`.visually-hidden`);
@@ -31,13 +41,30 @@ render(visuallyHiddenElement, createTripMenu(), `afterEnd`); // рендер м�
 render(tripControlsElement, createTripFilter(), `beforeEnd`); // рендер фильтр хедер
 
 const tripEventElement = document.querySelector(`.trip-events`);
-render(tripEventElement, createTripEventsSort(), `beforeEnd`); // рендер сортировки
+render(tripEventElement, createTripEventsSort(tripEventsSort[0]), `beforeEnd`); // рендер сортировки
 
-render(tripEventElement, createTripEventEditForm(), `beforeEnd`); // рендер формы нового предложения
+render(tripEventElement, createTripEventEditForm(tripItems[getRandomInteger(0, tripItems.length - 1)]), `beforeEnd`); // рендер формы
+// нового
+// предложения
 
 render(tripEventElement, createTripEventsList(), `beforeEnd`); // рендер формы нового предложения
 
 const tripEventsListElement = tripEventElement.querySelector(`.trip-events__list`);
-for (let i = 0; i < POINT_COUNT; i++) {
-  render(tripEventsListElement, createTripEventItem(), `beforeEnd`); // рендер точек маршрута
+let totalPriceItem = 0;
+let destinations = [];
+let startDateInfo = [];
+for (let i = 1; i <= POINT_COUNT; i++) {
+  render(tripEventsListElement, createTripEventItem(tripItems[i]), `beforeEnd`); // рендер точек маршрута
+  totalPriceItem += tripItems[i].price; // затраты на точки маршрута
+
+  for (let item of tripItems[i].additionalOffers) { // обошел веь массив через of
+    totalPriceItem += item.price; // дополнительные затраты
+  }
+  destinations.push(tripItems[i].destinationItem); // закинул все города которые были в точке маршрута
+  startDateInfo.push(tripItems[i].dateStart);
 }
+
+render(tripMainElement, createTripInfo(destinations, startDateInfo), `afterBegin`); // рендер маршрута tripInfo[0]
+
+const tripInfoElement = tripMainElement.querySelector(`.trip-main__trip-info`);
+render(tripInfoElement, createTripInfoCost(totalPriceItem), `beforeEnd`); // рендер цены

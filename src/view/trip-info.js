@@ -1,8 +1,14 @@
-const createTripInfo = () => {
+import dayjs from "dayjs";
+
+const createTripInfo = (destinations, starts) => {
+
+  const dateStartDay = dayjs(starts[0]).format(`MMM DD`);
+  const dateFinishDay = dayjs(starts[starts.length - 1]).format(`DD`);
+
   return `<section class="trip-main__trip-info  trip-info">
   <div class="trip-info__main">
-    <h1 class="trip-info__title">Amsterdam &mdash; Chamonix &mdash; Geneva</h1>
-    <p class="trip-info__dates">Mar 18&nbsp;&mdash;&nbsp;20</p>
+    <h1 class="trip-info__title">${destinations[0]} &mdash; ${destinations[1]} &mdash; ${destinations[2]}</h1>
+    <p class="trip-info__dates">${dateStartDay}&nbsp;&mdash;&nbsp;${dateFinishDay}</p>
   </div>
 </section>`;
 };

@@ -1,29 +1,50 @@
-const createTripEventItem = () => {
+import dayjs from "dayjs";
+import {getDateDiff} from "../mock/util.js";
+
+const createTripEventItem = (dataItems) => {
+  const {type, price, dateStart, dateFinish, additionalOffers, destinationItem} = dataItems;
+
+  const getAdditionalOffers = () => {
+    return additionalOffers.reduce((total, element) => {
+      return total + `
+     <li class="event__offer">
+                    <span class="event__offer-title">${element.offer}</span>
+                    &plus;&euro;&nbsp;
+                    <span class="event__offer-price">${element.price}</span>
+                  </li>
+  `;
+    }, ``);
+  };
+
+  const startDate = dayjs(dateStart).format(`HH:mm`); // часы в item
+  const finishDate = dayjs(dateFinish).format(`HH:mm`);
+
+  const dateStartDay = dayjs(dateStart).format(`MMM DD`); // дата в item
+
   return `<li class="trip-events__item">
               <div class="event">
-                <time class="event__date" datetime="2019-03-18">MAR 18</time>
+                <time class="event__date" datetime=${dateStartDay}>${dateStartDay}</time>
                 <div class="event__type">
                   <img class="event__type-icon" width="42" height="42" src="img/icons/drive.png" alt="Event type icon">
                 </div>
-                <h3 class="event__title">Drive Chamonix</h3>
+                <h3 class="event__title">${type} ${destinationItem}</h3>
                 <div class="event__schedule">
                   <p class="event__time">
-                    <time class="event__start-time" datetime="2019-03-18T14:30">14:30</time>
+                    <time class="event__start-time" datetime=${startDate}>${startDate}</time>
                     &mdash;
-                    <time class="event__end-time" datetime="2019-03-18T16:05">16:05</time>
+                    <time class="event__end-time" datetime=${finishDate}>${finishDate}</time>
                   </p>
-                  <p class="event__duration">1H 35M</p>
+               
+
+                  <p class="event__duration">${getDateDiff(dayjs(dateStart), dayjs(dateFinish))}</p>
                 </div>
                 <p class="event__price">
-                  &euro;&nbsp;<span class="event__price-value">160</span>
+                  &euro;&nbsp;<span class="event__price-value">${price}</span> 
                 </p>
                 <h4 class="visually-hidden">Offers:</h4>
                 <ul class="event__selected-offers">
-                  <li class="event__offer">
-                    <span class="event__offer-title">Rent a car</span>
-                    &plus;&euro;&nbsp;
-                    <span class="event__offer-price">200</span>
-                  </li>
+                ${getAdditionalOffers()}
+               
                 </ul>
                 <button class="event__favorite-btn  event__favorite-btn--active" type="button">
                   <span class="visually-hidden">Add to favorite</span>
