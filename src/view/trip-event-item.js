@@ -1,5 +1,6 @@
 import dayjs from "dayjs";
 import {getDateDiff} from "../mock/util.js";
+import {createElement} from "../mock/util";
 
 const createTripEventItem = (dataItems) => {
   const {type, price, dateStart, dateFinish, additionalOffers, destinationItem} = dataItems;
@@ -59,4 +60,27 @@ const createTripEventItem = (dataItems) => {
             </li>`;
 };
 
-export {createTripEventItem};
+// export {createTripEventItem};
+
+export default class TripEventItem {
+  constructor(dataItems){
+    this._dataItems = dataItems;
+
+    this._element = null;
+  }
+
+  getTemplate(){
+    return createTripEventItem(this._dataItems);
+  }
+
+  getElement(){
+    if(!this._element){
+      this._element = createElement(this.getTemplate());
+    }
+    return this._element
+  }
+
+  removeElement(){
+    this._element = null;
+  }
+}

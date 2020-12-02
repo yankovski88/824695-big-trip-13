@@ -1,15 +1,31 @@
-import {createTripInfo} from "./view/trip-info.js";
-import {createTripInfoCost} from "./view/trip-info-cost.js";
-import {createTripMenu} from "./view/trip-menu.js";
-import {createTripFilter} from "./view/trip-filter.js";
-import {createTripEventsSort} from "./view/trip-events-sort.js";
-import {createTripEventEditForm} from "./view/trip-event-edit-form.js";
+// import {createTripInfo} from "./view/trip-info.js";
+import TripInfoView from "./view/trip-info.js";
 
-import {createTripEventsList} from "./view/trip-events-list.js";
-import {createTripEventItem} from "./view/trip-event-item.js";
+// import {createTripInfoCost} from "./view/trip-info-cost.js";
+import TripInfoCostView from "./view/trip-info-cost.js";
+
+// import {createTripMenu} from "./view/trip-menu.js";
+// import {createTripFilter} from "./view/trip-filter.js";
+import TripFilterView from "./view/trip-filter.js";
+
+import TripEventsSortView from "./view/trip-events-sort-view.js";
+// import {createTripEventEditForm} from "./view/trip-event-edit-form.js";
+import TripEventEditFormView from "./view/trip-event-edit-form.js";
+import FieldTimeView from "./view/field-time-view.js";
+
+
+import TripEventsList from "./view/trip-events-list.js";
+// import {createTripEventItem} from "./view/trip-event-item.js";
+import TripEventItem from "./view/trip-event-item.js";
+
 import {getTripEventItem} from "./mock/mock-trip-event-item.js";
 import {getTripEventsSort} from "./mock/mock-trip-events-sort.js";
+import TripSortItemView from "./view/trip-sort-item.js";
+
 import {getRandomInteger} from "./mock/util";
+import {renderTemplate, renderElement, RenderPosition} from "./mock/util";
+
+import TripMenuView from "./view/trip-menu.js";
 
 const POINT_COUNT = 3;
 const DATA_COUNT = 15;
@@ -24,37 +40,43 @@ const tripItems = new Array(DATA_COUNT).fill().map(getTripEventItem);
 const tripEventsSort = new Array(1).fill().map(getTripEventsSort); // создал один массив с одним объектом для
 // сортировки
 
-// container = место куда вставляем разметку;
-// content = text разметки;
-// position = определяет позицию добавляемого элемента;
-const render = (container, content, position) => {
-  container.insertAdjacentHTML(position, content);
-};
+
 
 const tripMainElement = document.querySelector(`.trip-main`);
 
 const tripControlsElement = tripMainElement.querySelector(`.trip-main__trip-controls`);
 const visuallyHiddenElement = tripControlsElement.querySelector(`.visually-hidden`);
+// renderTemplate(visuallyHiddenElement, createTripMenu(), `afterEnd`); // рендер меню
+renderElement(visuallyHiddenElement, new TripMenuView().getElement(), RenderPosition.AFTEREND); // рендер меню
 
-render(visuallyHiddenElement, createTripMenu(), `afterEnd`); // рендер меню
 
-render(tripControlsElement, createTripFilter(), `beforeEnd`); // рендер фильтр хедер
+// renderTemplate(tripControlsElement, createTripFilter(), `beforeEnd`); // рендер фильтр хедер
+renderElement(tripControlsElement, new TripFilterView().getElement(), RenderPosition.BEFOREEND); // рендер фильтр хедер
 
 const tripEventElement = document.querySelector(`.trip-events`);
-render(tripEventElement, createTripEventsSort(tripEventsSort[0]), `beforeEnd`); // рендер сортировки
+const tripEventsSortComponent = new TripEventsSortView();
+renderElement(tripEventElement, tripEventsSortComponent.getElement(), RenderPosition.BEFOREEND); // рендер сортировки
+// выбрал renderTemplate вместо renderElement т.к. некуда было вставить данные
+renderElement(tripEventsSortComponent.getElement(), new TripSortItemView(tripEventsSort[0]).getElement(), RenderPosition.BEFOREEND);
 
-render(tripEventElement, createTripEventEditForm(tripItems[getRandomInteger(0, tripItems.length - 1)]), `beforeEnd`); // рендер формы
-// нового
-// предложения
 
-render(tripEventElement, createTripEventsList(), `beforeEnd`); // рендер формы нового предложения
+// renderTemplate(tripEventElement, createTripEventEditForm(tripItems[getRandomInteger(0, tripItems.length - 1)]), `beforeEnd`); // рендер формы
+renderElement(tripEventElement, new TripEventEditFormView(tripItems[getRandomInteger(0, tripItems.length - 1)]).getElement(), RenderPosition.BEFOREEND); // рендер формы
+const eventFieldGroup = document.querySelector(`.event__field-group`);
+renderElement(eventFieldGroup, new FieldTimeView(tripItems[getRandomInteger(0, tripItems.length - 1)]).getElement(), RenderPosition.AFTEREND); // рендер времени в редактировании формы
+
+
+renderElement(tripEventElement, new TripEventsList().getElement(), RenderPosition.BEFOREEND); // рендер списка нового предложения
 
 const tripEventsListElement = tripEventElement.querySelector(`.trip-events__list`);
 let totalPriceItem = 0;
 let destinations = [];
 let startDateInfo = [];
 for (let i = 1; i <= POINT_COUNT; i++) {
-  render(tripEventsListElement, createTripEventItem(tripItems[i]), `beforeEnd`); // рендер точек маршрута
+  // renderTemplate(tripEventsListElement, createTripEventItem(tripItems[i]), `beforeEnd`); // рендер точек маршрута
+  renderElement(tripEventsListElement, new TripEventItem(tripItems[i]).getElement(), RenderPosition.BEFOREEND); // рендер точек
+  // маршрута
+
   totalPriceItem += tripItems[i].price; // затраты на точки маршрута
 
   for (let item of tripItems[i].additionalOffers) { // обошел веь массив через of
@@ -64,7 +86,12 @@ for (let i = 1; i <= POINT_COUNT; i++) {
   startDateInfo.push(tripItems[i].dateStart);
 }
 
-render(tripMainElement, createTripInfo(destinations, startDateInfo), `afterBegin`); // рендер маршрута tripInfo[0]
+// renderTemplate(tripMainElement, createTripInfo(destinations, startDateInfo), `afterBegin`); // рендер маршрута tripInfo[0]
+renderElement(tripMainElement, new TripInfoView(destinations, startDateInfo).getElement(), RenderPosition.AFTERBEGIN); // рендер
+// маршрута
+// tripInfo[0]
+
 
 const tripInfoElement = tripMainElement.querySelector(`.trip-main__trip-info`);
-render(tripInfoElement, createTripInfoCost(totalPriceItem), `beforeEnd`); // рендер цены
+// renderTemplate(tripInfoElement, createTripInfoCost(totalPriceItem), `beforeEnd`); // рендер цены
+renderElement(tripInfoElement, new TripInfoCostView(totalPriceItem).getElement(), RenderPosition.BEFOREEND); // рендер цены

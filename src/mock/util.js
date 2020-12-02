@@ -27,4 +27,41 @@ const getDateDiff = (start, finish) => {
   return time;
 };
 
-export {getRandomInteger, getDateDiff};
+// container = место куда вставляем разметку;
+// content = text разметки;
+// position = определяет позицию добавляемого элемента;
+const renderTemplate = (container, content, position) => {
+  container.insertAdjacentHTML(position, content);
+};
+
+// объект с константами куда вставить елемент
+const RenderPosition = {
+  AFTERBEGIN: `afterbegin`,
+  BEFOREEND: `beforeend`,
+  AFTEREND:`afterEnd`
+};
+
+// функция которая вставит внутрь шаблона элемент
+const renderElement = (container, element, position) => {
+  switch(position){ // попадает позиция
+    case RenderPosition.AFTERBEGIN: // если она RenderPosition.AFTERBEGIN
+      container.prepend(element); // то вставить в начало(pripend())
+      break;
+    case RenderPosition.BEFOREEND:
+      container.append(element);
+      break;
+    case RenderPosition.AFTEREND:
+      container.after(element);
+      break;
+  }
+};
+
+const createElement = (template) =>{
+  const newElement = document.createElement(`div`); // создаем пустой div
+  newElement.innerHTML = template; // берем HTML в виде строки и вкладываем в этот div-блок, превращаия в DOM-элемент
+
+  return newElement.firstChild; // возвращаем имеено вставленый элемент(ребенка) без созданого нами div
+  // т.е. элемент изначально должен имет свою собственную обертку
+};
+
+export {getRandomInteger, getDateDiff, renderTemplate, renderElement, createElement, RenderPosition};
