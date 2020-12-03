@@ -41,7 +41,6 @@ const tripEventsSort = new Array(1).fill().map(getTripEventsSort); // созда
 // сортировки
 
 
-
 const tripMainElement = document.querySelector(`.trip-main`);
 
 const tripControlsElement = tripMainElement.querySelector(`.trip-main__trip-controls`);
@@ -59,12 +58,14 @@ renderElement(tripEventElement, tripEventsSortComponent.getElement(), RenderPosi
 // выбрал renderTemplate вместо renderElement т.к. некуда было вставить данные
 renderElement(tripEventsSortComponent.getElement(), new TripSortItemView(tripEventsSort[0]).getElement(), RenderPosition.BEFOREEND);
 
+const renderForm = (container, position) => {
+  // renderTemplate(tripEventElement, createTripEventEditForm(tripItems[getRandomInteger(0, tripItems.length - 1)]), `beforeEnd`); // рендер формы
+// renderElement(tripEventElement, new TripEventEditFormView(tripItems[getRandomInteger(0, tripItems.length - 1)]).getElement(), RenderPosition.BEFOREEND); // рендер формы
+  renderElement(container, new TripEventEditFormView(tripItems[getRandomInteger(0, tripItems.length - 1)]).getElement(), position); // рендер формы
 
-// renderTemplate(tripEventElement, createTripEventEditForm(tripItems[getRandomInteger(0, tripItems.length - 1)]), `beforeEnd`); // рендер формы
-renderElement(tripEventElement, new TripEventEditFormView(tripItems[getRandomInteger(0, tripItems.length - 1)]).getElement(), RenderPosition.BEFOREEND); // рендер формы
-const eventFieldGroup = document.querySelector(`.event__field-group`);
-renderElement(eventFieldGroup, new FieldTimeView(tripItems[getRandomInteger(0, tripItems.length - 1)]).getElement(), RenderPosition.AFTEREND); // рендер времени в редактировании формы
-
+  const eventFieldGroup = document.querySelector(`.event__field-group`);
+  renderElement(eventFieldGroup, new FieldTimeView(tripItems[getRandomInteger(0, tripItems.length - 1)]).getElement(), RenderPosition.AFTEREND); // рендер времени в редактировании формы
+};
 
 renderElement(tripEventElement, new TripEventsList().getElement(), RenderPosition.BEFOREEND); // рендер списка нового предложения
 
@@ -74,8 +75,39 @@ let destinations = [];
 let startDateInfo = [];
 for (let i = 1; i <= POINT_COUNT; i++) {
   // renderTemplate(tripEventsListElement, createTripEventItem(tripItems[i]), `beforeEnd`); // рендер точек маршрута
-  renderElement(tripEventsListElement, new TripEventItem(tripItems[i]).getElement(), RenderPosition.BEFOREEND); // рендер точек
+  const tripEventItemComponent = new TripEventItem(tripItems[i]);
+  const TripEventEditComponent = new TripEventEditFormView(tripItems[getRandomInteger(0, tripItems.length - 1)]).getElement();
+
+  // функция которая заменяет item маршрута на форму редоктирования
+  const replaceItemToForm = () => {
+    tripEventItemComponent.getElement().replaceWith(TripEventEditComponent);
+    // через replaceChild не сработал
+    // tripEventItemComponent.getElement().firstChild.replaceChild(TripEventEditComponent, tripEventItemComponent.getElement());
+  };
+
+  const replaceFormToItem = () => {
+    TripEventEditComponent.replaceWith(tripEventItemComponent.getElement());
+  };
+
+  // обраотчик который появляется приредоктировании Item в форме
+  const onButtonSave = () => {
+    const eventSaveBtn = TripEventEditComponent.querySelector(`form`);
+    eventSaveBtn.addEventListener(`submit`, (evt) => {
+      evt.preventDefault();
+      replaceFormToItem(); // замена формы на точку маршрута
+      document.removeEventListener(`submit`, onButtonSave); // удаление обработчика
+    })
+  };
+
+  renderElement(tripEventsListElement, tripEventItemComponent.getElement(), RenderPosition.BEFOREEND); // рендер точек
   // маршрута
+
+  // код который рендерит форму при клике на стрелку вниз в item
+  tripEventItemComponent.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, () => {
+    replaceItemToForm();
+    onButtonSave();
+  });
+
 
   totalPriceItem += tripItems[i].price; // затраты на точки маршрута
 
