@@ -21,8 +21,6 @@ const createTripFilter = () => {
  </form>`;
 };
 
-// export {createTripFilter};
-
 export default class TripFilterView {
   constructor(){
     this._element = null;

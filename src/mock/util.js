@@ -64,4 +64,4 @@ const createElement = (template) =>{
   // т.е. элемент изначально должен имет свою собственную обертку
 };
 
-export {getRandomInteger, getDateDiff, renderTemplate, renderElement, createElement, RenderPosition};
+export {getRandomInteger, getDateDiff, renderElement, createElement, RenderPosition};

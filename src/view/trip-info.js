@@ -14,7 +14,6 @@ const createTripInfo = (destinations, starts) => {
 </section>`;
 };
 
-// export {createTripInfo};
 export default class TripInfoView {
   constructor(destinations, starts){
     this._destinations = destinations;

@@ -6,8 +6,6 @@ const createTripInfoCost = (price) => {
     </p>`;
 };
 
-// export {createTripInfoCost};
-
 export default class TripInfoCostView {
   constructor(price){ // в конструктор помещаем свойства
     this._price = price;

@@ -60,8 +60,6 @@ const createTripEventItem = (dataItems) => {
             </li>`;
 };
 
-// export {createTripEventItem};
-
 export default class TripEventItem {
   constructor(dataItems){
     this._dataItems = dataItems;
