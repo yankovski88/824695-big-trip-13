@@ -51,59 +51,59 @@ const renderEventList = ()=>{
 };
 
 const renderEventItemDestinationCost = ()=>{
-const tripEventsListElement = tripEventElement.querySelector(`.trip-events__list`);
-let totalPriceItem = 0;
-let destinations = [];
-let startDateInfo = [];
-for (let i = 1; i <= POINT_COUNT; i++) {
-  const tripEventItemComponent = new TripEventItem(tripItems[i]);
-  const TripEventEditComponent = new TripEventEditFormView(tripItems[getRandomInteger(0, tripItems.length - 1)]).getElement();
+  const tripEventsListElement = tripEventElement.querySelector(`.trip-events__list`);
+  let totalPriceItem = 0;
+  let destinations = [];
+  let startDateInfo = [];
+  for (let i = 1; i <= POINT_COUNT; i++) {
+    const tripEventItemComponent = new TripEventItem(tripItems[i]);
+    const TripEventEditComponent = new TripEventEditFormView(tripItems[getRandomInteger(0, tripItems.length - 1)]).getElement();
 
-  // функция которая заменяет item маршрута на форму редоктирования
-  const replaceItemToForm = () => {
+    // функция которая заменяет item маршрута на форму редоктирования
+    const replaceItemToForm = () => {
     // через replaceChild не сработал
     // tripEventItemComponent.getElement().firstChild.replaceChild(TripEventEditComponent, tripEventItemComponent.getElement());
-    tripEventItemComponent.getElement().replaceWith(TripEventEditComponent);
-   };
+      tripEventItemComponent.getElement().replaceWith(TripEventEditComponent);
+    };
 
-  const replaceFormToItem = () => {
-    TripEventEditComponent.replaceWith(tripEventItemComponent.getElement());
-  };
+    const replaceFormToItem = () => {
+      TripEventEditComponent.replaceWith(tripEventItemComponent.getElement());
+    };
 
-  // обраотчик который появляется приредоктировании Item в форме
-  const onButtonSave = () => {
-    const eventSaveBtn = TripEventEditComponent.querySelector(`form`);
-    eventSaveBtn.addEventListener(`submit`, (evt) => {
-      evt.preventDefault();
-      replaceFormToItem(); // замена формы на точку маршрута
-      document.removeEventListener(`submit`, onButtonSave); // удаление обработчика
-    })
-  };
+    // обраотчик который появляется приредоктировании Item в форме
+    const onButtonSave = () => {
+      const eventSaveBtn = TripEventEditComponent.querySelector(`form`);
+      eventSaveBtn.addEventListener(`submit`, (evt) => {
+        evt.preventDefault();
+        replaceFormToItem(); // замена формы на точку маршрута
+        document.removeEventListener(`submit`, onButtonSave); // удаление обработчика
+      });
+    };
 
-  renderElement(tripEventsListElement, tripEventItemComponent.getElement(), RenderPosition.BEFOREEND); // рендер точек
-  // маршрута
+    renderElement(tripEventsListElement, tripEventItemComponent.getElement(), RenderPosition.BEFOREEND); // рендер точек
+    // маршрута
 
-  // код который рендерит форму при клике на стрелку вниз в item
-  tripEventItemComponent.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, () => {
-    replaceItemToForm();
-    onButtonSave();
-  });
+    // код который рендерит форму при клике на стрелку вниз в item
+    tripEventItemComponent.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, () => {
+      replaceItemToForm();
+      onButtonSave();
+    });
 
 
-  totalPriceItem += tripItems[i].price; // затраты на точки маршрута
+    totalPriceItem += tripItems[i].price; // затраты на точки маршрута
 
-  for (let item of tripItems[i].additionalOffers) { // обошел веь массив через of
-    totalPriceItem += item.price; // дополнительные затраты
+    for (let item of tripItems[i].additionalOffers) { // обошел веь массив через of
+      totalPriceItem += item.price; // дополнительные затраты
+    }
+    destinations.push(tripItems[i].destinationItem); // закинул все города которые были в точке маршрута
+    startDateInfo.push(tripItems[i].dateStart);
   }
-  destinations.push(tripItems[i].destinationItem); // закинул все города которые были в точке маршрута
-  startDateInfo.push(tripItems[i].dateStart);
-}
 
 
-renderElement(tripMainElement, new TripInfoView(destinations, startDateInfo).getElement(), RenderPosition.AFTERBEGIN); // рендер промежкутка даты
+  renderElement(tripMainElement, new TripInfoView(destinations, startDateInfo).getElement(), RenderPosition.AFTERBEGIN); // рендер промежкутка даты
 
-const tripInfoElement = tripMainElement.querySelector(`.trip-main__trip-info`);
-renderElement(tripInfoElement, new TripInfoCostView(totalPriceItem).getElement(), RenderPosition.BEFOREEND); // рендер цены
+  const tripInfoElement = tripMainElement.querySelector(`.trip-main__trip-info`);
+  renderElement(tripInfoElement, new TripInfoCostView(totalPriceItem).getElement(), RenderPosition.BEFOREEND); // рендер цены
 };
 
 renderMenu();

@@ -61,24 +61,24 @@ const createTripEventItem = (dataItems) => {
 };
 
 export default class TripEventItem {
-  constructor(dataItems){
+  constructor(dataItems) {
     this._dataItems = dataItems;
 
     this._element = null;
   }
 
-  getTemplate(){
+  getTemplate() {
     return createTripEventItem(this._dataItems);
   }
 
-  getElement(){
-    if(!this._element){
+  getElement() {
+    if (!this._element) {
       this._element = createElement(this.getTemplate());
     }
-    return this._element
+    return this._element;
   }
 
-  removeElement(){
+  removeElement() {
     this._element = null;
   }
 }

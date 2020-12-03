@@ -9,25 +9,25 @@ const createTripMenu = () => {
 
 
 export default class TripMenuView {
-  constructor(){
+  constructor() {
     this._element = null; // по умолчанию сделал елемент пустым
-  };
-
-  // функция которая будет возвращать разметку
-  getTemplate(){
-    return createTripMenu();
-  };
-
-  getElement(){
-    if(!this._element){ // если нет элемента, а его нет! т.к. изначально прописал
-     this._element = createElement(this.getTemplate()); // то создаем элемент нашего шаблона
-      // НЕ понимаю зачем создовать createElement
-    }
-    return this._element
   }
 
-  removeElement(){
-   this._element = null;
+  // функция которая будет возвращать разметку
+  getTemplate() {
+    return createTripMenu();
+  }
+
+  getElement() {
+    if (!this._element) { // если нет элемента, а его нет! т.к. изначально прописал
+      this._element = createElement(this.getTemplate()); // то создаем элемент нашего шаблона
+      // НЕ понимаю зачем создовать createElement
+    }
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
   }
 }
 

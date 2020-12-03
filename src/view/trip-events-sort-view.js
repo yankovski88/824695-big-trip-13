@@ -1,4 +1,4 @@
-import {createElement} from "../mock/util.js"
+import {createElement} from "../mock/util.js";
 
 const getSortItems = (sortItem) => {
   return sortItem.sortItems.reduce((total, element) => {

@@ -15,25 +15,25 @@ const createTripInfo = (destinations, starts) => {
 };
 
 export default class TripInfoView {
-  constructor(destinations, starts){
+  constructor(destinations, starts) {
     this._destinations = destinations;
     this._starts = starts;
 
     this._element = null;
   }
 
-  getTemplate(){
+  getTemplate() {
     return createTripInfo(this._destinations, this._starts);
   }
 
-  getElement(){
-    if(!this._element){
+  getElement() {
+    if (!this._element) {
       this._element = createElement(this.getTemplate());
     }
     return this._element;
   }
 
-  removeElement(){
+  removeElement() {
     this._element = null;
   }
 }

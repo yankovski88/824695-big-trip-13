@@ -27,23 +27,16 @@ const getDateDiff = (start, finish) => {
   return time;
 };
 
-// container = место куда вставляем разметку;
-// content = text разметки;
-// position = определяет позицию добавляемого элемента;
-const renderTemplate = (container, content, position) => {
-  container.insertAdjacentHTML(position, content);
-};
-
 // объект с константами куда вставить елемент
 const RenderPosition = {
   AFTERBEGIN: `afterbegin`,
   BEFOREEND: `beforeend`,
-  AFTEREND:`afterEnd`
+  AFTEREND: `afterEnd`
 };
 
 // функция которая вставит внутрь шаблона элемент
 const renderElement = (container, element, position) => {
-  switch(position){ // попадает позиция
+  switch (position) { // попадает позиция
     case RenderPosition.AFTERBEGIN: // если она RenderPosition.AFTERBEGIN
       container.prepend(element); // то вставить в начало(pripend())
       break;
