@@ -27,11 +27,11 @@ const createTripEventEditForm = (dataItem) => { // сюда попадают д�
     }, ``);
   };
 
-// добавление кнопки вверх
+  // добавление кнопки вверх
   const createEventRollupBtn = () =>{
     return `<button class="event__rollup-btn" type="button">
          <span class="visually-hidden">Open event</span>
-      </button>`
+      </button>`;
   };
 
 

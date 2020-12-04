@@ -13,7 +13,9 @@ import {getRandomInteger, renderElement, RenderPosition} from "./mock/util";
 
 import TripMenuView from "./view/trip-menu.js";
 
-const POINT_COUNT = 3;
+import EventMsgView from "./view/trip-event-msg.js";
+
+const POINT_COUNT = 0;
 const DATA_COUNT = 15;
 // файл в котором будем рендерить все модули
 
@@ -50,6 +52,7 @@ const renderEventList = () => {
   renderElement(tripEventElement, new TripEventsList().getElement(), RenderPosition.BEFOREEND);
 };
 
+
 const renderEventItemDestinationCost = () => {
   const tripEventsListElement = tripEventElement.querySelector(`.trip-events__list`);
   let totalPriceItem = 0;
@@ -58,6 +61,7 @@ const renderEventItemDestinationCost = () => {
   for (let i = 1; i <= POINT_COUNT; i++) {
     const tripEventItemComponent = new TripEventItem(tripItems[i]);
     const TripEventEditComponent = new TripEventEditFormView(tripItems[getRandomInteger(0, tripItems.length - 1)]).getElement();
+
 
     // функция которая заменяет item маршрута на форму редоктирования
     const replaceItemToForm = () => {
@@ -99,6 +103,7 @@ const renderEventItemDestinationCost = () => {
       document.removeEventListener(`submit`, onButtonSaveSubmit); // удаление обработчика
       document.removeEventListener(`click`, onEventRollupBtnClick); // удаление обработчика
     };
+
     renderElement(tripEventsListElement, tripEventItemComponent.getElement(), RenderPosition.BEFOREEND); // рендер точек
     // маршрута
 
@@ -139,4 +144,12 @@ renderMenu();
 renderFilter();
 renderSort();
 renderEventList();
-renderEventItemDestinationCost();
+
+if (POINT_COUNT > 0) {
+  renderEventItemDestinationCost();
+} else {
+  const main = document.querySelector(`main`);
+  const pageBodyContainer = main.querySelector(`.page-body__container`);
+  main.removeChild(pageBodyContainer);
+  renderElement(main, new EventMsgView().getElement(), RenderPosition.BEFOREEND);
+}
