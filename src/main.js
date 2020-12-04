@@ -35,22 +35,22 @@ const renderMenu = () => {
   renderElement(visuallyHiddenElement, new TripMenuView().getElement(), RenderPosition.AFTEREND); // рендер меню
 };
 
-const renderFilter = ()=>{
+const renderFilter = () => {
   renderElement(tripControlsElement, new TripFilterView().getElement(), RenderPosition.BEFOREEND); // рендер фильтр хедер
 };
 
 const tripEventElement = document.querySelector(`.trip-events`);
-const renderSort = ()=>{
+const renderSort = () => {
   const tripEventsSortComponent = new TripEventsSortView(tripEventsSort[0]);
   renderElement(tripEventElement, tripEventsSortComponent.getElement(), RenderPosition.BEFOREEND); // рендер сортировки
 };
 
-const renderEventList = ()=>{
+const renderEventList = () => {
 // рендер списка новой точки маршрута
   renderElement(tripEventElement, new TripEventsList().getElement(), RenderPosition.BEFOREEND);
 };
 
-const renderEventItemDestinationCost = ()=>{
+const renderEventItemDestinationCost = () => {
   const tripEventsListElement = tripEventElement.querySelector(`.trip-events__list`);
   let totalPriceItem = 0;
   let destinations = [];
@@ -61,8 +61,8 @@ const renderEventItemDestinationCost = ()=>{
 
     // функция которая заменяет item маршрута на форму редоктирования
     const replaceItemToForm = () => {
-    // через replaceChild не сработал
-    // tripEventItemComponent.getElement().firstChild.replaceChild(TripEventEditComponent, tripEventItemComponent.getElement());
+      // через replaceChild не сработал
+      // tripEventItemComponent.getElement().firstChild.replaceChild(TripEventEditComponent, tripEventItemComponent.getElement());
       tripEventItemComponent.getElement().replaceWith(TripEventEditComponent);
     };
 
@@ -70,23 +70,52 @@ const renderEventItemDestinationCost = ()=>{
       TripEventEditComponent.replaceWith(tripEventItemComponent.getElement());
     };
 
-    // обраотчик который появляется приредоктировании Item в форме
-    const onButtonSave = () => {
+    // обраотчик сохранения формы
+    const onButtonSaveSubmit = () => {
       const eventSaveBtn = TripEventEditComponent.querySelector(`form`);
       eventSaveBtn.addEventListener(`submit`, (evt) => {
         evt.preventDefault();
         replaceFormToItem(); // замена формы на точку маршрута
-        document.removeEventListener(`submit`, onButtonSave); // удаление обработчика
+        document.removeEventListener(`submit`, onButtonSaveSubmit); // удаление обработчика
+        // document.removeEventListener(`keydown`, onEscKeyPress); // удаление обработчика, если нажали на ESC
+        // document.removeEventListener(`click`, onEventRollupBtnClick); // удаление обработчика
       });
     };
 
+    // обраотчик который закрывается без сохранения формы
+    const onEscKeyPress = (evt) => {
+      if (evt.key === `Escape` || evt.key === `Esc`) {
+        evt.preventDefault();
+        replaceFormToItem(); // замена формы на точку маршрута
+        document.removeEventListener(`keydown`, onEscKeyPress); // удаление обработчика, если нажали на ESC
+        document.removeEventListener(`submit`, onButtonSaveSubmit); // удаление обработчика
+        // document.removeEventListener(`click`, onEventRollupBtnClick); // удаление обработчика
+      }
+    };
+    const onEventRollupBtnClick = (evt) => {
+      evt.preventDefault();
+      replaceFormToItem(); // замена формы на точку маршрута
+      document.removeEventListener(`keydown`, onEscKeyPress); // удаление обработчика, если нажали на ESC
+      document.removeEventListener(`submit`, onButtonSaveSubmit); // удаление обработчика
+      document.removeEventListener(`click`, onEventRollupBtnClick); // удаление обработчика
+    };
     renderElement(tripEventsListElement, tripEventItemComponent.getElement(), RenderPosition.BEFOREEND); // рендер точек
     // маршрута
 
+    const buttonEventItem = tripEventItemComponent.getElement().querySelector(`.event__rollup-btn`);
     // код который рендерит форму при клике на стрелку вниз в item
-    tripEventItemComponent.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, () => {
+    buttonEventItem.addEventListener(`click`, () => {
+
       replaceItemToForm();
-      onButtonSave();
+      onButtonSaveSubmit(); // ЭТОТ ОБРАБОТЧИК ДОБАВЛЯЕТСЯ ВСЕГДА ПРИ КЛИКЕ НА СТРЕЛКУ, НО ЕСЛИ НАЖИМАТЬ НА ESC, ТО
+      // ОН НЕ УДАЛЯЕТСЯ, А БУДЕТ ТОЛЬКО ДОБАВЛЯЕТСЯ т.е. при нажати на esc его надо удалять. Также и в обратную
+      // сторону нужно удалять обработчик на ESC
+      document.addEventListener(`keydown`, onEscKeyPress); // после клика на стрелку вставил обработчик на ESC
+
+      if (tripEventsListElement.querySelector(`form`)) {
+        const eventRollupBtn = TripEventEditComponent.querySelector(`.event__rollup-btn`);
+        eventRollupBtn.addEventListener(`click`, onEventRollupBtnClick); // вставил обработчика как для и ESC onEscKeyPress
+      }
     });
 
 

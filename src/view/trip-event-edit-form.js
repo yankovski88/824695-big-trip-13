@@ -27,6 +27,14 @@ const createTripEventEditForm = (dataItem) => { // сюда попадают д�
     }, ``);
   };
 
+// добавление кнопки вверх
+  const createEventRollupBtn = () =>{
+    return `<button class="event__rollup-btn" type="button">
+         <span class="visually-hidden">Open event</span>
+      </button>`
+  };
+
+
   // функция по отрисовке фрагмента всех преимуществ
   const getOffersTemplate = () => {
     return additionalOffers.reduce((total, element) => {
@@ -136,6 +144,7 @@ const createTripEventEditForm = (dataItem) => { // сюда попадают д�
 
                   <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
                   <button class="event__reset-btn" type="reset">Cancel</button>
+                  ${createEventRollupBtn()}
                 </header>
                 <section class="event__details">
                   <section class="event__section  event__section--offers">

@@ -28,5 +28,4 @@ export default class TripInfoCostView {
   removeElement() {
     this._element = null;
   }
-
 }
