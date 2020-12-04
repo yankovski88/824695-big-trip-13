@@ -11,7 +11,7 @@ const createEventMsg = ()=>{
       </div>`;
 };
 
-export default class EventMsgView {
+export default class EventListEmptyMessageView {
   constructor() {
     this._element = null;
   }
