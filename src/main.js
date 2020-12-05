@@ -1,3 +1,5 @@
+// файл в котором будем рендерить все модули
+
 import TripInfoView from "./view/trip-info.js";
 import TripInfoCostView from "./view/trip-info-cost.js";
 import TripFilterView from "./view/trip-filter.js";
@@ -9,14 +11,13 @@ import TripEventItem from "./view/trip-event-item.js";
 import {getTripEventItem} from "./mock/mock-trip-event-item.js";
 import {getTripEventsSort} from "./mock/mock-trip-events-sort.js";
 
-import {getRandomInteger, renderElement, RenderPosition} from "./mock/util";
+import {renderElement, RenderPosition} from "./mock/util";
 
 import TripMenuView from "./view/trip-menu.js";
 
 import EventListEmptyMessageView from "./view/trip-event-msg.js";
 
 const DATA_COUNT = 15;
-// файл в котором будем рендерить все модули
 
 const tripItems = new Array(DATA_COUNT).fill().map(getTripEventItem);
 // Array создаем массив
@@ -28,7 +29,8 @@ const tripMainElement = document.querySelector(`.trip-main`);
 const tripControlsElement = tripMainElement.querySelector(`.trip-main__trip-controls`);
 
 const renderMenu = () => {
-  const visuallyHiddenFirstH2Element = tripControlsElement.querySelector(`.visually-hidden`);
+  const visuallyHiddenFirstH2Element = tripControlsElement.querySelector(`h2.visually-hidden`); // нашли тег h2 и в
+  // нем класс visually-hidden
   renderElement(visuallyHiddenFirstH2Element, new TripMenuView().getElement(), RenderPosition.AFTEREND); // рендер меню
 };
 
@@ -47,32 +49,35 @@ const renderEventList = () => {
   renderElement(tripEventElement, new TripEventsList().getElement(), RenderPosition.BEFOREEND);
 };
 
+// данные для рендера их на сайте
+let totalPriceItem = 0;
+let destinations = [];
+let startDateInfo = [];
+
 const renderEventItemDestinationCost = () => {
   const tripEventsListElement = tripEventElement.querySelector(`.trip-events__list`);
-  let totalPriceItem = 0;
-  let destinations = [];
-  let startDateInfo = [];
+
   for (let i = 0; i < DATA_COUNT; i++) {
     const tripEventItemComponent = new TripEventItem(tripItems[i]);
-    const TripEventEditComponent = new TripEventEditFormView(tripItems[getRandomInteger(0, tripItems.length - 1)]).getElement();
+    const TripEventEditComponent = new TripEventEditFormView(tripItems[i]).getElement();
 
 
     // функция которая заменяет item маршрута на форму редоктирования
     const replaceItemToForm = () => {
       // через replaceChild не сработал
-      // tripEventItemComponent.getElement().firstChild.replaceChild(TripEventEditComponent, tripEventItemComponent.getElement());
       // Эта функция у тебя не работала, потому что .replaceChild() ты должен вызывать на контейнере в котором находятся элементы должны замениться, в твоем случае - это tripEventsListElement
       tripEventsListElement.replaceChild(TripEventEditComponent, tripEventItemComponent.getElement());
     };
 
+    // функция которая из формы редоктирования делает предложение Item
     const replaceFormToItem = () => {
       TripEventEditComponent.replaceWith(tripEventItemComponent.getElement());
     };
 
     // обраотчик сохранения формы
     const onFormSubmit = () => {
-      const eventSaveBtn = TripEventEditComponent.querySelector(`form`);
-      eventSaveBtn.addEventListener(`submit`, (evt) => {
+      const formEditEvent = TripEventEditComponent.querySelector(`form`);
+      formEditEvent.addEventListener(`submit`, (evt) => {
         evt.preventDefault();
         replaceFormToItem(); // замена формы на точку маршрута
         document.removeEventListener(`submit`, onFormSubmit); // удаление обработчика
@@ -118,7 +123,6 @@ const renderEventItemDestinationCost = () => {
       }
     });
 
-
     totalPriceItem += tripItems[i].price; // затраты на точки маршрута
 
     for (let item of tripItems[i].additionalOffers) { // обошел веь массив через of
@@ -127,12 +131,25 @@ const renderEventItemDestinationCost = () => {
     destinations.push(tripItems[i].destinationItem); // закинул все города которые были в точке маршрута
     startDateInfo.push(tripItems[i].dateStart);
   }
+};
 
-
+// функция которая выводит дистанцию дат и точек маршрута
+const renderDestination = () => {
   renderElement(tripMainElement, new TripInfoView(destinations, startDateInfo).getElement(), RenderPosition.AFTERBEGIN); // рендер промежкутка даты
+};
 
+// функция которая рендерит цену
+const renderTotalCost = () => {
   const tripInfoElement = tripMainElement.querySelector(`.trip-main__trip-info`);
   renderElement(tripInfoElement, new TripInfoCostView(totalPriceItem).getElement(), RenderPosition.BEFOREEND); // рендер цены
+};
+
+// функция которая выводить пустое сообщение если нет Item
+const renderEmptyMessage = () => {
+  const main = document.querySelector(`main`);
+  const pageBodyContainer = main.querySelector(`.page-body__container`);
+  main.removeChild(pageBodyContainer);
+  renderElement(main, new EventListEmptyMessageView().getElement(), RenderPosition.BEFOREEND);
 };
 
 renderMenu();
@@ -141,9 +158,8 @@ renderSort();
 renderEventList();
 if (DATA_COUNT > 0) {
   renderEventItemDestinationCost();
+  renderDestination();
+  renderTotalCost();
 } else {
-  const main = document.querySelector(`main`);
-  const pageBodyContainer = main.querySelector(`.page-body__container`);
-  main.removeChild(pageBodyContainer);
-  renderElement(main, new EventListEmptyMessageView().getElement(), RenderPosition.BEFOREEND);
+  renderEmptyMessage();
 }
