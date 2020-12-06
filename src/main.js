@@ -54,7 +54,7 @@ let totalPriceItem = 0;
 let destinations = [];
 let startDateInfo = [];
 
-const renderEventItemDestinationCost = () => {
+const renderEventItem = () => {
   const tripEventsListElement = tripEventElement.querySelector(`.trip-events__list`);
 
   for (let i = 0; i < DATA_COUNT; i++) {
@@ -157,7 +157,7 @@ renderFilter();
 renderSort();
 renderEventList();
 if (DATA_COUNT > 0) {
-  renderEventItemDestinationCost();
+  renderEventItem();
   renderDestination();
   renderTotalCost();
 } else {
