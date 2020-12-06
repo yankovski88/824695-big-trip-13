@@ -1,4 +1,6 @@
 import dayjs from "dayjs";
+import {createElement} from "../mock/util";
+
 // функция по установке времени в форме
 const createFieldTime = (dateStart, dateFinish) => {
   // установка формата времени
@@ -25,9 +27,17 @@ const createTripEventEditForm = (dataItem) => { // сюда попадают д�
     }, ``);
   };
 
+  // добавление кнопки вверх
+  const createEventRollupBtn = () =>{
+    return `<button class="event__rollup-btn" type="button">
+         <span class="visually-hidden">Open event</span>
+      </button>`;
+  };
+
+
   // функция по отрисовке фрагмента всех преимуществ
   const getOffersTemplate = () => {
-    return additionalOffers.reduce((total, element)=>{
+    return additionalOffers.reduce((total, element) => {
       return total + `
                       <div class="event__offer-selector">
                         <input class="event__offer-checkbox  visually-hidden" id="event-offer-luggage-1" type="checkbox" name="event-offer-luggage" checked>
@@ -42,7 +52,6 @@ const createTripEventEditForm = (dataItem) => { // сюда попадают д�
 
 
   const createTime = createFieldTime(dateStart, dateFinish);
-
 
   return `<li class="trip-events__item">
               <form class="event event--edit" action="#" method="post">
@@ -123,8 +132,7 @@ const createTripEventEditForm = (dataItem) => { // сюда попадают д�
                     </datalist>
                   </div>
 
-${createTime}
-              
+   ${createTime }
 
                   <div class="event__field-group  event__field-group--price">
                     <label class="event__label" for="event-price-1">
@@ -136,6 +144,7 @@ ${createTime}
 
                   <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
                   <button class="event__reset-btn" type="reset">Cancel</button>
+                  ${createEventRollupBtn()}
                 </header>
                 <section class="event__details">
                   <section class="event__section  event__section--offers">
@@ -164,4 +173,25 @@ ${createTime}
 `;
 };
 
-export {createTripEventEditForm};
+
+export default class TripEventEditFormView {
+  constructor(dataItem) {
+    this._dataItem = dataItem;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createTripEventEditForm(this._dataItem);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
