@@ -1,4 +1,5 @@
-import {createElement} from "../mock/util";
+import AbstractView from "./abstract.js"
+// import {createElement} from "../mock/util";
 
 const createTripFilter = () => {
   return `<form class="trip-filters" action="#" method="get">
@@ -21,23 +22,23 @@ const createTripFilter = () => {
  </form>`;
 };
 
-export default class TripFilterView {
-  constructor() {
-    this._element = null;
-  }
+export default class TripFilterView extends AbstractView{
+  // constructor() {
+  //   this._element = null;
+  // }
 
   getTemplate() {
     return createTripFilter();
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
-  }
+  // getElement() {
+  //   if (!this._element) {
+  //     this._element = createElement(this.getTemplate());
+  //   }
+  //   return this._element;
+  // }
+  //
+  // removeElement() {
+  //   this._element = null;
+  // }
 }

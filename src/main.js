@@ -59,32 +59,46 @@ const renderEventItem = () => {
 
   for (let i = 0; i < DATA_COUNT; i++) {
     const tripEventItemComponent = new TripEventItem(tripItems[i]);
-    const TripEventEditComponent = new TripEventEditFormView(tripItems[i]).getElement();
+    // const TripEventEditComponent = new TripEventEditFormView(tripItems[i]).getElement();
+    const TripEventEditComponent = new TripEventEditFormView(tripItems[i]);
+
 
 
     // функция которая заменяет item маршрута на форму редоктирования
     const replaceItemToForm = () => {
       // через replaceChild не сработал
       // Эта функция у тебя не работала, потому что .replaceChild() ты должен вызывать на контейнере в котором находятся элементы должны замениться, в твоем случае - это tripEventsListElement
-      tripEventsListElement.replaceChild(TripEventEditComponent, tripEventItemComponent.getElement());
+      // tripEventsListElement.replaceChild(TripEventEditComponent, tripEventItemComponent.getElement());
+      tripEventItemComponent.getElement().replaceWith(TripEventEditComponent.getElement());
+
     };
 
     // функция которая из формы редоктирования делает предложение Item
     const replaceFormToItem = () => {
-      TripEventEditComponent.replaceWith(tripEventItemComponent.getElement());
+      TripEventEditComponent.getElement().replaceWith(tripEventItemComponent.getElement());
     };
 
     // обраотчик сохранения формы
     const onFormSubmit = () => {
-      const formEditEvent = TripEventEditComponent.querySelector(`form`);
-      formEditEvent.addEventListener(`submit`, (evt) => {
-        evt.preventDefault();
+      const formEditEvent = TripEventEditComponent.getElement().querySelector(`form`);
+      TripEventEditComponent.setSubmitHandler(() => {
+      // formEditEvent.addEventListener(`submit`, (evt) => {
+
+        // evt.preventDefault();
         replaceFormToItem(); // замена формы на точку маршрута
         document.removeEventListener(`submit`, onFormSubmit); // удаление обработчика
         // document.removeEventListener(`keydown`, onEscKeyPress); // удаление обработчика, если нажали на ESC
         // document.removeEventListener(`click`, onEventRollupBtnClick); // удаление обработчика
-      });
+      // });
+        }, formEditEvent);
+
+
     };
+
+    // при удаление элемента из DOM все обработчики, которые есть на нем - тоже удаляются
+    // Единственное, что тебе нужно удалять - это обработчики, которые ты вешаешь на document
+    // или другие DOM элементы, которые остаются после удаления компонента
+
 
     // обраотчик который закрывается без сохранения формы
     const onEscKeyPress = (evt) => {
@@ -93,6 +107,7 @@ const renderEventItem = () => {
         replaceFormToItem(); // замена формы на точку маршрута
         document.removeEventListener(`keydown`, onEscKeyPress); // удаление обработчика, если нажали на ESC
         document.removeEventListener(`submit`, onFormSubmit); // удаление обработчика
+        // Можно не удалять т.к. элемент удален
         // document.removeEventListener(`click`, onEventRollupBtnClick); // удаление обработчика
       }
     };
@@ -107,21 +122,33 @@ const renderEventItem = () => {
     renderElement(tripEventsListElement, tripEventItemComponent.getElement(), RenderPosition.BEFOREEND); // рендер точек
     // маршрута
 
+
+
+
+
     const buttonEventItem = tripEventItemComponent.getElement().querySelector(`.event__rollup-btn`);
     // код который рендерит форму при клике на стрелку вниз в item
-    buttonEventItem.addEventListener(`click`, () => {
+
+    tripEventItemComponent.setClickHandler(() => { // установили метод setClickHandler
+
+      // buttonEventItem.addEventListener(`click`, () => {
 
       replaceItemToForm();
+      // при удалении элемента из дом обработчик можно не удалять
       onFormSubmit(); // ЭТОТ ОБРАБОТЧИК ДОБАВЛЯЕТСЯ ВСЕГДА ПРИ КЛИКЕ НА СТРЕЛКУ, НО ЕСЛИ НАЖИМАТЬ НА ESC, ТО
       // ОН НЕ УДАЛЯЕТСЯ, А БУДЕТ ТОЛЬКО ДОБАВЛЯЕТСЯ т.е. при нажати на esc его надо удалять. Также и в обратную
       // сторону нужно удалять обработчик на ESC
       document.addEventListener(`keydown`, onEscKeyPress); // после клика на стрелку вставил обработчик на ESC
 
       if (tripEventsListElement.querySelector(`form`)) {
-        const eventRollupBtn = TripEventEditComponent.querySelector(`.event__rollup-btn`);
+        const eventRollupBtn = TripEventEditComponent.getElement().querySelector(`.event__rollup-btn`);
         eventRollupBtn.addEventListener(`click`, onEventRollupBtnClick); // вставил обработчика как для и ESC onEscKeyPress
       }
-    });
+    }, buttonEventItem);
+    // });
+
+
+
 
     totalPriceItem += tripItems[i].price; // затраты на точки маршрута
 

@@ -1,5 +1,6 @@
 import dayjs from "dayjs";
-import {createElement} from "../mock/util";
+import AbstractView from "./abstract.js"
+// import {createElement} from "../mock/util";
 
 const createTripInfo = (destinations, starts) => {
 
@@ -14,26 +15,27 @@ const createTripInfo = (destinations, starts) => {
 </section>`;
 };
 
-export default class TripInfoView {
+export default class TripInfoView extends AbstractView{
   constructor(destinations, starts) {
+    super();
     this._destinations = destinations;
     this._starts = starts;
 
-    this._element = null;
+    // this._element = null;
   }
 
   getTemplate() {
     return createTripInfo(this._destinations, this._starts);
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
-  }
+  // getElement() {
+  //   if (!this._element) {
+  //     this._element = createElement(this.getTemplate());
+  //   }
+  //   return this._element;
+  // }
+  //
+  // removeElement() {
+  //   this._element = null;
+  // }
 }

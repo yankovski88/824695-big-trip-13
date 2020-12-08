@@ -1,5 +1,7 @@
 import dayjs from "dayjs";
-import {createElement} from "../mock/util";
+import AbstractView from "./abstract.js";
+
+// import {createElement} from "../mock/util";
 
 // функция по установке времени в форме
 const createFieldTime = (dateStart, dateFinish) => {
@@ -28,7 +30,7 @@ const createTripEventEditForm = (dataItem) => { // сюда попадают д�
   };
 
   // добавление кнопки вверх
-  const createEventRollupBtn = () =>{
+  const createEventRollupBtn = () => {
     return `<button class="event__rollup-btn" type="button">
          <span class="visually-hidden">Open event</span>
       </button>`;
@@ -174,24 +176,39 @@ const createTripEventEditForm = (dataItem) => { // сюда попадают д�
 };
 
 
-export default class TripEventEditFormView {
+export default class TripEventEditFormView extends AbstractView {
   constructor(dataItem) {
+    super();
     this._dataItem = dataItem;
-    this._element = null;
+
+    this._submitHandler = this._submitHandler.bind(this);
+    // this._submitHandler на новый контекст this._submitHandler.bind(this)
   }
 
   getTemplate() {
     return createTripEventEditForm(this._dataItem);
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-    return this._element;
+  // вот этот колбек вызовится если отправится форма
+  _submitHandler(evt) {
+    evt.preventDefault();
+    this._callback.submit(); // Не понял. чтобы это вызвалось надо забиндить. НАВЕРНОЕ из-за того что _submitHandler
+    // не находится в конструкторе
   }
 
-  removeElement() {
-    this._element = null;
+
+  // установим публичный обработчик на отправку формы
+  setSubmitHandler(callback, element) {   // callback это функция которая поступит из main.js
+    this._callback.submit = callback; // в объект установил свойство submit и функцию колбек от addEventListner которая
+    // придет из main.js
+
+    if (element) {
+      element.addEventListener(`submit`, this._submitHandler);
+    } else {
+      // передаем обстрактный обработчик
+      this.getElement().addEventListener(`submit`, this._submitHandler)
+    }
   }
+
+
 }

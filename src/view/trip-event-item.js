@@ -1,6 +1,8 @@
 import dayjs from "dayjs";
 import {getDateDiff} from "../mock/util.js";
-import {createElement} from "../mock/util";
+import AbstractView from "./abstract.js";
+
+// import {createElement} from "../mock/util";
 
 const createTripEventItem = (dataItems) => {
   const {type, price, dateStart, dateFinish, additionalOffers, destinationItem} = dataItems;
@@ -60,25 +62,60 @@ const createTripEventItem = (dataItems) => {
             </li>`;
 };
 
-export default class TripEventItem {
+export default class TripEventItem extends AbstractView {
   constructor(dataItems) {
+    super();
     this._dataItems = dataItems;
 
-    this._element = null;
+    // ЦЕЛЬ ПОДПИСЫВАТЬСЯ НА СОБЫТИЕ ПРЯМО ВНУТРИ КОМПОНЕНТА
+    // Чтобы вся эта кортинка сработал нужно забиндить. Начинаем биндить контекст
+
+    // 4. Теперь обработчик - метод класса, а не стрелочная функция.
+    // Поэтому при передаче в addEventListner он теряет контекст (this),
+    // а с контекстом доступ к свойствам и методам.
+    // Чтобы такого не происходило нужно насильно привязать обработчик к контексту с помощью bind
+    this._clickHandler = this._clickHandler.bind(this); // Не понимаю откуда и можно ли так
+    // this._clickHandler.bind получаем новую функцию которую получаем через метод bind
+    // и передаем туда новый контекст
+    // (this) контекст на текущий объект
   }
 
   getTemplate() {
     return createTripEventItem(this._dataItems);
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-    return this._element;
+  // в колбеке пишем код который был в колбеке
+  _clickHandler(evt) {
+    evt.preventDefault();
+
+    // 3. А внутри абстрактного оброботчика вызовем колбэк
+    this._callback.click(); // Не понимаю. ПОНЯЛ. Вызовем с нашего объекта колбека еще с абстракт свойство click
+    // которое добавили ниже, а в этом свойстве наша функция которая передана через mian.js
   }
 
-  removeElement() {
-    this._element = null;
+
+  // чтобы поставить обработчик пишем отдельный метод который принимает один единственный параметр.(я добавил второй
+  // element)
+  // принимает функцию колбек которая должна быть вызвана при клике по кнопке
+  setClickHandler(callback, element) {
+    // Мы могли сразу передать callback в addEventListener,
+    // но тогда для удаления обработчикав будущем,
+    // нужно было бы производить это снаружи, где-то там,
+    // где мы вызывали setClickHandler, что не всегда удобно
+
+    //1 Поэтому колбэк мы запишем во внутренее свойство
+    // 1 После клика, сохраняем сслыку на эту функцию в наш объект колбек, колбек описали в абстрактном классе
+    // .click достаточно поставить . и прописать click и будет создано новое свойство получится типа:
+    // в abstract, {click: callback} и в свойсво записали функцию ввиде колбека которая пришла с main.js
+    this._callback.click = callback;
+
+    // 2. В addEventListner передадим абстрактный обработчик
+    if (element) {
+      element.addEventListener(`click`, this._clickHandler)
+    } else {
+      this.getElement().addEventListener(`click`, this._clickHandler)
+      // this._clickHandler колбэк который должен сработать и им является приватный метод _clickHandler
+    }
   }
+
 }
