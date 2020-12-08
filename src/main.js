@@ -150,7 +150,7 @@ const renderDestination = () => {
 // функция которая рендерит цену
 const renderTotalCost = () => {
   const tripInfoElement = tripMainElement.querySelector(`.trip-main__trip-info`);
-  renderElement(tripInfoElement, new TripInfoCostView(totalPriceItem).getElement(), RenderPosition.BEFOREEND); // рендер цены
+  renderElement(tripInfoElement, new TripInfoCostView(totalPriceItem), RenderPosition.BEFOREEND); // рендер цены
 };
 
 // функция которая выводить пустое сообщение если нет Item
@@ -158,7 +158,7 @@ const renderEmptyMessage = () => {
   const main = document.querySelector(`main`);
   const pageBodyContainer = main.querySelector(`.page-body__container`);
   main.removeChild(pageBodyContainer);
-  renderElement(main, new EventListEmptyMessageView().getElement(), RenderPosition.BEFOREEND);
+  renderElement(main, new EventListEmptyMessageView(), RenderPosition.BEFOREEND);
 };
 
 renderMenu();
