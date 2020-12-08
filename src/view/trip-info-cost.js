@@ -1,5 +1,4 @@
 import AbstractView from "./abstract.js";
-import {createElement} from "../mock/util";
 
 const createTripInfoCost = (price) => {
   return `<p class="trip-info__cost">
@@ -14,25 +13,8 @@ export default class TripInfoCostView extends AbstractView {
     this._price = price; // определили приватное поле this._price
   }
 
-  // constructor(price) { // в конструктор помещаем свойства
-  //   this._price = price;
-  //
-  //   this._element = null;
-  // }
-
   // функция по возврату шаблона
   getTemplate() {
     return createTripInfoCost(this._price);
   }
-
-  // getElement() {
-  //   if (!this._element) {
-  //     this._element = createElement(this.getTemplate());
-  //   }
-  //   return this._element;
-  // }
-  //
-  // removeElement() {
-  //   this._element = null;
-  // }
 }

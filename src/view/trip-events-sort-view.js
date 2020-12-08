@@ -1,4 +1,3 @@
-// import {createElement} from "../mock/util.js";
 import AbstractView from "./abstract";
 
 const getSortItems = (sortItem) => {
@@ -25,7 +24,7 @@ const createTripEventsSort = (dataItem) => {
 // - Используем вспомогательную функцию для создания DOM-элемента по шаблону
 // компонент должен как-то собраться и сгененировать дом узлы, потом эти узлы получить и их отрендорить
 
-export default class TripEventsSortView extends AbstractView{
+export default class TripEventsSortView extends AbstractView {
   // раз получается мы хотим получить готовый элемент и вставить в дом дерево, то мы должны этот элемент как-то получить
   constructor(dataItem) {
     super();
@@ -37,18 +36,4 @@ export default class TripEventsSortView extends AbstractView{
   getTemplate() {
     return createTripEventsSort(this._dataItem);
   }
-
-
-  // // логика для получения элемента который будет вставлен в дом. Инициализируем элемент.
-  // getElement() {
-  //   if (!this._element) { // заполнено ли содержимое поля this._element, есть ли в нем какое значение. Если значение
-  //     // не заполнено
-  //     this._element = createElement(this.getTemplate()); // то this._element присваиваем результат функции createElement
-  //   }
-  //   return this._element; // если вместо null что-то есть то это и вернем
-  // }
-  //
-  // removeElement() { // функция которая приводит элемент в нчальное состояние т.е. в null
-  //   this._element = null;
-  // }
 }

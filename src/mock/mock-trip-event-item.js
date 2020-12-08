@@ -1,5 +1,5 @@
 import dayjs from "dayjs";
-import {getRandomInteger} from "./util.js";
+import {getRandomInteger} from "../util/common.js";
 // массив из которого выберится случайный тип маршрута
 const TYPES = [`Taxi`, `Bus`, `Train`, `Ship`, `Transport`, `Drive`, `Flight`, `Check-in`, `Sightseeng`, `Restaurant`];
 

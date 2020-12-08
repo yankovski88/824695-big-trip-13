@@ -1,8 +1,6 @@
 import dayjs from "dayjs";
 import AbstractView from "./abstract.js";
 
-// import {createElement} from "../mock/util";
-
 // функция по установке времени в форме
 const createFieldTime = (dateStart, dateFinish) => {
   // установка формата времени
@@ -198,7 +196,7 @@ export default class TripEventEditFormView extends AbstractView {
 
 
   // установим публичный обработчик на отправку формы
-  setSubmitHandler(callback, element) {   // callback это функция которая поступит из main.js
+  setSubmitHandler(callback, element) { // callback это функция которая поступит из main.js
     this._callback.submit = callback; // в объект установил свойство submit и функцию колбек от addEventListner которая
     // придет из main.js
 
@@ -206,7 +204,7 @@ export default class TripEventEditFormView extends AbstractView {
       element.addEventListener(`submit`, this._submitHandler);
     } else {
       // передаем обстрактный обработчик
-      this.getElement().addEventListener(`submit`, this._submitHandler)
+      this.getElement().addEventListener(`submit`, this._submitHandler);
     }
   }
 

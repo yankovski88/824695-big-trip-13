@@ -1,8 +1,6 @@
 import dayjs from "dayjs";
-import {getDateDiff} from "../mock/util.js";
+import {getDateDiff} from "../util/render.js";
 import AbstractView from "./abstract.js";
-
-// import {createElement} from "../mock/util";
 
 const createTripEventItem = (dataItems) => {
   const {type, price, dateStart, dateFinish, additionalOffers, destinationItem} = dataItems;
@@ -103,7 +101,7 @@ export default class TripEventItem extends AbstractView {
     // нужно было бы производить это снаружи, где-то там,
     // где мы вызывали setClickHandler, что не всегда удобно
 
-    //1 Поэтому колбэк мы запишем во внутренее свойство
+    // 1 Поэтому колбэк мы запишем во внутренее свойство
     // 1 После клика, сохраняем сслыку на эту функцию в наш объект колбек, колбек описали в абстрактном классе
     // .click достаточно поставить . и прописать click и будет создано новое свойство получится типа:
     // в abstract, {click: callback} и в свойсво записали функцию ввиде колбека которая пришла с main.js
@@ -111,9 +109,9 @@ export default class TripEventItem extends AbstractView {
 
     // 2. В addEventListner передадим абстрактный обработчик
     if (element) {
-      element.addEventListener(`click`, this._clickHandler)
+      element.addEventListener(`click`, this._clickHandler);
     } else {
-      this.getElement().addEventListener(`click`, this._clickHandler)
+      this.getElement().addEventListener(`click`, this._clickHandler);
       // this._clickHandler колбэк который должен сработать и им является приватный метод _clickHandler
     }
   }
