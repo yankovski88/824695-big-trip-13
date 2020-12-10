@@ -26,7 +26,8 @@ const createTripEventItem = (dataItems) => {
               <div class="event">
                 <time class="event__date" datetime=${dateStartDay}>${dateStartDay}</time>
                 <div class="event__type">
-                  <img class="event__type-icon" width="42" height="42" src="img/icons/drive.png" alt="Event type icon">
+                  <img class="event__type-icon" width="42" height="42" src="img/icons/${type}.png" alt="Event type icon"
+                  value="${type}">
                 </div>
                 <h3 class="event__title">${type} ${destinationItem}</h3>
                 <div class="event__schedule">
@@ -68,14 +69,29 @@ export default class TripEventItem extends AbstractView {
     // ЦЕЛЬ ПОДПИСЫВАТЬСЯ НА СОБЫТИЕ ПРЯМО ВНУТРИ КОМПОНЕНТА
     // Чтобы вся эта кортинка сработал нужно забиндить. Начинаем биндить контекст
 
+    // Получается если функция this._clickHandler не в конструкторе, то она теряет контекст конструктора и не видит
+    // в нем объект с кобеком
+
+    // Uncaught TypeError: Cannot read property 'click' of undefined. Эта ошибка появляется когда теряется контекст т.е.
+    // this._callback.click() вот эта функция в контексте this обращается к виндовс, а в нем нет метода click. И чтобы
+    // устранить делаем bind в this._clickHandler через bind передали новый контекст this, а передали контекст
+    // конструктора, а в нем уже лежит объект с колбеком click
+
+
     // 4. Теперь обработчик - метод класса, а не стрелочная функция.
     // Поэтому при передаче в addEventListner он теряет контекст (this),
     // а с контекстом доступ к свойствам и методам.
     // Чтобы такого не происходило нужно насильно привязать обработчик к контексту с помощью bind
-    this._clickHandler = this._clickHandler.bind(this); // Не понимаю откуда и можно ли так
-    // this._clickHandler.bind получаем новую функцию которую получаем через метод bind
+    this._clickHandler = this._clickHandler.bind(this); // Не понимаю. Получается перед функцие вызвали объект {все
+    // функции и свойства}.this._clickHandler(а там уже внутри наш колбек)
+    // bind(this) this указывает на глобальный объект window
+    // this._clickHandler = .bind получаем новую функцию которую получаем через метод bind
     // и передаем туда новый контекст
     // (this) контекст на текущий объект
+
+    // Ответ при использовании bind мы меняем контекст получается вместо this._clickHandler получим this
+    // а this это весь объект получается и поулучается this._clickHandler объявленая ниже увидит себя же
+    // console.log(this);
   }
 
   getTemplate() {
@@ -85,10 +101,15 @@ export default class TripEventItem extends AbstractView {
   // в колбеке пишем код который был в колбеке
   _clickHandler(evt) {
     evt.preventDefault();
+    // console.log(this); // контекстом стала кнопка если закоментировать bind
+    // а если не комментировать bind, то контекстом становится объект TripEventItem и уже из конструктора из объекта
+    // {click: callback} уже вызовится наш сохраненый колбек
 
     // 3. А внутри абстрактного оброботчика вызовем колбэк
     this._callback.click(); // Не понимаю. ПОНЯЛ. Вызовем с нашего объекта колбека еще с абстракт свойство click
     // которое добавили ниже, а в этом свойстве наша функция которая передана через mian.js
+
+    // вот за этого this теряется контекст и не может вызваться click
   }
 
 
@@ -109,9 +130,11 @@ export default class TripEventItem extends AbstractView {
 
     // 2. В addEventListner передадим абстрактный обработчик
     if (element) {
-      element.addEventListener(`click`, this._clickHandler);
+      element.addEventListener(`click`, this._clickHandler); // вот здесь потерялся контекст стал контекст elementа.
+      // Но функция this._callback.click(); в this._clickHandler не вызовется т.к. она находится в свойствах
+      // конструктора куда  и добавили обработчик {click: (){...} c main.js поступает}
     } else {
-      this.getElement().addEventListener(`click`, this._clickHandler);
+      this.getElement().addEventListener(`click`, this._clickHandler); // вот здесь потерялся контекст стал контекст this.getElement()
       // this._clickHandler колбэк который должен сработать и им является приватный метод _clickHandler
     }
   }

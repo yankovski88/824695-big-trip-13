@@ -117,7 +117,6 @@ const renderEventItem = () => {
     // код который рендерит форму при клике на стрелку вниз в item
 
     tripEventItemComponent.setClickHandler(() => { // установили метод setClickHandler
-
       replaceItemToForm();
       // при удалении элемента из дом обработчик можно не удалять
       onFormSubmit(); // ЭТОТ ОБРАБОТЧИК ДОБАВЛЯЕТСЯ ВСЕГДА ПРИ КЛИКЕ НА СТРЕЛКУ, НО ЕСЛИ НАЖИМАТЬ НА ESC, ТО
