@@ -19,8 +19,6 @@ export default class TripInfoView extends AbstractView {
     super();
     this._destinations = destinations;
     this._starts = starts;
-
-    // this._element = null;
   }
 
   getTemplate() {

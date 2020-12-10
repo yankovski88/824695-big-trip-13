@@ -65,7 +65,6 @@ export default class TripEventItem extends AbstractView {
   constructor(dataItems) {
     super();
     this._dataItems = dataItems;
-
     // ЦЕЛЬ ПОДПИСЫВАТЬСЯ НА СОБЫТИЕ ПРЯМО ВНУТРИ КОМПОНЕНТА
     // Чтобы вся эта кортинка сработал нужно забиндить. Начинаем биндить контекст
 
@@ -116,7 +115,7 @@ export default class TripEventItem extends AbstractView {
   // чтобы поставить обработчик пишем отдельный метод который принимает один единственный параметр.(я добавил второй
   // element)
   // принимает функцию колбек которая должна быть вызвана при клике по кнопке
-  setClickHandler(callback, element) {
+  setClickHandler(callback) {
     // Мы могли сразу передать callback в addEventListener,
     // но тогда для удаления обработчикав будущем,
     // нужно было бы производить это снаружи, где-то там,
@@ -128,15 +127,17 @@ export default class TripEventItem extends AbstractView {
     // в abstract, {click: callback} и в свойсво записали функцию ввиде колбека которая пришла с main.js
     this._callback.click = callback;
 
+    const buttonEventItem = this.getElement().querySelector(`.event__rollup-btn`); // нашел кнопку у объекта Item
+    // для открытия формы
+
     // 2. В addEventListner передадим абстрактный обработчик
-    if (element) {
-      element.addEventListener(`click`, this._clickHandler); // вот здесь потерялся контекст стал контекст elementа.
-      // Но функция this._callback.click(); в this._clickHandler не вызовется т.к. она находится в свойствах
-      // конструктора куда  и добавили обработчик {click: (){...} c main.js поступает}
-    } else {
-      this.getElement().addEventListener(`click`, this._clickHandler); // вот здесь потерялся контекст стал контекст this.getElement()
-      // this._clickHandler колбэк который должен сработать и им является приватный метод _clickHandler
-    }
+    buttonEventItem.addEventListener(`click`, this._clickHandler); // вот здесь потерялся контекст стал контекст elementа.
+    // в this._clickHandler не вызовется т.к. она находится в свойствах
+    // конструктора куда  и добавили обработчик {click: (){...} c main.js поступает}
+    // вот здесь потерялся контекст стал контекст this.getElement()
+    // this._clickHandler колбэк который должен сработать и им является приватный метод _clickHandler
+
+
   }
 
 }

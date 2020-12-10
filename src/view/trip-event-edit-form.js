@@ -202,16 +202,14 @@ export default class TripEventEditFormView extends AbstractView {
 
 
   // установим публичный обработчик на отправку формы
-  setSubmitHandler(callback, element) { // callback это функция которая поступит из main.js
+  setSubmitHandler(callback) { // callback это функция которая поступит из main.js
     this._callback.submit = callback; // в объект установил свойство submit и функцию колбек от addEventListner которая
     // придет из main.js
 
-    if (element) {
-      element.addEventListener(`submit`, this._submitHandler);
-    } else {
-      // передаем обстрактный обработчик
-      this.getElement().addEventListener(`submit`, this._submitHandler);
-    }
+    const formEditEvent = this.getElement().querySelector(`form`); // нашел форму на которую нужно поувесть submit
+
+    // передаем обстрактный обработчик
+    formEditEvent.addEventListener(`submit`, this._submitHandler);
   }
 
 

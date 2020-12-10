@@ -76,14 +76,13 @@ const renderEventItem = () => {
 
     // обраотчик сохранения формы
     const onFormSubmit = () => {
-      const formEditEvent = tripEventEditComponent.getElement().querySelector(`form`);
       tripEventEditComponent.setSubmitHandler(() => {
         replaceFormToItem(); // замена формы на точку маршрута
         document.removeEventListener(`submit`, onFormSubmit); // удаление обработчика
         // Можно обработчики не удалять т.к. элемент удален. Удаляются только на document и нов созданный элемент
         // document.removeEventListener(`keydown`, onEscKeyPress); // удаление обработчика, если нажали на ESC
         // document.removeEventListener(`click`, onEventRollupBtnClick); // удаление обработчика
-      }, formEditEvent);
+      });
     };
 
     // при удаление элемента из DOM все обработчики, которые есть на нем - тоже удаляются
@@ -113,10 +112,9 @@ const renderEventItem = () => {
     renderElement(tripEventsListElement, tripEventItemComponent, RenderPosition.BEFOREEND); // рендер точек
     // маршрута
 
-    const buttonEventItem = tripEventItemComponent.getElement().querySelector(`.event__rollup-btn`);
     // код который рендерит форму при клике на стрелку вниз в item
-
     tripEventItemComponent.setClickHandler(() => { // установили метод setClickHandler
+
       replaceItemToForm();
       // при удалении элемента из дом обработчик можно не удалять
       onFormSubmit(); // ЭТОТ ОБРАБОТЧИК ДОБАВЛЯЕТСЯ ВСЕГДА ПРИ КЛИКЕ НА СТРЕЛКУ, НО ЕСЛИ НАЖИМАТЬ НА ESC, ТО
@@ -128,7 +126,7 @@ const renderEventItem = () => {
         const eventRollupBtn = tripEventEditComponent.getElement().querySelector(`.event__rollup-btn`);
         eventRollupBtn.addEventListener(`click`, onEventRollupBtnClick); // вставил обработчика как для и ESC onEscKeyPress
       }
-    }, buttonEventItem);
+    });
 
 
     totalPriceItem += tripItems[i].price; // затраты на точки маршрута
