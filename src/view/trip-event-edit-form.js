@@ -20,10 +20,6 @@ const createFieldTime = (dateStart, dateFinish) => {
 const createTripEventEditForm = (dataItem) => { // сюда попадают данные и запоняется шаблон
   const {description, photos, additionalOffers, dateStart, dateFinish, price, destinationItem, type} = dataItem;
 
-  // генерирую город в option
-  const destinationListOption = (option) => {
-    return `<option value=${option}></option>`;
-  };
 
   // генерирует разметку фоток
   const createEventPhotoTemplate = () => {
@@ -129,7 +125,9 @@ const createTripEventEditForm = (dataItem) => { // сюда попадают д�
                     </label>
                     <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destinationItem}" list="destination-list-1">
                     <datalist id="destination-list-1">
-  ${destinationListOption(destinationItem)}
+                      <option value="Amsterdam"></option>
+                      <option value="Geneva"></option>
+                      <option value="Chamonix"></option>
                     </datalist>
                   </div>
 
