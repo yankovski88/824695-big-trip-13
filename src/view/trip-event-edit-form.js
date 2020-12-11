@@ -18,13 +18,11 @@ const createFieldTime = (dateStart, dateFinish) => {
 
 
 const createTripEventEditForm = (dataItem) => { // сюда попадают данные и запоняется шаблон
-  const {description, photos, additionalOffers, dateStart, dateFinish, price, destinationItem, type, destinationItems} = dataItem;
+  const {description, photos, additionalOffers, dateStart, dateFinish, price, destinationItem, type} = dataItem;
 
-  // генерирую города в option
-  const destinationListOption = (options) => {
-    return options.reduce((total, element) => {
-      return total + `<option value=${element}></option>`;
-    }, ``);
+  // генерирую город в option
+  const destinationListOption = (option) => {
+    return `<option value=${option}></option>`;
   };
 
   // генерирует разметку фоток
@@ -56,7 +54,6 @@ const createTripEventEditForm = (dataItem) => { // сюда попадают д�
     }, ``);
   };
 
-
   const createTime = createFieldTime(dateStart, dateFinish);
 
   return `<li class="trip-events__item">
@@ -65,7 +62,7 @@ const createTripEventEditForm = (dataItem) => { // сюда попадают д�
                   <div class="event__type-wrapper">
                     <label class="event__type  event__type-btn" for="event-type-toggle-1">
                       <span class="visually-hidden">Choose event type</span>
-                      <img class="event__type-icon" width="17" height="17" src="img/icons/${type}.png" alt="Event type icon">
+                      <img class="event__type-icon" width="17" height="17" src="img/icons/${type.toLowerCase()}.png" alt="Event type icon">
                     </label>
                     <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox">
 
@@ -132,7 +129,7 @@ const createTripEventEditForm = (dataItem) => { // сюда попадают д�
                     </label>
                     <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destinationItem}" list="destination-list-1">
                     <datalist id="destination-list-1">
-  ${destinationListOption(destinationItems)}
+  ${destinationListOption(destinationItem)}
                     </datalist>
                   </div>
 

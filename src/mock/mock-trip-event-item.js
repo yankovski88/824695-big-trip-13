@@ -105,6 +105,7 @@ const destinationItems = [`Amsterdam`, `Chamonix`, `Geneva`, `Minsk`];
 // функция которая возвращает объект со всеми данным для точки маршрута
 export const getTripEventItem = () => {
   return {
+    id: getRandomInteger(0, 1000),
     type: TYPES[getRandomInteger(1, TYPES.length - 1)],
     price: prices[getRandomInteger(0, prices.length - 1)],
     dateStart: generateDateStart(),
@@ -113,7 +114,6 @@ export const getTripEventItem = () => {
     photos: getPhotos(),
     additionalOffers: getAdditionalOffers(),
     destinationItem: destinationItems[getRandomInteger(0, destinationItems.length - 1)],
-    destinationItems,
   };
 };
 
