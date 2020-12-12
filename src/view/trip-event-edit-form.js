@@ -1,5 +1,5 @@
 import dayjs from "dayjs";
-import {createElement} from "../mock/util";
+import AbstractView from "./abstract.js";
 
 // функция по установке времени в форме
 const createFieldTime = (dateStart, dateFinish) => {
@@ -18,7 +18,8 @@ const createFieldTime = (dateStart, dateFinish) => {
 
 
 const createTripEventEditForm = (dataItem) => { // сюда попадают данные и запоняется шаблон
-  const {description, photos, additionalOffers, dateStart, dateFinish} = dataItem;
+  const {description, photos, additionalOffers, dateStart, dateFinish, price, destinationItem, type} = dataItem;
+
 
   // генерирует разметку фоток
   const createEventPhotoTemplate = () => {
@@ -28,20 +29,19 @@ const createTripEventEditForm = (dataItem) => { // сюда попадают д�
   };
 
   // добавление кнопки вверх
-  const createEventRollupBtn = () =>{
+  const createEventRollupBtn = () => {
     return `<button class="event__rollup-btn" type="button">
          <span class="visually-hidden">Open event</span>
       </button>`;
   };
-
 
   // функция по отрисовке фрагмента всех преимуществ
   const getOffersTemplate = () => {
     return additionalOffers.reduce((total, element) => {
       return total + `
                       <div class="event__offer-selector">
-                        <input class="event__offer-checkbox  visually-hidden" id="event-offer-luggage-1" type="checkbox" name="event-offer-luggage" checked>
-                        <label class="event__offer-label" for="event-offer-luggage-1">
+                        <input class="event__offer-checkbox  visually-hidden" id="event-offer-luggage-${element.id}" type="checkbox" name="event-offer-luggage" checked>
+                        <label class="event__offer-label" for="event-offer-luggage-${element.id}">
                           <span class="event__offer-title">${element.offer}</span>
                           &plus;&euro;&nbsp;
                           <span class="event__offer-price">${element.price}</span>
@@ -49,7 +49,6 @@ const createTripEventEditForm = (dataItem) => { // сюда попадают д�
                       </div>`;
     }, ``);
   };
-
 
   const createTime = createFieldTime(dateStart, dateFinish);
 
@@ -59,12 +58,12 @@ const createTripEventEditForm = (dataItem) => { // сюда попадают д�
                   <div class="event__type-wrapper">
                     <label class="event__type  event__type-btn" for="event-type-toggle-1">
                       <span class="visually-hidden">Choose event type</span>
-                      <img class="event__type-icon" width="17" height="17" src="img/icons/flight.png" alt="Event type icon">
+                      <img class="event__type-icon" width="17" height="17" src="img/icons/${type.toLowerCase()}.png" alt="Event type icon">
                     </label>
                     <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox">
 
                     <div class="event__type-list">
-                      <fieldset class="event__type-group">
+                                <fieldset class="event__type-group">
                         <legend class="visually-hidden">Event type</legend>
 
                         <div class="event__type-item">
@@ -73,7 +72,7 @@ const createTripEventEditForm = (dataItem) => { // сюда попадают д�
                         </div>
 
                         <div class="event__type-item">
-                          <input id="event-type-bus-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="bus">
+                          <input id="event-type-bus-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="bus" checked>
                           <label class="event__type-label  event__type-label--bus" for="event-type-bus-1">Bus</label>
                         </div>
 
@@ -98,7 +97,7 @@ const createTripEventEditForm = (dataItem) => { // сюда попадают д�
                         </div>
 
                         <div class="event__type-item">
-                          <input id="event-type-flight-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="flight" checked>
+                          <input id="event-type-flight-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="flight">
                           <label class="event__type-label  event__type-label--flight" for="event-type-flight-1">Flight</label>
                         </div>
 
@@ -122,9 +121,9 @@ const createTripEventEditForm = (dataItem) => { // сюда попадают д�
 
                   <div class="event__field-group  event__field-group--destination">
                     <label class="event__label  event__type-output" for="event-destination-1">
-                      Flight
+                      ${type}
                     </label>
-                    <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="Geneva" list="destination-list-1">
+                    <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destinationItem}" list="destination-list-1">
                     <datalist id="destination-list-1">
                       <option value="Amsterdam"></option>
                       <option value="Geneva"></option>
@@ -137,7 +136,7 @@ const createTripEventEditForm = (dataItem) => { // сюда попадают д�
                   <div class="event__field-group  event__field-group--price">
                     <label class="event__label" for="event-price-1">
                       <span class="visually-hidden">Price</span>
-                      &euro;
+                      &euro; ${price}
                     </label>
                     <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="">
                   </div>
@@ -174,24 +173,39 @@ const createTripEventEditForm = (dataItem) => { // сюда попадают д�
 };
 
 
-export default class TripEventEditFormView {
+export default class TripEventEditFormView extends AbstractView {
   constructor(dataItem) {
+    super();
     this._dataItem = dataItem;
-    this._element = null;
+
+    this._submitHandler = this._submitHandler.bind(this);
+    // this._submitHandler на новый контекст this._submitHandler.bind(this)
   }
 
   getTemplate() {
     return createTripEventEditForm(this._dataItem);
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-    return this._element;
+  // вот этот колбек вызовится если отправится форма
+  _submitHandler(evt) {
+    evt.preventDefault();
+    this._callback.submit();
+    // ты передаешь эту функцию обработчику событий в качестве коллбэка.
+    // Когда это функция будет выполняться this будет ссылаться на объект на котором сработало событие, а нам нужно,
+    // чтобы он ссылался на наш компонент, поэтому мы явно делаем привязку контекста
   }
 
-  removeElement() {
-    this._element = null;
+
+  // установим публичный обработчик на отправку формы
+  setSubmitHandler(callback) { // callback это функция которая поступит из main.js
+    this._callback.submit = callback; // в объект установил свойство submit и функцию колбек от addEventListner которая
+    // придет из main.js
+
+    const formEditEvent = this.getElement().querySelector(`form`); // нашел форму на которую нужно поувесть submit
+
+    // передаем обстрактный обработчик
+    formEditEvent.addEventListener(`submit`, this._submitHandler);
   }
+
+
 }

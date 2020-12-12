@@ -1,4 +1,4 @@
-import {createElement} from "../mock/util";
+import AbstractView from "./abstract";
 
 const createEventMsg = ()=>{
 
@@ -11,23 +11,9 @@ const createEventMsg = ()=>{
       </div>`;
 };
 
-export default class EventListEmptyMessageView {
-  constructor() {
-    this._element = null;
-  }
+export default class EventListEmptyMessageView extends AbstractView {
 
   getTemplate() {
     return createEventMsg();
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

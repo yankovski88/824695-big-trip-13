@@ -1,4 +1,4 @@
-import {createElement} from "../mock/util";
+import AbstractView from "./abstract.js";
 
 const createTripMenu = () => {
   return `<nav class="trip-controls__trip-tabs  trip-tabs">
@@ -8,26 +8,11 @@ const createTripMenu = () => {
 };
 
 
-export default class TripMenuView {
-  constructor() {
-    this._element = null; // по умолчанию сделал елемент пустым
-  }
+export default class TripMenuView extends AbstractView {
 
   // функция которая будет возвращать разметку
   getTemplate() {
     return createTripMenu();
-  }
-
-  getElement() {
-    if (!this._element) { // если нет элемента, а его нет! т.к. изначально прописал
-      this._element = createElement(this.getTemplate()); // то создаем элемент нашего шаблона
-      // НЕ понимаю зачем создовать createElement
-    }
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }
 
