@@ -61,4 +61,15 @@ const createElement = (template) => {
   // т.е. элемент изначально должен имет свою собственную обертку
 };
 
-export {getDateDiff, renderElement, createElement, RenderPosition};
+
+const remove = (component) => {
+  if (!(component instanceof Abstract)) {
+    throw new Error(`Can remove only components`);
+  }
+
+  component.getElement().remove();
+  component.removeElement();
+};
+
+
+export {getDateDiff, renderElement, createElement, RenderPosition, remove};
