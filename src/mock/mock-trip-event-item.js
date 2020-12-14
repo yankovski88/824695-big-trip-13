@@ -114,7 +114,7 @@ export const getTripEventItem = () => {
     photos: getPhotos(),
     additionalOffers: getAdditionalOffers(),
     destinationItem: destinationItems[getRandomInteger(0, destinationItems.length - 1)],
-    favorite: ``,
+    favorite: getRandomInteger(0, 1),
   };
 };
 

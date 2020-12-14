@@ -14,6 +14,7 @@ const createTripEventItem = (dataItems) => {
   };
 
   const getAdditionalOffers = () => {
+
     return additionalOffers.reduce((total, element) => {
       return total + `
      <li class="event__offer">
@@ -23,6 +24,7 @@ const createTripEventItem = (dataItems) => {
                   </li>
   `;
     }, ``);
+
   };
 
   const startDate = dayjs(dateStart).format(`HH:mm`); // часы в item

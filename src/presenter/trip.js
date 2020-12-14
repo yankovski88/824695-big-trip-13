@@ -16,24 +16,30 @@ import {renderElement, RenderPosition, remove} from "../util/render";
 // import TripMenuView from "./view/trip-menu.js";
 //
 import EventListEmptyMessageView from "../view/trip-event-msg.js";
+import TripEventsSortView from "../view/trip-events-sort-view";
+import {getTripEventsSort} from "../mock/mock-trip-events-sort";
 
-const DATA_COUNT = 15;
 
-
-const tripEventElement = document.querySelector(`.trip-events`);
+// const tripEventElement = document.querySelector(`.trip-events`);
 const tripMainElement = document.querySelector(`.trip-main`);
+// 1. создаем шаблон призентера без реалзации функций, функции которые нужны берем из main.js. Пишем шаблон для
+// всего предложения маршрута
 
 export default class Trip {
-  constructor() {
+  constructor(tripContainer) { // контеинер куда будет все рисоваться
+    // инициализируем данные
+    this._tripContainer = tripContainer;
     // Не понимаю зачем это this._... прописывать в конструкторе и дублировать если можно в рендере сразу указать
     // через new
     this._eventListEmptyMessageComponent = new EventListEmptyMessageView();
+    this._tripEventsSortComponent = new TripEventsSortView(getTripEventsSort().sortItems);
 
-    // данные для рендера их на сайте
-    this._totalPriceItem = 0;
-    this._destinations = [];
-    this._startDateInfo = [];
-    this._tripInfoComponent = new TripInfoView(this._destinations, this._startDateInfo);
+
+    // // данные для рендера их на сайте
+    // this._totalPriceItem = 0;
+    // this._destinations = [];
+    // this._startDateInfo = [];
+    // this._tripInfoComponent = new TripInfoView(this._destinations, this._startDateInfo);
 
     this._itemPresenter = {}; // cюда будем записывать id наших точек маршрута
 
@@ -43,28 +49,41 @@ export default class Trip {
 
   // все что нужно сделать для старта приложения
   init(tripItems) {
+
     this._tripItems = tripItems.slice(); // нужно скопировать чтобы напрямую не взамиодействовать с моками
 
-
     // создание вьюх которые нужны ИМЕННО для этогопризентера
-    if (DATA_COUNT === 0) {
+    if (!this._tripItems.length) {
       this._renderEmptyMessage();
     }
+    this._renderSort();
     this._renderEventList();
-    this._renderEventItem(this._tripItems);
-    this._renderDestination();
-    this._renderTotalCost();
+    // this._renderEventItems(this._tripItems);
+    // this._renderDestination();
+    // this._renderTotalCost();
   }
 
-  _renderEventList() {
-    renderElement(tripEventElement, new TripEventsList(), RenderPosition.BEFOREEND);
+  // сортировка
+  _renderSort() {
+    renderElement(this._tripContainer, this._tripEventsSortComponent, RenderPosition.BEFOREEND); // рендер сортировки
   };
 
-  _renderEventItem(tripItems) {
+  _renderEventList() {
+    renderElement(this._tripContainer, new TripEventsList(), RenderPosition.BEFOREEND);
+  };
 
-    const tripEventsListElement = tripEventElement.querySelector(`.trip-events__list`);
+  // рендер, метод куда уйдет логика созданию и рендерингку компонетов задачи
+  // текущая функция renderTask в main.js
+  _renderEventItem() {
 
-    for (let i = 0; i < DATA_COUNT; i++) {
+  }
+
+  // рендер n задач за раз
+  _renderEventItems(tripItems) {
+
+    const tripEventsListElement = this._tripContainer.querySelector(`.trip-events__list`);
+
+    for (let i = 0; i < this._tripItems.length; i++) {
       const tripEventItemComponent = new TripEventItem(tripItems[i]);
       const tripEventEditComponent = new TripEventEditFormView(tripItems[i]);
 
@@ -148,11 +167,11 @@ export default class Trip {
       for (let item of tripItems[i].additionalOffers) { // обошел веь массив через of
         this._totalPriceItem += item.price; // дополнительные затраты
       }
-      this._destinations.push(tripItems[i].destinationItem); // закинул все города которые были в точке маршрута
-      this._startDateInfo.push(tripItems[i].dateStart);
+      // this._destinations.push(tripItems[i].destinationItem); // закинул все города которые были в точке маршрута
+      // this._startDateInfo.push(tripItems[i].dateStart);
 
 
-     // tripEventItemComponent.getElement(); здесь надо чет другое вставить
+      // tripEventItemComponent.getElement(); здесь надо чет другое вставить
       this._itemPresenter[tripItems[i].id] = tripEventItemComponent.getElement();
 
       // не понимаю что за Object, думаю код не работает, но оставлю
@@ -167,7 +186,7 @@ export default class Trip {
       // добавил обработчик на звезду
       tripEventItemComponent.setBtnFavariteClickHandler(() => {
         const eventFavoriteBtn = tripEventItemComponent.getElement().querySelector(`.event__favorite-btn`);
-        if(eventFavoriteBtn.classList.contains(`event__favorite-btn--active`)){
+        if (eventFavoriteBtn.classList.contains(`event__favorite-btn--active`)) {
           eventFavoriteBtn.classList.remove(`event__favorite-btn--active`);
         } else {
           eventFavoriteBtn.classList.add(`event__favorite-btn--active`);
@@ -178,27 +197,24 @@ export default class Trip {
 
   };
 
-
-
-
   // функция которая выводить пустое сообщение если нет Item
   _renderEmptyMessage() {
     const main = document.querySelector(`main`);
     const pageBodyContainer = main.querySelector(`.page-body__container`);
-    main.removeChild(pageBodyContainer);
-    renderElement(main, this._eventListEmptyMessageComponent, RenderPosition.BEFOREEND);
+    main.removeChild(pageBodyContainer); // в main удалили pageBodyContainer
+    renderElement(main, this._eventListEmptyMessageComponent, RenderPosition.BEFOREEND); // вместо удаленнного
+    // контейнеа проприсовали сообщение
   };
 
   // функция которая выводит дистанцию дат и точек маршрута
-  _renderDestination() {
-    renderElement(tripMainElement, this._tripInfoComponent, RenderPosition.AFTERBEGIN); // рендер промежкутка даты
-  };
+  // _renderDestination() {
+  //   renderElement(tripMainElement, this._tripInfoComponent, RenderPosition.AFTERBEGIN); // рендер промежкутка даты
+  // };
 
 // функция которая рендерит цену
-  _renderTotalCost() {
-    const tripInfoElement = tripMainElement.querySelector(`.trip-main__trip-info`);
-    renderElement(tripInfoElement, new TripInfoCostView(this._totalPriceItem), RenderPosition.BEFOREEND); // рендер цены
-  };
-
+//   _renderTotalCost() {
+//     const tripInfoElement = tripMainElement.querySelector(`.trip-main__trip-info`);
+//     renderElement(tripInfoElement, new TripInfoCostView(this._totalPriceItem), RenderPosition.BEFOREEND); // рендер цены
+//   };
 
 }
