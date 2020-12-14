@@ -48,9 +48,7 @@ export default class TripBoard {
   }
 
   _renderList() {
-    // const renderEventList = () => {
     renderElement(this._tripBoardContainer, this._tripEventsListComponent, RenderPosition.BEFOREEND);
-    // };
   }
 
   _renderItem(tripItem) {
