@@ -10,7 +10,6 @@ import {renderElement, RenderPosition} from "../util/render";
 export default class TripInfo {
   constructor(tripInfoContainer) { // контейнер для вставки наших вьюх / сюда нужно вставить  tripMainElement
     this._tripInfoContainer = tripInfoContainer;
-    // this._tripInfoComponent = new TripInfoView();
     this._destinations = [];
     this._startDateInfo = [];
     this._tripInfoComponent = new TripInfoView(this._destinations, this._startDateInfo)

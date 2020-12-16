@@ -103,6 +103,8 @@ export default class TripEventItem extends AbstractView {
     // console.log(this);
 
     this._clickFavoriteHandler = this._clickFavoriteHandler.bind(this);
+
+
   }
 
   getTemplate() {
@@ -152,11 +154,26 @@ export default class TripEventItem extends AbstractView {
   _clickFavoriteHandler(evt){
     evt.preventDefault();
     this._callback.clickFavorite();
+    // this._callback.favoriteClick();
   }
 
-  setBtnFavariteClickHandler(callback) {
-    this._callback.clickFavorite = callback;
-    const eventFavoriteBtn = this.getElement().querySelector(`.event__favorite-btn`);
-    eventFavoriteBtn.addEventListener(`click`, this._clickFavoriteHandler);
-  }
+  // setBtnFavariteClickHandler(callback) {
+  //   this._callback.clickFavorite = callback;
+  //   const eventFavoriteBtn = this.getElement().querySelector(`.event__favorite-btn`);
+  //   eventFavoriteBtn.addEventListener(`click`, this._clickFavoriteHandler);
+  // }
+
+  // _favoriteClickHandler(evt) {
+  //   evt.preventDefault();
+  //   this._callback.favoriteClick();
+  // }
+
+  // setFavoriteClickHandler(callback) {
+  //   // this._callback.clickFavorite = callback;
+  //
+  //   this._callback.favoriteClick = callback;
+  //   this.getElement().querySelector(`.card__btn--favorites`).addEventListener(`click`, this._favoriteClickHandler);
+  // }
+
+
 }

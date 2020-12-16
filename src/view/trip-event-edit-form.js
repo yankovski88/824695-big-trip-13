@@ -189,6 +189,8 @@ export default class TripEventEditFormView extends AbstractView {
   // вот этот колбек вызовится если отправится форма
   _submitHandler(evt) {
     evt.preventDefault();
+    // this._callback.submit(this._dataItems);
+
     this._callback.submit();
     // ты передаешь эту функцию обработчику событий в качестве коллбэка.
     // Когда это функция будет выполняться this будет ссылаться на объект на котором сработало событие, а нам нужно,

@@ -102,10 +102,16 @@ const getAdditionalOffers = () => {
 // пункт назанчения
 const destinationItems = [`Amsterdam`, `Chamonix`, `Geneva`, `Minsk`];
 
+// Date.now() и Math.random() - плохие решения для генерации id
+// в "продуктовом" коде, а для моков самое то.
+// Для "продуктового" кода используйте что-то понадежнее,
+// вроде nanoid - https://github.com/ai/nanoid
+const generateId = () => Date.now() + parseInt(Math.random() * 10000, 10);
+
 // функция которая возвращает объект со всеми данным для точки маршрута
 export const getTripEventItem = () => {
   return {
-    id: getRandomInteger(0, 10000),
+    id: generateId(), // будем понимать какой в event находится presenter
     type: TYPES[getRandomInteger(1, TYPES.length - 1)],
     price: prices[getRandomInteger(0, prices.length - 1)],
     dateStart: generateDateStart(),
