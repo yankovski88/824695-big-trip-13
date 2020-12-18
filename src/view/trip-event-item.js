@@ -7,7 +7,7 @@ const createTripEventItem = (dataItems) => {
 
   // код который определяет favorite или нет и если да то добовляет active
   const getFavorite = (favorite) => {
-    if(favorite){
+    if (favorite) {
       return `event__favorite-btn--active`
     }
     return ``
@@ -71,7 +71,7 @@ const createTripEventItem = (dataItems) => {
             </li>`;
 };
 
-export default class TripEventItem extends AbstractView {
+export default class TripEventItemView extends AbstractView {
   constructor(dataItems) {
     super();
     this._dataItems = dataItems;
@@ -101,10 +101,20 @@ export default class TripEventItem extends AbstractView {
     // Ответ при использовании bind мы меняем контекст получается вместо this._clickHandler получим this
     // а this это весь объект получается и поулучается this._clickHandler объявленая ниже увидит себя же
     // console.log(this);
+    // this._clickFavoriteHandler = this._clickFavoriteHandler.bind(this); // Не понимаю. Получается перед функцие вызвали объект {все
+    // // функции и свойства}.this._clickHandler(а там уже внутри наш колбек)
+    // // bind(this) this указывает на глобальный объект window
+    // // this._clickHandler = .bind получаем новую функцию которую получаем через метод bind
+    // // и передаем туда новый контекст
+    // // (this) контекст на текущий объект
+    // //
+    // // Ответ при использовании bind мы меняем контекст получается вместо this._clickHandler получим this
+    // // а this это весь объект получается и поулучается this._clickHandler объявленая ниже увидит себя же
+    // // console.log(this);
+
+    // this._clickFavoriteHandler = this._clickFavoriteHandler.bind(this);
 
     this._clickFavoriteHandler = this._clickFavoriteHandler.bind(this);
-
-
   }
 
   getTemplate() {
@@ -142,7 +152,7 @@ export default class TripEventItem extends AbstractView {
 
     const buttonEventItem = this.getElement().querySelector(`.event__rollup-btn`); // нашел кнопку у объекта Item
     // для открытия формы
-
+// console.log(buttonEventItem);
     // 2. В addEventListner передадим абстрактный обработчик
     buttonEventItem.addEventListener(`click`, this._clickHandler); // вот здесь потерялся контекст стал контекст elementа.
     // в this._clickHandler не вызовется т.к. она находится в свойствах
@@ -151,29 +161,45 @@ export default class TripEventItem extends AbstractView {
     // this._clickHandler колбэк который должен сработать и им является приватный метод _clickHandler
   }
 
-  _clickFavoriteHandler(evt){
-    evt.preventDefault();
+  _clickFavoriteHandler() {
+    console.log(`_clickFavoriteHandler`);
     this._callback.clickFavorite();
-    // this._callback.favoriteClick();
+
   }
 
+  // метод по установке клика на зведу, будет вызываться в presentee
+  setFavoriteClickHandler(callback) { //  // setBtnFavariteClickHandler
+    this._callback.clickFavorite = callback;
+    const btnFavorite = this.getElement().querySelector(`.event__favorite-btn`);
+    btnFavorite.addEventListener(`click`, this._clickFavoriteHandler);
+
+  }
+
+
+  // _clickFavoriteHandler(evt){
+  //   evt.preventDefault();
+  //   this._callback.clickFavorite();
+  //   // this._callback.favoriteClick();
+  // }
+  //
   // setBtnFavariteClickHandler(callback) {
+  //   console.log(`sdf`);
   //   this._callback.clickFavorite = callback;
   //   const eventFavoriteBtn = this.getElement().querySelector(`.event__favorite-btn`);
   //   eventFavoriteBtn.addEventListener(`click`, this._clickFavoriteHandler);
   // }
-
-  // _favoriteClickHandler(evt) {
-  //   evt.preventDefault();
-  //   this._callback.favoriteClick();
-  // }
-
-  // setFavoriteClickHandler(callback) {
-  //   // this._callback.clickFavorite = callback;
   //
-  //   this._callback.favoriteClick = callback;
-  //   this.getElement().querySelector(`.card__btn--favorites`).addEventListener(`click`, this._favoriteClickHandler);
-  // }
+  // // _favoriteClickHandler(evt) {
+  // //   evt.preventDefault();
+  // //   this._callback.favoriteClick();
+  // // }
+  //
+  // // setFavoriteClickHandler(callback) {
+  // //   // this._callback.clickFavorite = callback;
+  // //
+  // //   this._callback.favoriteClick = callback;
+  // //   this.getElement().querySelector(`.card__btn--favorites`).addEventListener(`click`, this._favoriteClickHandler);
+  // // }
 
 
 }

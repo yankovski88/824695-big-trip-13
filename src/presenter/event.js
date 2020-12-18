@@ -3,13 +3,14 @@
 import TripEventItem from "../view/trip-event-item.js"
 import {remove, renderElement, RenderPosition} from "../util/render";
 import TripEventEditFormView from "../view/trip-event-edit-form";
+import TripEventItemView from "../view/trip-event-item";
 
 
 export default class Event {
-  // changeData
-  constructor(eventContainer, ) { // поддерживаем колбек который приходит с наружи
+  // changeData поддерживаем получение колбека _handleEventChange который приходит с наружи
+  constructor(eventContainer, changeData) { // поддерживаем колбек который приходит с наружи
     this._eventContainer = eventContainer;
-    // this._changeData = changeData;
+    this._changeData = changeData; // 3 нов. записываем в свойства класса
 
     this._tripEventItemComponent = null;
     this._tripEventEditComponent = null;
@@ -23,7 +24,7 @@ export default class Event {
     this._onFormSubmit = this._onFormSubmit.bind(this);
     this._onEscKeyPress = this._onEscKeyPress.bind(this);
     this._onEventRollupBtnClick = this._onEventRollupBtnClick.bind(this);
-    // this._handleFavoriteClick = this._handleFavoriteClick.bind(this);
+    this._handleFavoriteClick = this._handleFavoriteClick.bind(this); // описываем клик по кнопке favorite
   }
 
   // удалили функцию и сделал методы для presentera
@@ -35,16 +36,13 @@ export default class Event {
     const prevTripEventEditComponent = this._tripEventEditComponent;
 
 
-    this._tripEventItemComponent = new TripEventItem(this._tripItem); // виюха для item
+    this._tripEventItemComponent = new TripEventItemView(this._tripItem); // виюха для item
     this._tripEventEditComponent = new TripEventEditFormView(this._tripItem); // вьюха для формы редоктирования
 
-    // думаю это надо удалить
-    // this._replaceItemToForm();
-    // this._replaceFormToItem();
+
 
     // код который рендерит форму при клике на стрелку вниз в item
     this._tripEventItemComponent.setClickHandler(() => { // установили метод setClickHandler
-
       this._replaceItemToForm();
       // при удалении элемента из дом обработчик можно не удалять
       this._onFormSubmit(); // ЭТОТ ОБРАБОТЧИК ДОБАВЛЯЕТСЯ ВСЕГДА ПРИ КЛИКЕ НА СТРЕЛКУ, НО ЕСЛИ НАЖИМАТЬ НА ESC, ТО
@@ -58,8 +56,20 @@ export default class Event {
         // onEscKeyPress
       }
 
+     //  // передали эти обработчики в соответствующие вьюхи
      // this._tripEventItemComponent.setFavoriteClickHandler(this._handleFavoriteClick); // нужно сделать клик по favorite
+
+
+      // // установка обработчика на звезду
+      // this._tripEventItemComponent.setBtnFavariteClickHandler(this._clickFavoriteHandler);
+
     });
+
+    // передали эти обработчики в соответствующие вьюхи
+    this._tripEventItemComponent.setFavoriteClickHandler(this._handleFavoriteClick); // нужно сделать клик по favorite
+
+
+
 
 
 
@@ -70,20 +80,20 @@ export default class Event {
       return; // пока не знаю что возвращает
     }
 
-
-
     // проверка на наличие в Dom необходима, чтобы не пытаться заменить что что не было отрисовано
-    if(this._eventContainer.getElement().contains(prevTripEventItemComponent.getElement())){
-      this._tripEventItemComponent.replaceWith(prevTripEventItemComponent);
+    if(this._eventContainer.contains(prevTripEventItemComponent.getElement())){
+      prevTripEventItemComponent.getElement().replaceWith(this._tripEventItemComponent.getElement());
+
     }
 
-    if(this._eventContainer.getElement().contains(prevTripEventItemComponent.getElement())){
-      this._tripEventEditComponent.replaceWith(prevTripEventEditComponent);
+    // пока не зна для чего этот код
+    if(this._eventContainer.contains(prevTripEventEditComponent.getElement())){
+      prevTripEventEditComponent.getElement().replaceWith(this._tripEventEditComponent.getElement());
     }
 
-    // дополнительно зачищаем ссылку которая у нас есть. Не понял. Разобраться.
-    // Получается все варианты развития пошли по If. А чтобы сохранить предыдуший item и понять что дальше с ним
-    // делать в какой If его отправить, то когда он отправлен нужно удалить ссылку на предыдущий item. Вот и удаляем
+    // // дополнительно зачищаем ссылку которая у нас есть. Не понял. Разобраться.
+    // // Получается все варианты развития пошли по If. А чтобы сохранить предыдуший item и понять что дальше с ним
+    // // делать в какой If его отправить, то когда он отправлен нужно удалить ссылку на предыдущий item. Вот и удаляем
     remove(prevTripEventItemComponent);
     remove(prevTripEventEditComponent);
 
@@ -109,14 +119,9 @@ export default class Event {
 
   // функция которая из формы редоктирования делает предложение Item
   _replaceFormToItem() { // убрать dataItem
-    // this._changeData();
-
     this._tripEventEditComponent.getElement().replaceWith(this._tripEventItemComponent.getElement());
-
-    // _handleFormSubmit(task) {
-      // this._replaceFormToCard();
-    // }
   };
+
 
   // // функция которая из формы редоктирования делает предложение Item
   // _replaceFormToItem(dataItem) { // убрать dataItem
@@ -131,8 +136,12 @@ export default class Event {
 
 
   // обраотчик сохранения формы
-  _onFormSubmit() {
+  _onFormSubmit(task) {
     this._tripEventEditComponent.setSubmitHandler(() => {
+      this._changeData(task); // 10 Это обработчик с tripBoard this._handleEventChange в котором находится
+      // редоктируемый task
+
+
       this._replaceFormToItem(); // замена формы на точку маршрута
       document.removeEventListener(`submit`, this._onFormSubmit); // удаление обработчика
       // Можно обработчики не удалять т.к. элемент удален. Удаляются только на document и нов созданный элемент
@@ -166,17 +175,23 @@ export default class Event {
     document.removeEventListener(`click`, this._onEventRollupBtnClick); // удаление обработчика
   };
 
-  // _handleFavoriteClick() {
-  //   this._changeData(
-  //     Object.assign(
-  //       {},
-  //       this._dataItems,
-  //       {
-  //         isFavorite: !this._dataItems.isFavorite
-  //       }
-  //     )
-  //   );
-  // }
+
+  // этот обработчик вызывает _changeData который пришел из tripBoard _handleEventChange который является колбеком
+  // для изменения данных. Этому колбеку нужно сообщить измененные данные. И здесь эти данные будем менять!!!
+  // и этому колбеку нужно сообщить измененные данные. Менять данные будем здесь в event презентере
+  _handleFavoriteClick() {
+    console.log(`я тут`);
+    this._changeData( // и после замены сооббщаем в changeData
+      Object.assign(
+        {},
+        this._tripItem, // берем текущий объект описывающий задачу
+        {
+          favorite: !this._tripItem.favorite  // и меняем в нем признак избранности. isFavorite
+            // и сообщить этот новый объект в _changeData
+        }
+      )
+    );
+  }
 
 
 

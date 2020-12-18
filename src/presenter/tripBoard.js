@@ -22,7 +22,7 @@ export default class TripBoard {
 
     this._eventPresenter = {}; // это объект в котором будут хранится инстансы всех предложений презенторов
 
-    // this._handleEventChange = this._handleEventChange(this);
+    this._handleEventChange = this._handleEventChange.bind(this); // функция по обновлению данных, после клика favorite
   }
 
   init(tripItems) { // нет данных для вставки
@@ -34,20 +34,28 @@ export default class TripBoard {
       this._renderSort();
       this._renderList();
       this._renderEventItems(this._tripItems);
-      // console.log(tripItems);
-
-      console.log(this._eventPresenter);
     }
   }
+
+  // Нак клик Edit form вызвали _handleEventChange и там изменили this._tripItems моки и тут же перерисовали this._eventPresenter[updatedEvent.id]
+
 
   // здесь связь от предстовления к данным
   // обработчик который заменяет данные, клик на кнопку Edit
   // в этом обработчике изменили наши моки и тут же перерисовали наш компонентик
-  // _handleEventChange(updatedEvent) {
-  //   this._tripItems = updateItem(this._tripItems, updatedEvent); // он что-то обновляет
-  //   this._eventPresenter[updatedEvent.id].init(updatedEvent); // и делает инициализацию
-  // }
-
+  // _handleEventChange метод который будет обновлять данные. выступает в роли той функции которая будет обновлять
+  // данные
+  // допустим обработали на кнопку Edite клик и вызвали обработчик _handleEventChange это обработчик изменения задач
+  _handleEventChange(updatedEvent) {
+    this._tripItems = updateItem(this._tripItems, updatedEvent); // тут же изменили моки
+    this._eventPresenter[updatedEvent.id].init(updatedEvent); // после делает инициализацию т.е.ПЕРЕресовали компонентик
+    // updatedEvent это конкретная задача которую нужно обновить
+    // this._eventPresenter это весь список id: event который был добавлен при рендере Event
+    // updatedEvent предпологаю объект который был изменен
+    // updatedEvent[updatedEvent.id] получается должен получить по id обновленного объекта его event что добавляли ниже
+    // вот такое например 1608250670855: Event {_eventContainer: ul.trip-events__list, _tripEventItemComponent: TripEventItemView, _tripEventEditComponent: TripEventEditFormView, _totalPriceItem: 0, _changeData: ƒ, …}
+  // .init(updatedEvent) не понимаю что это такое ведь init должен принимать массив с объектами
+  }
 
 
   // функция которая выводить пустое сообщение если нет Item
@@ -78,9 +86,11 @@ export default class TripBoard {
   }
 
   _renderItem(tripItem) { // создаем отдельный event
-    // console.log(tripItem);
     // , this._handleEventChange
-    const eventPresenter = new Event(this._tripEventsListComponent.getElement()); // создаем новый компонет с
+    // в Event передаем тот this._handleEventChange который описали в прошлом комите, теперь мы его передали в
+    // каждый eventPresenter и теперь каждая вьюха event может вызвать _handleEventChange(который по сути является
+    // изменением даты) и моковые данные начнут менятся
+    const eventPresenter = new Event(this._tripEventsListComponent.getElement(), this._handleEventChange); // создаем новый компонет с
     // контейнером куда отрисовать предложение
     eventPresenter.init(tripItem);
     this._eventPresenter[tripItem.id] = eventPresenter; // в объект записываем id с сылкой на этот event презентер
@@ -90,6 +100,7 @@ export default class TripBoard {
     tripItems.forEach((item) => {
       this._renderItem(item);
     });
+
   };
 
 

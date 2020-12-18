@@ -172,7 +172,7 @@ export default class Trip {
 
 
       // tripEventItemComponent.getElement(); здесь надо чет другое вставить
-      this._itemPresenter[tripItems[i].id] = tripEventItemComponent.getElement();
+      // this._itemPresenter[tripItems[i].id] = tripEventItemComponent.getElement();
 
       // не понимаю что за Object, думаю код не работает, но оставлю
       const clearTaskList = () => {
@@ -183,15 +183,19 @@ export default class Trip {
       };
 
 
-      // добавил обработчик на звезду
+      // добавил обработчик на звезду, чтобы через точку вызвать я должен создать этот метод во вьюхе
       tripEventItemComponent.setBtnFavariteClickHandler(() => {
-        const eventFavoriteBtn = tripEventItemComponent.getElement().querySelector(`.event__favorite-btn`);
-        if (eventFavoriteBtn.classList.contains(`event__favorite-btn--active`)) {
-          eventFavoriteBtn.classList.remove(`event__favorite-btn--active`);
-        } else {
-          eventFavoriteBtn.classList.add(`event__favorite-btn--active`);
-        }
+        console.log(`click favorite`);
+        // const eventFavoriteBtn = tripEventItemComponent.getElement().querySelector(`.event__favorite-btn`);
+        // if (eventFavoriteBtn.classList.contains(`event__favorite-btn--active`)) {
+        //   eventFavoriteBtn.classList.remove(`event__favorite-btn--active`);
+        // } else {
+        //   eventFavoriteBtn.classList.add(`event__favorite-btn--active`);
+        // }
       })
+
+
+
     }
 
 
