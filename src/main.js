@@ -1,4 +1,3 @@
-
 import TripFilterView from "./view/trip-filter.js";
 import {renderElement, RenderPosition} from "./util/render";
 import TripMenuView from "./view/trip-menu.js";
@@ -35,28 +34,6 @@ const tripBoardPresenter = new TripBoard(tripEventElement); // создал пр
 const tripInfoPresenter = new TripInfo(tripMainElement); // tripInfoElement
 tripInfoPresenter.init(tripItems); // элемент info
 tripBoardPresenter.init(tripItems); // элементы доски
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 // // файл в котором будем рендерить все модули

@@ -1,20 +1,25 @@
 // импортируем вью для event
-// моки
-import TripEventItem from "../view/trip-event-item.js"
 import {remove, renderElement, RenderPosition} from "../util/render";
 import TripEventEditFormView from "../view/trip-event-edit-form";
 import TripEventItemView from "../view/trip-event-item";
 
+// 4 наблюдатель
+const Mode = {
+  DEFAULT: `DEFAULT`,
+  EDITING: `EDITING`
+};
 
 export default class Event {
   // changeData поддерживаем получение колбека _handleEventChange который приходит с наружи
-  constructor(eventContainer, changeData) { // поддерживаем колбек который приходит с наружи
+  // 5 наблюдатель
+  constructor(eventContainer, changeData, changeMode) { // поддерживаем колбек который приходит с наружи
     this._eventContainer = eventContainer;
     this._changeData = changeData; // 3 нов. записываем в свойства класса
+    this._changeMode = changeMode; // 6 наблюдатель
 
     this._tripEventItemComponent = null;
     this._tripEventEditComponent = null;
-
+    this._mode = Mode.DEFAULT; // 7 наблюдатель. Изначально говорим режим дефолт
 
     // данные для рендера их на сайте
     this._totalPriceItem = 0;
@@ -40,7 +45,6 @@ export default class Event {
     this._tripEventEditComponent = new TripEventEditFormView(this._tripItem); // вьюха для формы редоктирования
 
 
-
     // код который рендерит форму при клике на стрелку вниз в item
     this._tripEventItemComponent.setClickHandler(() => { // установили метод setClickHandler
       this._replaceItemToForm();
@@ -55,25 +59,13 @@ export default class Event {
         eventRollupBtn.addEventListener(`click`, this._onEventRollupBtnClick); // вставил обработчика как для и ESC
         // onEscKeyPress
       }
-
-     //  // передали эти обработчики в соответствующие вьюхи
-     // this._tripEventItemComponent.setFavoriteClickHandler(this._handleFavoriteClick); // нужно сделать клик по favorite
-
-
-      // // установка обработчика на звезду
-      // this._tripEventItemComponent.setBtnFavariteClickHandler(this._clickFavoriteHandler);
-
     });
 
     // передали эти обработчики в соответствующие вьюхи
     this._tripEventItemComponent.setFavoriteClickHandler(this._handleFavoriteClick); // нужно сделать клик по favorite
 
 
-
-
-
-
-    if(prevTripEventItemComponent === null || prevTripEventEditComponent === null) { // проверка если компоненты
+    if (prevTripEventItemComponent === null || prevTripEventEditComponent === null) { // проверка если компоненты
       // равны null т.е. никто из них не был создан, то значит можем отрисовать с нуля
       renderElement(this._eventContainer, this._tripEventItemComponent, RenderPosition.BEFOREEND); // рендер точек
       // маршрута   tripEventsListElement
@@ -81,13 +73,15 @@ export default class Event {
     }
 
     // проверка на наличие в Dom необходима, чтобы не пытаться заменить что что не было отрисовано
-    if(this._eventContainer.contains(prevTripEventItemComponent.getElement())){
+    // if(this._eventContainer.contains(prevTripEventItemComponent.getElement())){
+    if (this._mode === Mode.DEFAULT) { // 8 наблюдатель
       prevTripEventItemComponent.getElement().replaceWith(this._tripEventItemComponent.getElement());
 
     }
 
     // пока не зна для чего этот код
-    if(this._eventContainer.contains(prevTripEventEditComponent.getElement())){
+    // if(this._eventContainer.contains(prevTripEventEditComponent.getElement())){
+    if (this._mode === Mode.EDITING) { // 9 наблюдатель
       prevTripEventEditComponent.getElement().replaceWith(this._tripEventEditComponent.getElement());
     }
 
@@ -96,7 +90,6 @@ export default class Event {
     // // делать в какой If его отправить, то когда он отправлен нужно удалить ссылку на предыдущий item. Вот и удаляем
     remove(prevTripEventItemComponent);
     remove(prevTripEventEditComponent);
-
   }
 
   // метод по удалению event
@@ -105,6 +98,12 @@ export default class Event {
     remove(this._tripEventEditComponent);
   }
 
+  // 10 наблюдатель
+  resetView() {
+    if (this._mode !== Mode.DEFAULT) {
+      this._replaceFormToItem();
+    }
+  }
 
 
   // були функциями класса, а через фокус стали методами презентера
@@ -115,25 +114,16 @@ export default class Event {
     // Эта функция у тебя не работала, потому что .replaceChild() ты должен вызывать на контейнере в котором находятся элементы должны замениться, в твоем случае - это tripEventsListElement
     // tripEventsListElement.replaceChild(tripEventEditComponent, tripEventItemComponent.getElement());
     this._tripEventItemComponent.getElement().replaceWith(this._tripEventEditComponent.getElement());
-  };
+
+    this._changeMode(); // 11 наблюдатель
+    this._mode = Mode.EDITING; // 12 наблюдатель
+  }
 
   // функция которая из формы редоктирования делает предложение Item
   _replaceFormToItem() { // убрать dataItem
     this._tripEventEditComponent.getElement().replaceWith(this._tripEventItemComponent.getElement());
-  };
-
-
-  // // функция которая из формы редоктирования делает предложение Item
-  // _replaceFormToItem(dataItem) { // убрать dataItem
-  //   this._changeData(dataItem);
-  //
-  //   this._tripEventEditComponent.getElement().replaceWith(this._tripEventItemComponent.getElement());
-  //
-  //   // _handleFormSubmit(task) {
-  //   // this._replaceFormToCard();
-  //   // }
-  // };
-
+    this._mode = Mode.DEFAULT; // 13 наблюдатель. Текущий режим по умолчанию
+  }
 
   // обраотчик сохранения формы
   _onFormSubmit(task) {
@@ -148,7 +138,7 @@ export default class Event {
       // document.removeEventListener(`keydown`, onEscKeyPress); // удаление обработчика, если нажали на ESC
       // document.removeEventListener(`click`, onEventRollupBtnClick); // удаление обработчика
     });
-  };
+  }
 
   // при удаление элемента из DOM все обработчики, которые есть на нем - тоже удаляются
   // Единственное, что тебе нужно удалять - это обработчики, которые ты вешаешь на document
@@ -165,7 +155,7 @@ export default class Event {
       // Можно не удалять т.к. элемент удален
       // document.removeEventListener(`click`, onEventRollupBtnClick); // удаление обработчика
     }
-  };
+  }
 
   _onEventRollupBtnClick(evt) {
     evt.preventDefault();
@@ -173,26 +163,24 @@ export default class Event {
     document.removeEventListener(`keydown`, this._onEscKeyPress); // удаление обработчика, если нажали на ESC
     document.removeEventListener(`submit`, this._onFormSubmit); // удаление обработчика
     document.removeEventListener(`click`, this._onEventRollupBtnClick); // удаление обработчика
-  };
+  }
 
 
   // этот обработчик вызывает _changeData который пришел из tripBoard _handleEventChange который является колбеком
   // для изменения данных. Этому колбеку нужно сообщить измененные данные. И здесь эти данные будем менять!!!
   // и этому колбеку нужно сообщить измененные данные. Менять данные будем здесь в event презентере
   _handleFavoriteClick() {
-    console.log(`я тут`);
     this._changeData( // и после замены сооббщаем в changeData
-      Object.assign(
-        {},
-        this._tripItem, // берем текущий объект описывающий задачу
-        {
-          favorite: !this._tripItem.favorite  // и меняем в нем признак избранности. isFavorite
+        Object.assign(
+            {},
+            this._tripItem, // берем текущий объект описывающий задачу
+            {
+              favorite: !this._tripItem.favorite // и меняем в нем признак избранности. isFavorite
             // и сообщить этот новый объект в _changeData
-        }
-      )
+            }
+        )
     );
   }
-
 
 
 }

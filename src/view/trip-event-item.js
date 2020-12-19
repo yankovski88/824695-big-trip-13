@@ -6,11 +6,11 @@ const createTripEventItem = (dataItems) => {
   const {id, type, price, dateStart, dateFinish, additionalOffers, destinationItem, favorite} = dataItems;
 
   // код который определяет favorite или нет и если да то добовляет active
-  const getFavorite = (favorite) => {
-    if (favorite) {
-      return `event__favorite-btn--active`
+  const getFavorite = (favoriteItem) => {
+    if (favoriteItem) {
+      return `event__favorite-btn--active`;
     }
-    return ``
+    return ``;
   };
 
   const getAdditionalOffers = () => {
@@ -152,7 +152,7 @@ export default class TripEventItemView extends AbstractView {
 
     const buttonEventItem = this.getElement().querySelector(`.event__rollup-btn`); // нашел кнопку у объекта Item
     // для открытия формы
-// console.log(buttonEventItem);
+    // console.log(buttonEventItem);
     // 2. В addEventListner передадим абстрактный обработчик
     buttonEventItem.addEventListener(`click`, this._clickHandler); // вот здесь потерялся контекст стал контекст elementа.
     // в this._clickHandler не вызовется т.к. она находится в свойствах
@@ -162,9 +162,7 @@ export default class TripEventItemView extends AbstractView {
   }
 
   _clickFavoriteHandler() {
-    console.log(`_clickFavoriteHandler`);
     this._callback.clickFavorite();
-
   }
 
   // метод по установке клика на зведу, будет вызываться в presentee
@@ -174,32 +172,4 @@ export default class TripEventItemView extends AbstractView {
     btnFavorite.addEventListener(`click`, this._clickFavoriteHandler);
 
   }
-
-
-  // _clickFavoriteHandler(evt){
-  //   evt.preventDefault();
-  //   this._callback.clickFavorite();
-  //   // this._callback.favoriteClick();
-  // }
-  //
-  // setBtnFavariteClickHandler(callback) {
-  //   console.log(`sdf`);
-  //   this._callback.clickFavorite = callback;
-  //   const eventFavoriteBtn = this.getElement().querySelector(`.event__favorite-btn`);
-  //   eventFavoriteBtn.addEventListener(`click`, this._clickFavoriteHandler);
-  // }
-  //
-  // // _favoriteClickHandler(evt) {
-  // //   evt.preventDefault();
-  // //   this._callback.favoriteClick();
-  // // }
-  //
-  // // setFavoriteClickHandler(callback) {
-  // //   // this._callback.clickFavorite = callback;
-  // //
-  // //   this._callback.favoriteClick = callback;
-  // //   this.getElement().querySelector(`.card__btn--favorites`).addEventListener(`click`, this._favoriteClickHandler);
-  // // }
-
-
 }

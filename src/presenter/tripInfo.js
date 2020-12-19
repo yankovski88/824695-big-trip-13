@@ -1,7 +1,4 @@
 // 1) импортируем все вьюхи для Info
-// diferent город и растояние дней
-// цена
-import createTripInfoCost from "../view/trip-info-cost.js"
 import TripInfoCostView from "../view/trip-info-cost";
 import TripInfoView from "../view/trip-info.js";
 import {renderElement, RenderPosition} from "../util/render";
@@ -12,7 +9,7 @@ export default class TripInfo {
     this._tripInfoContainer = tripInfoContainer;
     this._destinations = [];
     this._startDateInfo = [];
-    this._tripInfoComponent = new TripInfoView(this._destinations, this._startDateInfo)
+    this._tripInfoComponent = new TripInfoView(this._destinations, this._startDateInfo);
   }
 
   init(tripItems) {
@@ -36,9 +33,9 @@ export default class TripInfo {
       }
     }
     renderElement(tripInfoElement, new TripInfoCostView(this._totalPriceItem), RenderPosition.BEFOREEND); // рендер цены
-  };
+  }
 
-// функция которая выводит дистанцию дат и точек маршрута
+  // функция которая выводит дистанцию дат и точек маршрута
   _renderDestination(tripItems) {
 
 
@@ -49,7 +46,6 @@ export default class TripInfo {
 
 
     renderElement(this._tripInfoContainer, this._tripInfoComponent, RenderPosition.AFTERBEGIN); // рендер промежкутка даты
-  };
-
+  }
 }
 

@@ -18,7 +18,7 @@ const createFieldTime = (dateStart, dateFinish) => {
 
 
 const createTripEventEditForm = (dataItem) => { // сюда попадают данные и запоняется шаблон
-  const {description, photos, additionalOffers, dateStart, dateFinish, price, destinationItem, type, favorite} = dataItem;
+  const {description, photos, additionalOffers, dateStart, dateFinish, price, destinationItem, type} = dataItem;
 
 
   // генерирует разметку фоток
@@ -33,25 +33,6 @@ const createTripEventEditForm = (dataItem) => { // сюда попадают д�
     return `<button class="event__rollup-btn" type="button">
          <span class="visually-hidden">Open event</span>
       </button>`;
-  };
-
-  // добавление звезды favorite в форму
-  const createEventFavoriteBtn = (favorite) => { // event__favorite-btn--active
-    if(!favorite) {
-      return ` <button class="event__favorite-btn " type="button">
-                  <span class="visually-hidden">Add to favorite</span>
-                  <svg class="event__favorite-icon" width="28" height="28" viewBox="0 0 28 28">
-                    <path d="M14 21l-8.22899 4.3262 1.57159-9.1631L.685209 9.67376 9.8855 8.33688 14 0l4.1145 8.33688 9.2003 1.33688-6.6574 6.48934 1.5716 9.1631L14 21z"/>
-                  </svg>
-                </button>`
-    } else {
-      return `<button class="event__favorite-btn event__favorite-btn--active" type="button">
-                  <span class="visually-hidden">Add to favorite</span>
-                  <svg class="event__favorite-icon" width="28" height="28" viewBox="0 0 28 28">
-                    <path d="M14 21l-8.22899 4.3262 1.57159-9.1631L.685209 9.67376 9.8855 8.33688 14 0l4.1145 8.33688 9.2003 1.33688-6.6574 6.48934 1.5716 9.1631L14 21z"/>
-                  </svg>
-                </button>`
-    }
   };
 
   // функция по отрисовке фрагмента всех преимуществ
@@ -162,8 +143,7 @@ const createTripEventEditForm = (dataItem) => { // сюда попадают д�
 
                   <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
                   <button class="event__reset-btn" type="reset">Cancel</button>
-                  ${createEventFavoriteBtn(favorite)}
-                  ${createEventRollupBtn()}
+    ${createEventRollupBtn()}
                 </header>
                 <section class="event__details">
                   <section class="event__section  event__section--offers">
@@ -209,7 +189,6 @@ export default class TripEventEditFormView extends AbstractView {
   // вот этот колбек вызовится если отправится форма
   _submitHandler(evt) {
     evt.preventDefault();
-    // this._callback.submit(this._dataItems);
 
     this._callback.submit();
     // ты передаешь эту функцию обработчику событий в качестве коллбэка.
@@ -228,6 +207,4 @@ export default class TripEventEditFormView extends AbstractView {
     // передаем обстрактный обработчик
     formEditEvent.addEventListener(`submit`, this._submitHandler);
   }
-
-
 }

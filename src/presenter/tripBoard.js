@@ -4,14 +4,14 @@
 
 // 1) импортируем все вьюхи которые понадобятся для отрисовки презентера Боард
 
-import Sort from "./sort.js"
-import EventListEmptyMessageView from "../view/trip-event-msg.js"
-import TripEventsList from "../view/trip-events-list.js"
+import Sort from "./sort.js";
+import EventListEmptyMessageView from "../view/trip-event-msg.js";
+import TripEventsList from "../view/trip-events-list.js";
 import {renderElement, RenderPosition} from "../util/render";
 import {getTripEventsSort} from "../mock/mock-trip-events-sort.js";
 import {updateItem} from "../util/common.js"; // функция на обновление данных
 
-import Event from "./event.js"
+import Event from "./event.js";
 
 export default class TripBoard {
   constructor(tripBoardContainer) { // вставляем контейнер в который будем вставлять все вьюхи
@@ -23,6 +23,8 @@ export default class TripBoard {
     this._eventPresenter = {}; // это объект в котором будут хранится инстансы всех предложений презенторов
 
     this._handleEventChange = this._handleEventChange.bind(this); // функция по обновлению данных, после клика favorite
+
+    this._handleModeChange = this._handleModeChange.bind(this); // 1 наблюдатель
   }
 
   init(tripItems) { // нет данных для вставки
@@ -36,6 +38,18 @@ export default class TripBoard {
       this._renderEventItems(this._tripItems);
     }
   }
+
+  // функция если форма открыта, то закрыть, воспитатель т.е. он видит, что нажали форму и говорит у всех остальных
+  // сменитесь все на карточку
+  _handleModeChange() { // 2 наблюдатель
+    Object // Обработчик берет уже существующие у нас презентеры
+      .values(this._eventPresenter)
+      .forEach((presenter) => {
+        presenter.resetView();
+      });
+  }
+  // resetView() функция сбрось свое вью до начального, начальное это просто карточка
+
 
   // Нак клик Edit form вызвали _handleEventChange и там изменили this._tripItems моки и тут же перерисовали this._eventPresenter[updatedEvent.id]
 
@@ -65,7 +79,7 @@ export default class TripBoard {
     main.removeChild(pageBodyContainer); // в main удалили pageBodyContainer
     renderElement(main, this._eventListEmptyMessageComponent, RenderPosition.BEFOREEND); // вместо удаленнного
     // контейнеа проприсовали сообщение
-  };
+  }
 
   _renderSort() {
     const sortPresenter = new Sort(this._tripBoardContainer);
@@ -90,7 +104,8 @@ export default class TripBoard {
     // в Event передаем тот this._handleEventChange который описали в прошлом комите, теперь мы его передали в
     // каждый eventPresenter и теперь каждая вьюха event может вызвать _handleEventChange(который по сути является
     // изменением даты) и моковые данные начнут менятся
-    const eventPresenter = new Event(this._tripEventsListComponent.getElement(), this._handleEventChange); // создаем новый компонет с
+    const eventPresenter = new Event(this._tripEventsListComponent.getElement(), this._handleEventChange, this._handleModeChange); // создаем новый компонет с
+    // 3 наблюдатель
     // контейнером куда отрисовать предложение
     eventPresenter.init(tripItem);
     this._eventPresenter[tripItem.id] = eventPresenter; // в объект записываем id с сылкой на этот event презентер
@@ -101,7 +116,5 @@ export default class TripBoard {
       this._renderItem(item);
     });
 
-  };
-
-
+  }
 }
