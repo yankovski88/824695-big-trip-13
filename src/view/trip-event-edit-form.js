@@ -143,7 +143,7 @@ const createTripEventEditForm = (dataItem) => { // сюда попадают д�
 
                   <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
                   <button class="event__reset-btn" type="reset">Cancel</button>
-                  ${createEventRollupBtn()}
+    ${createEventRollupBtn()}
                 </header>
                 <section class="event__details">
                   <section class="event__section  event__section--offers">
@@ -189,6 +189,7 @@ export default class TripEventEditFormView extends AbstractView {
   // вот этот колбек вызовится если отправится форма
   _submitHandler(evt) {
     evt.preventDefault();
+
     this._callback.submit();
     // ты передаешь эту функцию обработчику событий в качестве коллбэка.
     // Когда это функция будет выполняться this будет ссылаться на объект на котором сработало событие, а нам нужно,
@@ -206,6 +207,4 @@ export default class TripEventEditFormView extends AbstractView {
     // передаем обстрактный обработчик
     formEditEvent.addEventListener(`submit`, this._submitHandler);
   }
-
-
 }
