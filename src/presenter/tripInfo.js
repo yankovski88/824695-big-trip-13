@@ -1,11 +1,11 @@
-// 1) импортируем все вьюхи для Info
+// импортируем все вьюхи для Info
 import TripInfoCostView from "../view/trip-info-cost";
 import TripInfoView from "../view/trip-info.js";
 import {renderElement, RenderPosition} from "../util/render";
 
 
 export default class TripInfo {
-  constructor(tripInfoContainer) { // контейнер для вставки наших вьюх / сюда нужно вставить  tripMainElement
+  constructor(tripInfoContainer) {
     this._tripInfoContainer = tripInfoContainer;
     this._destinations = [];
     this._startDateInfo = [];
@@ -14,10 +14,8 @@ export default class TripInfo {
 
   init(tripItems) {
     this._renderDestination(tripItems);
-
     this._renderTotalCost(tripItems);
   }
-
 
   // функция которая рендерит цену
   _renderTotalCost(tripItems) {
@@ -26,24 +24,21 @@ export default class TripInfo {
     this._totalPriceItem = 0;
 
     for (let i = 0; i < tripItems.length; i++) {
-      this._totalPriceItem += tripItems[i].price; // затраты на точки маршрута
+      this._totalPriceItem += tripItems[i].price;
 
-      for (let item of tripItems[i].additionalOffers) { // обошел веь массив через of
+      for (let item of tripItems[i].additionalOffers) { // обошел весь массив через of
         this._totalPriceItem += item.price; // дополнительные затраты
       }
     }
-    renderElement(tripInfoElement, new TripInfoCostView(this._totalPriceItem), RenderPosition.BEFOREEND); // рендер цены
+    renderElement(tripInfoElement, new TripInfoCostView(this._totalPriceItem), RenderPosition.BEFOREEND);
   }
 
   // функция которая выводит дистанцию дат и точек маршрута
   _renderDestination(tripItems) {
-
-
     for (let i = 0; i < tripItems.length; i++) {
-      this._destinations.push(tripItems[i].destinationItem); // закинул все города которые были в точке маршрута
+      this._destinations.push(tripItems[i].destinationItem);
       this._startDateInfo.push(tripItems[i].dateStart);
     }
-
 
     renderElement(this._tripInfoContainer, this._tripInfoComponent, RenderPosition.AFTERBEGIN); // рендер промежкутка даты
   }

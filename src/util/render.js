@@ -41,8 +41,8 @@ const renderElement = (container, element, position) => {
   }
 
   switch (position) { // попадает позиция
-    case RenderPosition.AFTERBEGIN: // если она RenderPosition.AFTERBEGIN
-      container.prepend(element); // то вставить в начало(pripend())
+    case RenderPosition.AFTERBEGIN:
+      container.prepend(element);
       break;
     case RenderPosition.BEFOREEND:
       container.append(element);
