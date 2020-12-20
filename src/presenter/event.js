@@ -45,8 +45,7 @@ export default class Event {
     this._tripEventItemComponent.setClickHandler(() => {
       this._replaceItemToForm();
       // при удалении элемента из дом обработчик можно не удалять. удалять на document и нов элемент обработчиком
-      this._onFormSubmit();
-      document.addEventListener(`keydown`, this._onEscKeyPress);
+      this._onFormSubmit(tripItem);
 
       if (this._eventContainer.querySelector(`form`)) {
         const eventRollupBtn = this._tripEventEditComponent.getElement().querySelector(`.event__rollup-btn`);
@@ -59,12 +58,11 @@ export default class Event {
 
     if (prevTripEventItemComponent === null || prevTripEventEditComponent === null) { // то компоненты не создавались
       renderElement(this._eventContainer, this._tripEventItemComponent, RenderPosition.BEFOREEND);
-      return; // НЕ знаю что возвращает
+      return; // Идет прерывание функции init чтобы дальше не выполнялась
     }
 
     if (this._mode === Mode.DEFAULT) { // 8 наблюдатель
       prevTripEventItemComponent.getElement().replaceWith(this._tripEventItemComponent.getElement());
-
     }
 
     if (this._mode === Mode.EDITING) { // 9 наблюдатель
@@ -92,6 +90,7 @@ export default class Event {
   // функция которая заменяет item маршрута на форму редоктирования
   _replaceItemToForm() {
     this._tripEventItemComponent.getElement().replaceWith(this._tripEventEditComponent.getElement());
+    document.addEventListener(`keydown`, this._onEscKeyPress);
 
     this._changeMode(); // 11 наблюдатель
     this._mode = Mode.EDITING; // 12 наблюдатель
@@ -100,6 +99,10 @@ export default class Event {
   // функция которая из формы редоктирования делает предложение Item
   _replaceFormToItem() {
     this._tripEventEditComponent.getElement().replaceWith(this._tripEventItemComponent.getElement());
+    document.removeEventListener(`keydown`, this._onEscKeyPress);
+    document.removeEventListener(`submit`, this._onFormSubmit);
+    document.removeEventListener(`click`, this._onEventRollupBtnClick);
+
     this._mode = Mode.DEFAULT; // 13 наблюдатель. Текущий режим по умолчанию
   }
 
@@ -109,9 +112,7 @@ export default class Event {
       this._changeData(task); // 10 Это обработчик с tripBoard this._handleEventChange в котором находится
       // редоктируемый task
 
-
       this._replaceFormToItem(); // замена формы на точку маршрута
-      document.removeEventListener(`submit`, this._onFormSubmit); // удаление обработчика
     });
   }
 
@@ -120,17 +121,12 @@ export default class Event {
     if (evt.key === `Escape` || evt.key === `Esc`) {
       evt.preventDefault();
       this._replaceFormToItem();
-      document.removeEventListener(`keydown`, this._onEscKeyPress);
-      document.removeEventListener(`submit`, this._onFormSubmit);
     }
   }
 
   _onEventRollupBtnClick(evt) {
     evt.preventDefault();
     this._replaceFormToItem(); // замена формы на точку маршрута
-    document.removeEventListener(`keydown`, this._onEscKeyPress); // удаление обработчика, если нажали на ESC
-    document.removeEventListener(`submit`, this._onFormSubmit); // удаление обработчика
-    document.removeEventListener(`click`, this._onEventRollupBtnClick); // удаление обработчика
   }
 
 

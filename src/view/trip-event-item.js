@@ -127,7 +127,7 @@ export default class TripEventItemView extends AbstractView {
   }
 
   // метод по установке клика на зведу, будет вызываться в presenter
-  setFavoriteClickHandler(callback) { //
+  setFavoriteClickHandler(callback) {
     this._callback.clickFavorite = callback;
     const btnFavorite = this.getElement().querySelector(`.event__favorite-btn`);
     btnFavorite.addEventListener(`click`, this._clickFavoriteHandler);

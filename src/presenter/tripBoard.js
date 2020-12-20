@@ -14,6 +14,7 @@ export default class TripBoard {
     this._tripEventsListComponent = new TripEventsList();
 
     this._eventPresenter = {}; // это объект в котором будут хранится инстансы всех предложений презенторов
+    // инстансы это экземляр твоего класса
 
     this._handleEventChange = this._handleEventChange.bind(this); // функция по обновлению данных, после клика favorite
     this._handleModeChange = this._handleModeChange.bind(this); // 1 наблюдатель
@@ -39,18 +40,16 @@ export default class TripBoard {
       });
   }
 
-
-  // Нак клик Edit form вызвали _handleEventChange и там изменили this._tripItems моки и тут же перерисовали this._eventPresenter[updatedEvent.id]
-
-
   // обработчик который заменяет данные, клик на кнопку Edit
   _handleEventChange(updatedEvent) {
     this._tripItems = updateItem(this._tripItems, updatedEvent); // изменили моки
     this._eventPresenter[updatedEvent.id].init(updatedEvent); // после делает инициализацию т.е.ПЕРЕресовали компонентик
-    // updatedEvent это конкретная задача которую нужно обновить
+    // updatedEvent это задача в которой изменили favorite
     // this._eventPresenter это весь список id: event который был добавлен при рендере Event
     // updatedEvent[updatedEvent.id] это 1608250670855: Event {…}
-  // .init(updatedEvent) не понимаю что это такое ведь init должен принимать массив с объектами
+    // init этот с renderItem
+    // .init(updatedEvent) презентер с id в котором были изменения перерисовывается
+
   }
 
 
