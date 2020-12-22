@@ -35,4 +35,3 @@ tripInfoPresenter.init(tripItems); // элемент info
 tripBoardPresenter.init(tripItems); // элементы доски
 
 
-

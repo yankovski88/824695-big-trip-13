@@ -1,5 +1,5 @@
 import AbstractView from "./abstract";
-import {SortType} from "../const.js"
+import {SortType} from "../const.js";
 
 const createTripEventsSort = () => {
   return `<form class="trip-events__trip-sort  trip-sort" action="#" method="get" >
@@ -32,7 +32,6 @@ const createTripEventsSort = () => {
 };
 
 
-
 export default class TripEventsSortView extends AbstractView {
   constructor() {
     super();
@@ -43,7 +42,7 @@ export default class TripEventsSortView extends AbstractView {
     return createTripEventsSort(); // this._dataItem
   }
 
-  _sortTypeChangeHandler(evt){ // 4 создаем колбек по вызову сохраненного колбека
+  _sortTypeChangeHandler(evt) { // 4 создаем колбек по вызову сохраненного колбека
     evt.preventDefault();
     // это обработчик отрисовки новый сортировки
     this._callback.sortTypeChange(evt.path[0].dataset.sortType); // 6 если цель тег  A то  .SortType
@@ -54,7 +53,7 @@ export default class TripEventsSortView extends AbstractView {
 
   setSortTypeChangeHandler(callback) {
     this._callback.sortTypeChange = callback; // 1 запись колбека из prezenter tripBoard
-    this.getElement().addEventListener(`change`, this._sortTypeChangeHandler)
+    this.getElement().addEventListener(`change`, this._sortTypeChangeHandler);
     // this.getElement() этот елемент, 2 находим элемент для подписки
     // .addEventListener(`click`, 3 подписываемся на событие
     // this._sortTypeChangeHandler) вызываем колбек

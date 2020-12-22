@@ -82,7 +82,7 @@ export default class TripBoard {
         this._tripItems.sort((a, b) => b.price - a.price);
         break;
       case SortType.TIME:
-// не знаю
+        // не знаю
         break;
     }
     this._currentSortType = sortType;
@@ -95,8 +95,8 @@ export default class TripBoard {
   }
 
   _renderSort() {
-    renderElement(this._tripBoardContainer, this._tripEventsSortComponent, RenderPosition.BEFOREEND)
-    this._tripEventsSortComponent.setSortTypeChangeHandler(this._handleSortTypeChange)
+    renderElement(this._tripBoardContainer, this._tripEventsSortComponent, RenderPosition.BEFOREEND);
+    this._tripEventsSortComponent.setSortTypeChangeHandler(this._handleSortTypeChange);
   }
 
   // метод по удалениею всех всех предложений
