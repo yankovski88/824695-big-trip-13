@@ -1,27 +1,39 @@
-import Sort from "./sort.js";
+import dayjs from "dayjs";
 import EventListEmptyMessageView from "../view/trip-event-msg.js";
 import TripEventsList from "../view/trip-events-list.js";
 import {renderElement, RenderPosition} from "../util/render";
-import {getTripEventsSort} from "../mock/mock-trip-events-sort.js";
 import {updateItem} from "../util/common.js"; // функция на обновление данных
 
 import Event from "./event.js";
+import TripEventsSortView from "../view/trip-events-sort-view";
+
+import {SortType} from "../const";
 
 export default class TripBoard {
   constructor(tripBoardContainer) {
     this._tripBoardContainer = tripBoardContainer;
     this._eventListEmptyMessageComponent = new EventListEmptyMessageView();
     this._tripEventsListComponent = new TripEventsList();
+    this._tripEventsSortComponent = new TripEventsSortView();
+
 
     this._eventPresenter = {}; // это объект в котором будут хранится инстансы всех предложений презенторов
     // инстансы это экземляр твоего класса
 
+    this._currentSortType = SortType.DAY; // сортировка по умолчанию
+
     this._handleEventChange = this._handleEventChange.bind(this); // функция по обновлению данных, после клика favorite
     this._handleModeChange = this._handleModeChange.bind(this); // 1 наблюдатель
+
+    this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
   }
 
   init(tripItems) {
-    this._tripItems = tripItems.slice();
+    this._tripItems = tripItems.slice(); // храним отсоортированные задачи
+    this._sortTripItems(this._currentSortType); // отсортировал список по умолчанию по дням
+
+    this._sourcedTripItems = tripItems.slice(); // храним исходные задачи
+
     if (!this._tripItems.length) {
       this._renderEmptyMessage();
     } else {
@@ -52,7 +64,6 @@ export default class TripBoard {
 
   }
 
-
   // функция которая выводить пустое сообщение если нет Item
   _renderEmptyMessage() {
     const main = document.querySelector(`main`);
@@ -62,9 +73,30 @@ export default class TripBoard {
     // контейнера проприсовали сообщение
   }
 
+  _sortTripItems(sortType) {
+    switch (sortType) {
+      case SortType.DAY:
+        this._tripItems.sort((a, b) => dayjs(a.dateStart).diff(dayjs(b.dateStart)));
+        break;
+      case SortType.PRICE:
+        this._tripItems.sort((a, b) => b.price - a.price);
+        break;
+      case SortType.TIME:
+// не знаю
+        break;
+    }
+    this._currentSortType = sortType;
+  }
+
+  _handleSortTypeChange(sortType) { // получаем сигнал из вьюхи что был клик и теперь надо обработать его
+    this._sortTripItems(sortType); // использовали функции сортировки
+    this._clearEventList(); // очищаем список
+    this._renderEventItems(this._tripItems); // рендерим список заново
+  }
+
   _renderSort() {
-    const sortPresenter = new Sort(this._tripBoardContainer);
-    sortPresenter.init(getTripEventsSort().sortItems);
+    renderElement(this._tripBoardContainer, this._tripEventsSortComponent, RenderPosition.BEFOREEND)
+    this._tripEventsSortComponent.setSortTypeChangeHandler(this._handleSortTypeChange)
   }
 
   // метод по удалениею всех всех предложений

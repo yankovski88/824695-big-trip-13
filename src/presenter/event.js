@@ -92,8 +92,8 @@ export default class Event {
     this._tripEventItemComponent.getElement().replaceWith(this._tripEventEditComponent.getElement());
     document.addEventListener(`keydown`, this._onEscKeyPress);
 
-    this._changeMode(); // 11 наблюдатель
-    this._mode = Mode.EDITING; // 12 наблюдатель
+    this._changeMode(); // 11 наблюдатель. Сначала закрой везде Edit
+    this._mode = Mode.EDITING; // 12 наблюдатель. Потом добавь режим EDITING. Этот режим в init откроет редактирование
   }
 
   // функция которая из формы редоктирования делает предложение Item
@@ -128,7 +128,6 @@ export default class Event {
     evt.preventDefault();
     this._replaceFormToItem(); // замена формы на точку маршрута
   }
-
 
   // этот обработчик вызывает _changeData который пришел из tripBoard _handleEventChange который является колбеком
   // для изменения данных. Этому колбеку нужно сообщить измененные данные. И здесь эти данные будем менять!!!
