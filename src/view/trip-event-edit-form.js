@@ -179,32 +179,24 @@ export default class TripEventEditFormView extends AbstractView {
     this._dataItem = dataItem;
 
     this._submitHandler = this._submitHandler.bind(this);
-    // this._submitHandler на новый контекст this._submitHandler.bind(this)
   }
 
   getTemplate() {
     return createTripEventEditForm(this._dataItem);
   }
 
-  // вот этот колбек вызовится если отправится форма
   _submitHandler(evt) {
     evt.preventDefault();
 
     this._callback.submit();
-    // ты передаешь эту функцию обработчику событий в качестве коллбэка.
-    // Когда это функция будет выполняться this будет ссылаться на объект на котором сработало событие, а нам нужно,
-    // чтобы он ссылался на наш компонент, поэтому мы явно делаем привязку контекста
   }
 
 
   // установим публичный обработчик на отправку формы
-  setSubmitHandler(callback) { // callback это функция которая поступит из main.js
-    this._callback.submit = callback; // в объект установил свойство submit и функцию колбек от addEventListner которая
-    // придет из main.js
+  setSubmitHandler(callback) {
+    this._callback.submit = callback;
 
-    const formEditEvent = this.getElement().querySelector(`form`); // нашел форму на которую нужно поувесть submit
-
-    // передаем обстрактный обработчик
+    const formEditEvent = this.getElement().querySelector(`form`);
     formEditEvent.addEventListener(`submit`, this._submitHandler);
   }
 }

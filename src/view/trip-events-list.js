@@ -7,8 +7,6 @@ const createTripEventsList = () => {
 
 
 export default class TripEventsList extends AbstractView {
-
-  // имплементируем (осуществляем) функцию getTemplate т.к. она обязательна
   getTemplate() {
     return createTripEventsList();
   }

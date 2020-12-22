@@ -8,8 +8,7 @@ const createTripInfoCost = (price) => {
 
 export default class TripInfoCostView extends AbstractView {
   constructor(price) { // в конструктор помещаем свойства
-    super(); // вызываем родительский конструктор и ничего в него не передаем т.к. так сделано в родителе.
-    // СНАЧАЛА пишем super();
+    super();
     this._price = price; // определили приватное поле this._price
   }
 
