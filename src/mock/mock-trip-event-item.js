@@ -1,6 +1,7 @@
 import dayjs from "dayjs";
 import {getRandomInteger} from "../util/common.js";
 
+
 // массив из которого выберится случайный тип маршрута
 const TYPES = [`Taxi`, `Bus`, `Train`, `Ship`, `Transport`, `Drive`, `Flight`, `Check-in`, `Sightseeing`, `Restaurant`];
 
@@ -99,6 +100,7 @@ const getAdditionalOffers = () => {
 const destinationItems = [`Amsterdam`, `Chamonix`, `Geneva`, `Minsk`];
 
 const generateId = () => Date.now() + parseInt(Math.random() * 10000, 10);
+
 
 export const getTripEventItem = () => {
   return {

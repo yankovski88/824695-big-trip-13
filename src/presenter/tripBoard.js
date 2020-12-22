@@ -82,7 +82,10 @@ export default class TripBoard {
         this._tripItems.sort((a, b) => b.price - a.price);
         break;
       case SortType.TIME:
-        // не знаю
+        for (let item of this._tripItems) { // перебрал все данные массива с объектами для отрисовки
+          item[[`timeDuration`]] = item.dateFinish - item.dateStart; // добавил новое поле с разницей времени
+        }
+        this._tripItems.sort((a, b) => b.timeDuration - a.timeDuration); // отсортировал по этому полю разницы времени
         break;
     }
     this._currentSortType = sortType;
