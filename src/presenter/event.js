@@ -129,8 +129,8 @@ export default class Event {
     this._replaceFormToItem(); // замена формы на точку маршрута
   }
 
-  // этот обработчик вызывает _changeData который пришел из tripBoard _handleEventChange который является колбеком
-  // для изменения данных. Этому колбеку нужно сообщить измененные данные. И здесь эти данные будем менять!!!
+  // этот метод вызывает _changeData который пришел из tripBoard _handleEventChange который является тоже методом
+  // для изменения данных. Этому методу нужно сообщить измененные данные. И здесь эти данные будем менять!!!
   _handleFavoriteClick() {
     this._changeData( // и после замены сооббщаем в changeData
         Object.assign(
@@ -143,6 +143,5 @@ export default class Event {
         )
     );
   }
-
 
 }
