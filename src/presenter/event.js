@@ -107,8 +107,8 @@ export default class Event {
   }
 
   // обраотчик сохранения формы
-  _onFormSubmit(task) {
-    this._tripEventEditComponent.setSubmitHandler(() => {
+  _onFormSubmit() {
+    this._tripEventEditComponent.setSubmitHandler((task) => {
       this._changeData(task); // 10 Это обработчик с tripBoard this._handleEventChange в котором находится
       // редоктируемый task
 
@@ -120,6 +120,7 @@ export default class Event {
   _onEscKeyPress(evt) {
     if (evt.key === `Escape` || evt.key === `Esc`) {
       evt.preventDefault();
+      this._tripEventEditComponent.reset();
       this._replaceFormToItem();
     }
   }

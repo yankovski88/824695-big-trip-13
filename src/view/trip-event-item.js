@@ -3,7 +3,7 @@ import {getDateDiff} from "../util/render.js";
 import AbstractView from "./abstract.js";
 
 const createTripEventItem = (dataItems) => {
-  const {id, type, price, dateStart, dateFinish, additionalOffers, destinationItem, favorite} = dataItems;
+  const {id, type, price, dateStart, dateFinish, destinationItem, favorite, additionalAllOffers} = dataItems;
 
   // код который определяет favorite или нет и если да то добовляет active
   const getFavorite = (favoriteItem) => {
@@ -14,15 +14,37 @@ const createTripEventItem = (dataItems) => {
   };
 
   const getAdditionalOffers = () => {
-    return additionalOffers.reduce((total, element) => {
-      return total + `
-     <li class="event__offer">
-                    <span class="event__offer-title">${element.offer}</span>
+    let a = [];
+    for (let i = 0; i < additionalAllOffers.length; i++) {
+      if (additionalAllOffers[i].check === 1) {
+        a.push(`<li class="event__offer">
+                    <span class="event__offer-title">${additionalAllOffers[i].offer}</span>
                     &plus;&euro;&nbsp;
-                    <span class="event__offer-price">${element.price}</span>
+                    <span class="event__offer-price">${additionalAllOffers[i].price}</span>
                   </li>
-  `;
-    }, ``);
+  `
+        );
+      }
+    }
+    const offerItem = a.join(` `);
+
+    return offerItem;
+
+    //   return additionalAllOffers.reduce((total, element) => { //     return additionalOffers.reduce((total, element) => {
+    //
+    //
+    //     if (element.check !== 0) {
+    //       return total + `
+    //    <li class="event__offer">
+    //                   <span class="event__offer-title">${element.offer}</span>
+    //                   &plus;&euro;&nbsp;
+    //                   <span class="event__offer-price">${element.price}</span>
+    //                 </li>
+    // `;
+    //     } else {
+    //       return ``
+    //     }
+    //   }, ``);
 
   };
 

@@ -84,11 +84,11 @@ export default class TripBoard {
         break;
       case SortType.TIME:
         this._tripItems.sort((a, b) => {
-          const timeDurationFirst  = a.dateFinish - a.dateStart; // итерируемся по каждому значению разницы времени
-          const timeDurationSecond  = b.dateFinish - b.dateStart; // также и для вторго времени
+          const timeDurationFirst = a.dateFinish - a.dateStart; // итерируемся по каждому значению разницы времени
+          const timeDurationSecond = b.dateFinish - b.dateStart; // также и для вторго времени
 
-          return timeDurationSecond - timeDurationFirst  // возвращаем отсортированный массив от Max
-          }
+          return timeDurationSecond - timeDurationFirst; // возвращаем отсортированный массив от Max
+        }
         );
         break;
     }

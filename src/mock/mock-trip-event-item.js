@@ -62,39 +62,52 @@ const additionalOffers = [
   {
     id: 1,
     offer: `Add luggage`,
-    price: 30,
+    price: 50,
+    check: getRandomInteger(0, 1), //  false //
   },
   {
     id: 2,
     offer: `Switch to comfort class`,
-    price: 100,
+    price: 80,
+    check: getRandomInteger(0, 1), //  false // getRandomInteger(0, 1),
   },
   {
     id: 3,
     offer: `Add meal`,
     price: 15,
+    check: getRandomInteger(0, 1), // false // getRandomInteger(0, 1),
   },
   {
     id: 4,
     offer: `Choose seats`,
     price: 5,
+    check: getRandomInteger(0, 1) // false // getRandomInteger(0, 1),
   },
   {
     id: 5,
     offer: `Travel by train`,
     price: 40,
+    check: getRandomInteger(0, 1) // false // getRandomInteger(0, 1),
   },
 ];
 
 
-const getAdditionalOffers = () => {
-  const items = [];
-
-  for (let i = 0; i < getRandomInteger(0, 5); i++) {
-    items.push(additionalOffers[i]);
-  }
-  return items;
-};
+// const getAdditionalOffers = () => {
+//   const items = [];
+//
+//   for (let i = 0; i < getRandomInteger(0, 5); i++) {
+//     items.push(additionalOffers[i]);
+//   }
+//   return items;
+//
+//
+//   // const items = [];
+//   //
+//   // for (let i = 0; i < getRandomInteger(0, 5); i++) {
+//   //   items.push(additionalOffers[i]);
+//   // }
+//   // return items;
+// };
 
 // пункт назанчения
 const destinationItems = [`Amsterdam`, `Chamonix`, `Geneva`, `Minsk`];
@@ -111,7 +124,8 @@ export const getTripEventItem = () => {
     dateFinish: generateDate(),
     description: getDescription(descriptions),
     photos: getPhotos(),
-    additionalOffers: getAdditionalOffers(),
+    additionalOffers: additionalOffers.slice(0, getRandomInteger(0, additionalOffers.length - 1)), // getAdditionalOffers(),
+    additionalAllOffers: additionalOffers, // getAdditionalOffers(),
     destinationItem: destinationItems[getRandomInteger(0, destinationItems.length - 1)],
     favorite: getRandomInteger(0, 1),
   };

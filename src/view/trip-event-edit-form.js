@@ -1,5 +1,8 @@
 import dayjs from "dayjs";
-import AbstractView from "./abstract.js";
+import SmartView from "./smart.js";
+
+// import AbstractView from "./abstract.js";
+
 
 // функция по установке времени в форме
 const createFieldTime = (dateStart, dateFinish) => {
@@ -16,9 +19,9 @@ const createFieldTime = (dateStart, dateFinish) => {
     </div>`;
 };
 
-
+// функция по отрисовке всей формы
 const createTripEventEditForm = (dataItem) => { // сюда попадают данные и запоняется шаблон
-  const {description, photos, additionalOffers, dateStart, dateFinish, price, destinationItem, type} = dataItem;
+  const {description, photos, dateStart, dateFinish, price, destinationItem, type, additionalAllOffers} = dataItem; // additionalOffers
 
 
   // генерирует разметку фоток
@@ -35,13 +38,18 @@ const createTripEventEditForm = (dataItem) => { // сюда попадают д�
       </button>`;
   };
 
+
   // функция по отрисовке фрагмента всех преимуществ
-  const getOffersTemplate = () => {
+  const getOffersTemplate = (additionalOffers) => {
+
     return additionalOffers.reduce((total, element) => {
       return total + `
                       <div class="event__offer-selector">
-                        <input class="event__offer-checkbox  visually-hidden" id="event-offer-luggage-${element.id}" type="checkbox" name="event-offer-luggage" checked>
-                        <label class="event__offer-label" for="event-offer-luggage-${element.id}">
+                        <input class="event__offer-checkbox  visually-hidden" id="event-offer-luggage-${element.id}" type="checkbox" name="event-offer-luggage"  ${
+  element.check === 0 ? `` : `checked`
+}>
+                        
+                            <label class="event__offer-label" for="event-offer-luggage-${element.id}">
                           <span class="event__offer-title">${element.offer}</span>
                           &plus;&euro;&nbsp;
                           <span class="event__offer-price">${element.price}</span>
@@ -151,7 +159,7 @@ const createTripEventEditForm = (dataItem) => { // сюда попадают д�
 
                     <div class="event__available-offers">
                     
-                    ${getOffersTemplate()}
+     ${getOffersTemplate(additionalAllOffers)}
                     </div>
                   </section>
 
@@ -173,22 +181,145 @@ const createTripEventEditForm = (dataItem) => { // сюда попадают д�
 };
 
 
-export default class TripEventEditFormView extends AbstractView {
+export default class TripEventEditFormView extends SmartView { // AbstractView
   constructor(dataItem) {
     super();
     this._dataItem = dataItem;
+    // this._data = TripEventEditFormView.parseDataItemToData(dataItem);     // 0 превращаем объект dataItem в объект data т.к. он более полный
+
 
     this._submitHandler = this._submitHandler.bind(this);
+
+    this._changePriceHandler = this._changePriceHandler.bind(this); // бинд по замене price
+    // 4
+    this._changeDateStartHandler = this._changeDateStartHandler.bind(this);
+    this._changeDateEndHandler = this._changeDateEndHandler.bind(this);
+    this._changeDestinationHandler = this._changeDestinationHandler.bind(this);
+    this._eventChangeOfferHandler = this._eventChangeOfferHandler.bind(this);
+
+    // this._eventInputPrice = this.getElement().querySelector(`.event__input--price`);
+    // this._eventInputPrice.addEventListener(`change`, this._changePriceHandler)
+    // // this.getElement() это класс с itema c формой редоктирования в внутри
+
+    this._setInnerHandlers();
+
   }
 
   getTemplate() {
     return createTripEventEditForm(this._dataItem);
   }
 
+
+  // // 2
+  // // метод updateData, который будет обновлять данные в свойстве dataItem
+  // updateData(update) { // метод принимает то (update), что нужно в этом dataItem обновить // justDataUpdating
+  //   if (!update) { // если нет обновлений
+  //     return; // то прекратить выполнение функции т.е. не обновлять
+  //   }
+  //
+  //   this._dataItem = Object.assign( // изменяем данные которые пришли
+  //       {}, // создаем объект*
+  //       this._dataItem, // проходим по старым данным*
+  //       update // и заменяем новыми*
+  //   );
+  //   // if(update){ // поля ввода сами умеют перерисовываться и за этого не нужно обновлять елемент
+  //   //   return;
+  //   // }
+  //
+  //   this.updateElement(); // вызываем обновить элемент
+  // }
+  //
+  // // 1
+  // // Объявим метод updateElement, его задача удалить старый DOM элемент, вызвать генерацию нового и заменить один на другой
+  // updateElement() {
+  //   let prevElement = this.getElement(); // сохранили изначальную(предыдущую) форму редактирования
+  //   const parent = prevElement.parentElement; // сохранили родительский элементе формы edite
+  //   this.removeElement(); // удаляем элемент Edit который сейчас создан данными
+  //
+  //   const newElement = this.getElement(); // получаем новый элемент с новыми данными
+  //   parent.replaceChild(newElement, prevElement); // заменяем старый элемент Edit на новый
+  //
+  //   // 6
+  //   this.restoreHandlers(); // вызвали публичную функцию по востонавлению всех обработчиков
+  // }
+
+  // 5
+  // публичный метод который заново навешивает обработчики
+  restoreHandlers() {
+    this._setInnerHandlers(); // востанавливаем приватные обработчики
+    this.setSubmitHandler(this._callback.submit); // востанавливаем внешние обработчики. вызвали обработчик который был сохранен в объекте.
+    // console.log(this._callback); // внутри только submit
+  }
+
+
+  // 3
+  // обработчик который заново навешивает внутрение обработчики
+  _setInnerHandlers() {
+    this._eventInputPrice = this.getElement().querySelector(`.event__input--price`);
+    this._eventInputPrice.addEventListener(`change`, this._changePriceHandler); // input
+    // this.getElement() это класс с itema c формой редоктирования в внутри
+
+    this._eventInputStartTime = this.getElement().querySelector(`#event-start-time-1`);
+    this._eventInputStartTime.addEventListener(`change`, this._changeDateStartHandler); // input
+
+    this._eventInputEndTime = this.getElement().querySelector(`#event-end-time-1`);
+    this._eventInputEndTime.addEventListener(`change`, this._changeDateEndHandler); // input
+
+    this._eventInputDestination = this.getElement().querySelector(`.event__input--destination`);
+    this._eventInputDestination.addEventListener(`change`, this._changeDestinationHandler); // input
+
+    this._eventChangeOffer = this.getElement().querySelector(`.event__available-offers`);
+    this._eventChangeOffer.addEventListener(`change`, this._eventChangeOfferHandler);
+
+  }
+
+
+  _changePriceHandler(evt) { // оброботчик в котором будем менять данные по цене
+    evt.preventDefault();
+    this.updateData({ // передаем только одну строчку которую хотим обновить т.к. assign создано выше
+      price: evt.target.value // 12 // this._dataItem.price
+    }); // true
+  }
+
+  // // 3.1.
+  _changeDateStartHandler(evt) {
+    evt.preventDefault();
+    this.updateData({
+      dateStart: evt.target.value
+    });
+  }
+
+  _changeDateEndHandler(evt) {
+    evt.preventDefault();
+    this.updateData({
+      dateFinish: evt.target.value
+    });
+  }
+
+  _changeDestinationHandler(evt) {
+    evt.preventDefault();
+    this.updateData({
+      destinationItem: evt.target.value
+    });
+  }
+
+  _eventChangeOfferHandler(evt) {
+    evt.preventDefault();
+    // this.updateData({
+    //   additionalAllOffers[0].check: !0
+    // })
+  }
+
+  // 8
+  reset() {
+    this.updateData(
+        this._dataItem);
+  }
+
   _submitHandler(evt) {
     evt.preventDefault();
 
-    this._callback.submit();
+    this._callback.submit(this._dataItem);
   }
 
 
