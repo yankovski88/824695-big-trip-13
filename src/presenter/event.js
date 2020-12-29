@@ -108,8 +108,8 @@ export default class Event {
 
   // обраотчик сохранения формы
   _onFormSubmit() {
-    this._tripEventEditComponent.setSubmitHandler((task) => {
-      this._changeData(task); // 10 Это обработчик с tripBoard this._handleEventChange в котором находится
+    this._tripEventEditComponent.setSubmitHandler((dataItem) => {
+      this._changeData(dataItem); // 10 Это обработчик с tripBoard this._handleEventChange в котором находится
       // редоктируемый task
 
       this._replaceFormToItem(); // замена формы на точку маршрута
@@ -120,7 +120,7 @@ export default class Event {
   _onEscKeyPress(evt) {
     if (evt.key === `Escape` || evt.key === `Esc`) {
       evt.preventDefault();
-      this._tripEventEditComponent.reset();
+      this._tripEventEditComponent.reset(this._tripItem); // код для удаления не сохраненных данных в форме
       this._replaceFormToItem();
     }
   }
@@ -138,7 +138,7 @@ export default class Event {
             {},
             this._tripItem, // берем текущий объект описывающий задачу
             {
-              favorite: !this._tripItem.favorite // и меняем в нем признак избранности. isFavorite
+              isFavorite: !this._tripItem.isFavorite // и меняем в нем признак избранности. isFavorite
             // и сообщить этот новый объект в _changeData
             }
         )

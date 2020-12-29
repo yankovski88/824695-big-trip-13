@@ -21,13 +21,12 @@ const createFieldTime = (dateStart, dateFinish) => {
 
 // функция по отрисовке всей формы
 const createTripEventEditForm = (dataItem) => { // сюда попадают данные и запоняется шаблон
-  const {description, photos, dateStart, dateFinish, price, destinationItem, type, additionalAllOffers} = dataItem; // additionalOffers
-
+  const {dateFrom, dateTo, destination, basePrice, type, offers} = dataItem; // additionalOffers, photos,
 
   // генерирует разметку фоток
   const createEventPhotoTemplate = () => {
-    return photos.reduce((total, element) => { // перебрал все элементы photos и присоединил их в total
-      return total + `<img class="event__photo" src="${element}" alt="Event photo">`;
+    return destination.pictures.reduce((total, element) => { // перебрал все элементы photos и присоединил их в total
+      return total + `<img class="event__photo" src="${element.src}" alt="${element.description}">`;
     }, ``);
   };
 
@@ -40,25 +39,24 @@ const createTripEventEditForm = (dataItem) => { // сюда попадают д�
 
 
   // функция по отрисовке фрагмента всех преимуществ
-  const getOffersTemplate = (additionalOffers) => {
+  const getOffersTemplate = (formOffers) => {
+    return formOffers.reduce((total, element) => {
 
-    return additionalOffers.reduce((total, element) => {
-      return total + `
-                      <div class="event__offer-selector">
+      return total + `<div class="event__offer-selector">
                         <input class="event__offer-checkbox  visually-hidden" id="event-offer-luggage-${element.id}" type="checkbox" name="event-offer-luggage"  ${
-  element.check === 0 ? `` : `checked`
+  element.offer === true ? `` : `checked`
 }>
                         
                             <label class="event__offer-label" for="event-offer-luggage-${element.id}">
-                          <span class="event__offer-title">${element.offer}</span>
+                          <span class="event__offer-title">${element.offers[0].title}</span>
                           &plus;&euro;&nbsp;
-                          <span class="event__offer-price">${element.price}</span>
+                          <span class="event__offer-price">${element.offers[0].price}</span>
                         </label>
                       </div>`;
     }, ``);
   };
 
-  const createTime = createFieldTime(dateStart, dateFinish);
+  const createTime = createFieldTime(dateFrom, dateTo);
 
   return `<li class="trip-events__item">
               <form class="event event--edit" action="#" method="post">
@@ -131,7 +129,7 @@ const createTripEventEditForm = (dataItem) => { // сюда попадают д�
                     <label class="event__label  event__type-output" for="event-destination-1">
                       ${type}
                     </label>
-                    <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destinationItem}" list="destination-list-1">
+                    <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destination.name}" list="destination-list-1">
                     <datalist id="destination-list-1">
                       <option value="Amsterdam"></option>
                       <option value="Geneva"></option>
@@ -139,12 +137,12 @@ const createTripEventEditForm = (dataItem) => { // сюда попадают д�
                     </datalist>
                   </div>
 
-   ${createTime }
+   ${createTime}
 
                   <div class="event__field-group  event__field-group--price">
                     <label class="event__label" for="event-price-1">
                       <span class="visually-hidden">Price</span>
-                      &euro; ${price}
+                      &euro; ${basePrice}
                     </label>
                     <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="">
                   </div>
@@ -159,13 +157,13 @@ const createTripEventEditForm = (dataItem) => { // сюда попадают д�
 
                     <div class="event__available-offers">
                     
-     ${getOffersTemplate(additionalAllOffers)}
+     ${getOffersTemplate(offers)}
                     </div>
                   </section>
 
                   <section class="event__section  event__section--destination">
                     <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-                    <p class="event__destination-description">${description}</p>
+                    <p class="event__destination-description">${destination.description}</p>
 
                     <div class="event__photos-container">
                       <div class="event__photos-tape">
@@ -196,6 +194,7 @@ export default class TripEventEditFormView extends SmartView { // AbstractView
     this._changeDateEndHandler = this._changeDateEndHandler.bind(this);
     this._changeDestinationHandler = this._changeDestinationHandler.bind(this);
     this._eventChangeOfferHandler = this._eventChangeOfferHandler.bind(this);
+    this._eventChangeTypeHandler = this._eventChangeTypeHandler.bind(this);
 
     // this._eventInputPrice = this.getElement().querySelector(`.event__input--price`);
     // this._eventInputPrice.addEventListener(`change`, this._changePriceHandler)
@@ -256,7 +255,7 @@ export default class TripEventEditFormView extends SmartView { // AbstractView
   // обработчик который заново навешивает внутрение обработчики
   _setInnerHandlers() {
     this._eventInputPrice = this.getElement().querySelector(`.event__input--price`);
-    this._eventInputPrice.addEventListener(`change`, this._changePriceHandler); // input
+    this._eventInputPrice.addEventListener(`input`, this._changePriceHandler); // input
     // this.getElement() это класс с itema c формой редоктирования в внутри
 
     this._eventInputStartTime = this.getElement().querySelector(`#event-start-time-1`);
@@ -271,36 +270,61 @@ export default class TripEventEditFormView extends SmartView { // AbstractView
     this._eventChangeOffer = this.getElement().querySelector(`.event__available-offers`);
     this._eventChangeOffer.addEventListener(`change`, this._eventChangeOfferHandler);
 
+    this._eventChangeOffer = this.getElement().querySelector(`.event__type-group`);
+    this._eventChangeOffer.addEventListener(`change`, this._eventChangeTypeHandler);
+
   }
 
 
   _changePriceHandler(evt) { // оброботчик в котором будем менять данные по цене
     evt.preventDefault();
+    // this._dataItem.basePrice = evt.target.value
     this.updateData({ // передаем только одну строчку которую хотим обновить т.к. assign создано выше
-      price: evt.target.value // 12 // this._dataItem.price
-    }); // true
+      basePrice: evt.target.value // 12 // this._dataItem.price
+    }, true); // при нажатии enter закрывается форма
   }
 
   // // 3.1.
   _changeDateStartHandler(evt) {
     evt.preventDefault();
     this.updateData({
-      dateStart: evt.target.value
-    });
+      dateFrom: evt.target.value
+    }, true);
   }
 
   _changeDateEndHandler(evt) {
     evt.preventDefault();
     this.updateData({
-      dateFinish: evt.target.value
-    });
+      dateTo: evt.target.value
+    }, true);
   }
 
   _changeDestinationHandler(evt) {
     evt.preventDefault();
-    this.updateData({
-      destinationItem: evt.target.value
-    });
+    this.updateData(this._dataItem.destination.name = evt.target.value, true); // не понимаю везде перезаписывали значения, а здесь передали, что данные изменились
+    if (evt.target.value === `Geneva`) {
+      this.updateData(this._dataItem.destination.pictures[0].src = this._dataItem.destinations[2].pictures[0].src);
+      this.updateData(this._dataItem.destination.pictures[0].description = this._dataItem.destinations[2].pictures[0].description);
+      this.updateData(this._dataItem.destination.description = this._dataItem.destinations[2].description);
+    } else if (evt.target.value === `Amsterdam`) {
+      this.updateData(this._dataItem.destination.pictures[0].src = this._dataItem.destinations[0].pictures[0].src);
+      this.updateData(this._dataItem.destination.pictures[0].description = this._dataItem.destinations[0].pictures[0].description);
+      this.updateData(this._dataItem.destination.description = this._dataItem.destinations[0].description);
+    } else if (evt.target.value === `Chamonix`) {
+      this.updateData(this._dataItem.destination.pictures[0].src = this._dataItem.destinations[1].pictures[0].src);
+      this.updateData(this._dataItem.destination.pictures[0].description = this._dataItem.destinations[1].pictures[0].description);
+      this.updateData(this._dataItem.destination.description = this._dataItem.destinations[1].description);
+    } else if (evt.target.value === `Minsk`) {
+      this.updateData(this._dataItem.destination.pictures[0].src = this._dataItem.destinations[3].pictures[0].src);
+      this.updateData(this._dataItem.destination.pictures[0].description = this._dataItem.destinations[3].pictures[0].description);
+      this.updateData(this._dataItem.destination.description = this._dataItem.destinations[3].description);
+    }
+    // this.updateData({
+    //      dataItem: this._dataItem
+    //
+    //   // destination.name: evt.target.value
+    // }, true);
+    // this._dataItem
   }
 
   _eventChangeOfferHandler(evt) {
@@ -309,11 +333,47 @@ export default class TripEventEditFormView extends SmartView { // AbstractView
     //   additionalAllOffers[0].check: !0
     // })
   }
+  _eventChangeTypeHandler(evt) {
+    evt.preventDefault();
+    if (evt.target.value === `taxi`) {
+      this.updateData(this._dataItem.type = this._dataItem.needOffers[0].type);
+      this.updateData(this._dataItem.offers[0].offers = this._dataItem.needOffers[0].offers);
+    } else if (evt.target.value === `bus`) {
+      this.updateData(this._dataItem.type = this._dataItem.needOffers[1].type);
+      this.updateData(this._dataItem.offers[0].offers = this._dataItem.needOffers[1].offers);
+    } else if (evt.target.value === `train`) {
+      this.updateData(this._dataItem.type = this._dataItem.needOffers[2].type);
+      this.updateData(this._dataItem.offers[0].offers = this._dataItem.needOffers[2].offers);
+    } else if (evt.target.value === `ship`) {
+      this.updateData(this._dataItem.type = this._dataItem.needOffers[3].type);
+      this.updateData(this._dataItem.offers[0].offers = this._dataItem.needOffers[3].offers);
+    } else if (evt.target.value === `transport`) {
+      this.updateData(this._dataItem.type = this._dataItem.needOffers[4].type);
+      this.updateData(this._dataItem.offers[0].offers = this._dataItem.needOffers[4].offers);
+    } else if (evt.target.value === `drive`) {
+      this.updateData(this._dataItem.type = this._dataItem.needOffers[5].type);
+      this.updateData(this._dataItem.offers[0].offers = this._dataItem.needOffers[5].offers);
+    } else if (evt.target.value === `flight`) {
+      this.updateData(this._dataItem.type = this._dataItem.needOffers[6].type);
+      this.updateData(this._dataItem.offers[0].offers = this._dataItem.needOffers[6].offers);
+    } else if (evt.target.value === `check-in`) {
+      this.updateData(this._dataItem.type = this._dataItem.needOffers[7].type);
+      this.updateData(this._dataItem.offers[0].offers = this._dataItem.needOffers[7].offers);
+    } else if (evt.target.value === `sightseeing`) {
+      this.updateData(this._dataItem.type = this._dataItem.needOffers[8].type);
+      this.updateData(this._dataItem.offers[0].offers = this._dataItem.needOffers[8].offers);
+    } else if (evt.target.value === `restaurant`) {
+      this.updateData(this._dataItem.type = this._dataItem.needOffers[9].type);
+      this.updateData(this._dataItem.offers[0].offers = this._dataItem.needOffers[9].offers);
+    }
+
+  }
 
   // 8
-  reset() {
+  reset(dataStart) { // обнуляет данные до стартовых которые пришли в tripBoard
     this.updateData(
-        this._dataItem);
+        dataStart
+    );
   }
 
   _submitHandler(evt) {

@@ -60,74 +60,274 @@ const getPhotos = () => {
 
 const additionalOffers = [
   {
-    id: 1,
-    offer: `Add luggage`,
-    price: 50,
-    check: getRandomInteger(0, 1), //  false //
+    "offers": [{
+      "title": `Add luggage`,
+      "price": 50,
+    }]
   },
   {
-    id: 2,
-    offer: `Switch to comfort class`,
-    price: 80,
-    check: getRandomInteger(0, 1), //  false // getRandomInteger(0, 1),
+    "offers": [{
+      "title": `Switch to comfort class`,
+      "price": 80,
+    }]
   },
   {
-    id: 3,
-    offer: `Add meal`,
-    price: 15,
-    check: getRandomInteger(0, 1), // false // getRandomInteger(0, 1),
+    "offers": [{
+      "title": `Add meal`,
+      "price": 15,
+    }]
   },
   {
-    id: 4,
-    offer: `Choose seats`,
-    price: 5,
-    check: getRandomInteger(0, 1) // false // getRandomInteger(0, 1),
+    "offers": [{
+      "title": `Choose seats`,
+      "price": 5,
+    }]
   },
   {
-    id: 5,
-    offer: `Travel by train`,
-    price: 40,
-    check: getRandomInteger(0, 1) // false // getRandomInteger(0, 1),
+    "offers": [{
+      "title": `Travel by train`,
+      "price": 40,
+    }]
   },
 ];
 
 
-// const getAdditionalOffers = () => {
-//   const items = [];
-//
-//   for (let i = 0; i < getRandomInteger(0, 5); i++) {
-//     items.push(additionalOffers[i]);
-//   }
-//   return items;
-//
-//
-//   // const items = [];
-//   //
-//   // for (let i = 0; i < getRandomInteger(0, 5); i++) {
-//   //   items.push(additionalOffers[i]);
-//   // }
-//   // return items;
-// };
+const getAdditionalOffers = () => {
+  const items = [];
+
+  for (let i = 0; i < getRandomInteger(0, 5); i++) {
+    items.push(additionalOffers[i]);
+  }
+  return items;
+};
 
 // пункт назанчения
 const destinationItems = [`Amsterdam`, `Chamonix`, `Geneva`, `Minsk`];
 
 const generateId = () => Date.now() + parseInt(Math.random() * 10000, 10);
 
+// массив со всеми офферрами в зависимости от типа
+export const offers = [
+  {
+    "type": `Taxi`,
+    "offers": [
+      {
+        "title": `Upgrade to a business class`,
+        "price": 120
+      }, {
+        "title": `Choose the radio station`,
+        "price": 60
+      }
+    ]
+  },
+  {
+    "type": `Bus`,
+    "offers": [
+      {
+        "title": `Add luggage`,
+        "price": 50,
+      },
+      {
+        "title": `Choose seats`,
+        "price": 5,
+      },
+    ]
+  },
+  {
+    "type": `Train`,
+    "offers": [
+      {
+        "title": `Add luggage`,
+        "price": 50,
+      },
+      {
+        "title": `Switch to comfort class`,
+        "price": 80,
+      },
+      {
+        "title": `Add meal`,
+        "price": 15,
+      },
+      {
+        "title": `Choose seats`,
+        "price": 5,
+      },
+      {
+        "title": `Travel by train`,
+        "price": 40,
+      },
+    ]
+  },
+  {
+    "type": `Ship`,
+    "offers": [
+      {
+        "title": `Add luggage`,
+        "price": 50,
+      },
+      {
+        "title": `Switch to comfort class`,
+        "price": 80,
+      },
+      {
+        "title": `Add meal`,
+        "price": 15,
+      },
+      {
+        "title": `Choose seats`,
+        "price": 5,
+      },
+    ]
+  },
+  {
+    "type": `Transport`,
+    "offers": [
+      {
+        "title": `Add luggage`,
+        "price": 50,
+      },
+      {
+        "title": `Switch to comfort class`,
+        "price": 80,
+      },
+      {
+        "title": `Add meal`,
+        "price": 15,
+      },
+      {
+        "title": `Choose seats`,
+        "price": 5,
+      },
+    ]
+  },
+  {
+    "type": `Drive`,
+    "offers": [
+      {
+        "title": `Add luggage`,
+        "price": 50,
+      },
+      {
+        "title": `Add meal`,
+        "price": 15,
+      },
+      {
+        "title": `Choose seats`,
+        "price": 5,
+      },
+    ]
+  },
+  {
+    "type": `Flight`,
+    "offers": [
+      {
+        "title": `Add luggage`,
+        "price": 50,
+      },
+      {
+        "title": `Switch to comfort class`,
+        "price": 80,
+      },
+      {
+        "title": `Add meal`,
+        "price": 15,
+      },
+      {
+        "title": `Choose seats`,
+        "price": 5,
+      },
+    ]
+  },
+  {
+    "type": `Check-in`,
+    "offers": []
+  },
+  {
+    "type": `Sightseeing`,
+    "offers": []
+  },
+  {
+    "type": `Restaurant`,
+    "offers": [
+      {
+        "title": `Choose seats`,
+        "price": 5,
+      },
+    ]
+  },
+
+];
+
+
+export const getDestination = () => {
+  return {
+    "description": getDescription(descriptions),
+    "name": destinationItems[getRandomInteger(0, destinationItems.length - 1)],
+    "pictures": [
+      {
+        "src": getPhotos(),
+        "description": `event`
+      }
+    ]
+  };
+};
+
+export const destinations = [{
+  "description": `Amsterdam ${getDescription(descriptions)}`,
+  "name": `Amsterdam`,
+  "pictures": [
+    {
+      "src": getPhotos(),
+      "description": `event Amsterdam`
+    }
+  ]
+},
+{
+  "description": `Chamonix ${getDescription(descriptions)}`,
+  "name": `Chamonix`,
+  "pictures": [
+    {
+      "src": getPhotos(),
+      "description": `event Chamonix`
+    }
+  ]
+},
+{
+  "description": `Geneva ${getDescription(descriptions)}`,
+  "name": `Geneva`,
+  "pictures": [
+    {
+      "src": getPhotos(),
+      "description": `event Geneva`
+    }
+  ]
+},
+{
+  "description": `Minsk ${getDescription(descriptions)}`,
+  "name": `Minsk`,
+  "pictures": [
+    {
+      "src": getPhotos(),
+      "description": `event Minsk`
+    }
+  ]
+},
+
+];
 
 export const getTripEventItem = () => {
   return {
-    id: generateId(),
-    type: TYPES[getRandomInteger(1, TYPES.length - 1)],
-    price: prices[getRandomInteger(0, prices.length - 1)],
-    dateStart: generateDateStart(),
-    dateFinish: generateDate(),
-    description: getDescription(descriptions),
-    photos: getPhotos(),
-    additionalOffers: additionalOffers.slice(0, getRandomInteger(0, additionalOffers.length - 1)), // getAdditionalOffers(),
-    additionalAllOffers: additionalOffers, // getAdditionalOffers(),
-    destinationItem: destinationItems[getRandomInteger(0, destinationItems.length - 1)],
-    favorite: getRandomInteger(0, 1),
+    "type": TYPES[getRandomInteger(1, TYPES.length - 1)],
+    "basePrice": prices[getRandomInteger(0, prices.length - 1)], // base_price
+    "dateFrom": generateDateStart(),
+    "dateTo": generateDate(),
+    "destination": getDestination(),
+    "id": generateId(),
+    "isFavorite": getRandomInteger(0, 1),
+    "offers": getAdditionalOffers(),
+    "needOffers": offers,
+    "destinations": destinations,
   };
 };
+
 

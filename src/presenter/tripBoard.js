@@ -77,15 +77,15 @@ export default class TripBoard {
   _sortTripItems(sortType) {
     switch (sortType) {
       case SortType.DAY:
-        this._tripItems.sort((a, b) => dayjs(a.dateStart).diff(dayjs(b.dateStart)));
+        this._tripItems.sort((a, b) => dayjs(a.dateFrom).diff(dayjs(b.dateFrom)));
         break;
       case SortType.PRICE:
-        this._tripItems.sort((a, b) => b.price - a.price);
+        this._tripItems.sort((a, b) => b.basePrice - a.basePrice);
         break;
       case SortType.TIME:
         this._tripItems.sort((a, b) => {
-          const timeDurationFirst = a.dateFinish - a.dateStart; // итерируемся по каждому значению разницы времени
-          const timeDurationSecond = b.dateFinish - b.dateStart; // также и для вторго времени
+          const timeDurationFirst = a.dateTo - a.dateFrom; // итерируемся по каждому значению разницы времени
+          const timeDurationSecond = b.dateTo - b.dateFrom; // также и для вторго времени
 
           return timeDurationSecond - timeDurationFirst; // возвращаем отсортированный массив от Max
         }
