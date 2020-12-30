@@ -33,6 +33,7 @@ export default class Event {
   init(tripItem) {
     this._tripItem = tripItem;
 
+
     // предыдущие компоненты будут null
     const prevTripEventItemComponent = this._tripEventItemComponent;
     const prevTripEventEditComponent = this._tripEventEditComponent;

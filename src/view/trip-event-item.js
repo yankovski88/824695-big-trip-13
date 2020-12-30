@@ -13,38 +13,15 @@ const createTripEventItem = (dataItems) => {
     return ``;
   };
 
-  const getAdditionalOffers = () => {
-  //   let a = [];
-  //   for (let i = 0; i < additionalAllOffers.length; i++) {
-  //     if (additionalAllOffers[i].check === 1) {
-  //       a.push(`<li class="event__offer">
-  //                   <span class="event__offer-title">${additionalAllOffers[i].offer}</span>
-  //                   &plus;&euro;&nbsp;
-  //                   <span class="event__offer-price">${additionalAllOffers[i].base_price}</span>
-  //                 </li>
-  // `
-  //       );
-  //     }
-  //   }
-  //   const offerItem = a.join(` `);
-  //
-  //   return offerItem;
-
-    return offers.reduce((total, element) => { //     return additionalOffers.reduce((total, element) => {
-
-
-      // if (element.check !== 0) {
+  // код в котором получаем offers в точку event
+  const getOffers = (dataOffers) => {
+    return dataOffers[0].offers.reduce((total, element) => { // перебрал все элементы photos и присоединил их в total
       return total + `<li class="event__offer">
-                      <span class="event__offer-title">${element.offers[0].title}</span>
+                      <span class="event__offer-title">${element.title}</span>
                       &plus;&euro;&nbsp;
-                      <span class="event__offer-price">${element.offers[0].price}</span>
-                    </li>
-    `;
-      // } else {
-      //   return ``
-      // }
+                      <span class="event__offer-price">${element.price}</span>
+                    </li>`;
     }, ``);
-
   };
 
   const startDate = dayjs(dateFrom).format(`HH:mm`); // часы в item
@@ -75,8 +52,8 @@ const createTripEventItem = (dataItems) => {
                 </p>
                 <h4 class="visually-hidden">Offers:</h4>
                 <ul class="event__selected-offers">
-                ${getAdditionalOffers()}
-               
+    ${getOffers(offers)}
+                    
                 </ul>
                 <button class="event__favorite-btn  ${getFavorite(isFavorite)}" type="button">
                   <span class="visually-hidden">Add to favorite</span>

@@ -58,46 +58,11 @@ const getPhotos = () => {
   return photos;
 };
 
-const additionalOffers = [
-  {
-    "offers": [{
-      "title": `Add luggage`,
-      "price": 50,
-    }]
-  },
-  {
-    "offers": [{
-      "title": `Switch to comfort class`,
-      "price": 80,
-    }]
-  },
-  {
-    "offers": [{
-      "title": `Add meal`,
-      "price": 15,
-    }]
-  },
-  {
-    "offers": [{
-      "title": `Choose seats`,
-      "price": 5,
-    }]
-  },
-  {
-    "offers": [{
-      "title": `Travel by train`,
-      "price": 40,
-    }]
-  },
-];
-
-
-const getAdditionalOffers = () => {
+// код по получению рандомного offer
+const getRandomOffer = (offers) => {
+  const randomNumber = getRandomInteger(0, offers.length - 1);
   const items = [];
-
-  for (let i = 0; i < getRandomInteger(0, 5); i++) {
-    items.push(additionalOffers[i]);
-  }
+  items.push(offers[randomNumber]);
   return items;
 };
 
@@ -107,7 +72,7 @@ const destinationItems = [`Amsterdam`, `Chamonix`, `Geneva`, `Minsk`];
 const generateId = () => Date.now() + parseInt(Math.random() * 10000, 10);
 
 // массив со всеми офферрами в зависимости от типа
-export const offers = [
+export const dataOffers = [
   {
     "type": `Taxi`,
     "offers": [
@@ -240,7 +205,10 @@ export const offers = [
   },
   {
     "type": `Check-in`,
-    "offers": []
+    "offers": [{
+      "title": `Choose seats`,
+      "price": 5,
+    }]
   },
   {
     "type": `Sightseeing`,
@@ -248,17 +216,11 @@ export const offers = [
   },
   {
     "type": `Restaurant`,
-    "offers": [
-      {
-        "title": `Choose seats`,
-        "price": 5,
-      },
-    ]
+    "offers": []
   },
-
 ];
 
-
+// рандомный объект для event form
 export const getDestination = () => {
   return {
     "description": getDescription(descriptions),
@@ -266,12 +228,13 @@ export const getDestination = () => {
     "pictures": [
       {
         "src": getPhotos(),
-        "description": `event`
+        "description": `event ${getDescription(descriptions)}`
       }
     ]
   };
 };
 
+// массив объектов для event form
 export const destinations = [{
   "description": `Amsterdam ${getDescription(descriptions)}`,
   "name": `Amsterdam`,
@@ -318,15 +281,13 @@ export const destinations = [{
 export const getTripEventItem = () => {
   return {
     "type": TYPES[getRandomInteger(1, TYPES.length - 1)],
-    "basePrice": prices[getRandomInteger(0, prices.length - 1)], // base_price
+    "basePrice": prices[getRandomInteger(0, prices.length - 1)],
     "dateFrom": generateDateStart(),
     "dateTo": generateDate(),
     "destination": getDestination(),
     "id": generateId(),
     "isFavorite": getRandomInteger(0, 1),
-    "offers": getAdditionalOffers(),
-    "needOffers": offers,
-    "destinations": destinations,
+    "offers": getRandomOffer(dataOffers),
   };
 };
 

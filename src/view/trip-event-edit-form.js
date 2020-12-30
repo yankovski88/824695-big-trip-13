@@ -1,5 +1,6 @@
 import dayjs from "dayjs";
 import SmartView from "./smart.js";
+import {destinations, dataOffers} from "../mock/mock-trip-event-item.js";
 
 // import AbstractView from "./abstract.js";
 
@@ -40,17 +41,15 @@ const createTripEventEditForm = (dataItem) => { // сюда попадают д�
 
   // функция по отрисовке фрагмента всех преимуществ
   const getOffersTemplate = (formOffers) => {
-    return formOffers.reduce((total, element) => {
+    return formOffers[0].offers.reduce((total, element) => {
 
       return total + `<div class="event__offer-selector">
-                        <input class="event__offer-checkbox  visually-hidden" id="event-offer-luggage-${element.id}" type="checkbox" name="event-offer-luggage"  ${
-  element.offer === true ? `` : `checked`
-}>
-                        
-                            <label class="event__offer-label" for="event-offer-luggage-${element.id}">
-                          <span class="event__offer-title">${element.offers[0].title}</span>
+                        <input class="event__offer-checkbox  visually-hidden" id="event-offer-luggage-${element.title}" type="checkbox" name="event-offer-luggage"  
+${element === true ? `` : `checked`}>
+                            <label class="event__offer-label" for="event-offer-luggage-${element.title}">
+                          <span class="event__offer-title">${element.title}</span>
                           &plus;&euro;&nbsp;
-                          <span class="event__offer-price">${element.offers[0].price}</span>
+                          <span class="event__offer-price">${element.price}</span>
                         </label>
                       </div>`;
     }, ``);
@@ -78,7 +77,7 @@ const createTripEventEditForm = (dataItem) => { // сюда попадают д�
                         </div>
 
                         <div class="event__type-item">
-                          <input id="event-type-bus-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="bus" checked>
+                          <input id="event-type-bus-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="bus">
                           <label class="event__type-label  event__type-label--bus" for="event-type-bus-1">Bus</label>
                         </div>
 
@@ -183,6 +182,7 @@ export default class TripEventEditFormView extends SmartView { // AbstractView
   constructor(dataItem) {
     super();
     this._dataItem = dataItem;
+    this._destinations = destinations;
     // this._data = TripEventEditFormView.parseDataItemToData(dataItem);     // 0 превращаем объект dataItem в объект data т.к. он более полный
 
 
@@ -196,10 +196,6 @@ export default class TripEventEditFormView extends SmartView { // AbstractView
     this._eventChangeOfferHandler = this._eventChangeOfferHandler.bind(this);
     this._eventChangeTypeHandler = this._eventChangeTypeHandler.bind(this);
 
-    // this._eventInputPrice = this.getElement().querySelector(`.event__input--price`);
-    // this._eventInputPrice.addEventListener(`change`, this._changePriceHandler)
-    // // this.getElement() это класс с itema c формой редоктирования в внутри
-
     this._setInnerHandlers();
 
   }
@@ -207,40 +203,6 @@ export default class TripEventEditFormView extends SmartView { // AbstractView
   getTemplate() {
     return createTripEventEditForm(this._dataItem);
   }
-
-
-  // // 2
-  // // метод updateData, который будет обновлять данные в свойстве dataItem
-  // updateData(update) { // метод принимает то (update), что нужно в этом dataItem обновить // justDataUpdating
-  //   if (!update) { // если нет обновлений
-  //     return; // то прекратить выполнение функции т.е. не обновлять
-  //   }
-  //
-  //   this._dataItem = Object.assign( // изменяем данные которые пришли
-  //       {}, // создаем объект*
-  //       this._dataItem, // проходим по старым данным*
-  //       update // и заменяем новыми*
-  //   );
-  //   // if(update){ // поля ввода сами умеют перерисовываться и за этого не нужно обновлять елемент
-  //   //   return;
-  //   // }
-  //
-  //   this.updateElement(); // вызываем обновить элемент
-  // }
-  //
-  // // 1
-  // // Объявим метод updateElement, его задача удалить старый DOM элемент, вызвать генерацию нового и заменить один на другой
-  // updateElement() {
-  //   let prevElement = this.getElement(); // сохранили изначальную(предыдущую) форму редактирования
-  //   const parent = prevElement.parentElement; // сохранили родительский элементе формы edite
-  //   this.removeElement(); // удаляем элемент Edit который сейчас создан данными
-  //
-  //   const newElement = this.getElement(); // получаем новый элемент с новыми данными
-  //   parent.replaceChild(newElement, prevElement); // заменяем старый элемент Edit на новый
-  //
-  //   // 6
-  //   this.restoreHandlers(); // вызвали публичную функцию по востонавлению всех обработчиков
-  // }
 
   // 5
   // публичный метод который заново навешивает обработчики
@@ -267,18 +229,16 @@ export default class TripEventEditFormView extends SmartView { // AbstractView
     this._eventInputDestination = this.getElement().querySelector(`.event__input--destination`);
     this._eventInputDestination.addEventListener(`change`, this._changeDestinationHandler); // input
 
-    this._eventChangeOffer = this.getElement().querySelector(`.event__available-offers`);
+    this._eventChangeOffer = this.getElement().querySelector(`.event__available-offers`); // удаление или добавление offer
     this._eventChangeOffer.addEventListener(`change`, this._eventChangeOfferHandler);
 
     this._eventChangeOffer = this.getElement().querySelector(`.event__type-group`);
-    this._eventChangeOffer.addEventListener(`change`, this._eventChangeTypeHandler);
-
+    this._eventChangeOffer.addEventListener(`input`, this._eventChangeTypeHandler);
   }
 
 
   _changePriceHandler(evt) { // оброботчик в котором будем менять данные по цене
     evt.preventDefault();
-    // this._dataItem.basePrice = evt.target.value
     this.updateData({ // передаем только одну строчку которую хотим обновить т.к. assign создано выше
       basePrice: evt.target.value // 12 // this._dataItem.price
     }, true); // при нажатии enter закрывается форма
@@ -301,30 +261,16 @@ export default class TripEventEditFormView extends SmartView { // AbstractView
 
   _changeDestinationHandler(evt) {
     evt.preventDefault();
-    this.updateData(this._dataItem.destination.name = evt.target.value, true); // не понимаю везде перезаписывали значения, а здесь передали, что данные изменились
-    if (evt.target.value === `Geneva`) {
-      this.updateData(this._dataItem.destination.pictures[0].src = this._dataItem.destinations[2].pictures[0].src);
-      this.updateData(this._dataItem.destination.pictures[0].description = this._dataItem.destinations[2].pictures[0].description);
-      this.updateData(this._dataItem.destination.description = this._dataItem.destinations[2].description);
-    } else if (evt.target.value === `Amsterdam`) {
-      this.updateData(this._dataItem.destination.pictures[0].src = this._dataItem.destinations[0].pictures[0].src);
-      this.updateData(this._dataItem.destination.pictures[0].description = this._dataItem.destinations[0].pictures[0].description);
-      this.updateData(this._dataItem.destination.description = this._dataItem.destinations[0].description);
-    } else if (evt.target.value === `Chamonix`) {
-      this.updateData(this._dataItem.destination.pictures[0].src = this._dataItem.destinations[1].pictures[0].src);
-      this.updateData(this._dataItem.destination.pictures[0].description = this._dataItem.destinations[1].pictures[0].description);
-      this.updateData(this._dataItem.destination.description = this._dataItem.destinations[1].description);
-    } else if (evt.target.value === `Minsk`) {
-      this.updateData(this._dataItem.destination.pictures[0].src = this._dataItem.destinations[3].pictures[0].src);
-      this.updateData(this._dataItem.destination.pictures[0].description = this._dataItem.destinations[3].pictures[0].description);
-      this.updateData(this._dataItem.destination.description = this._dataItem.destinations[3].description);
-    }
-    // this.updateData({
-    //      dataItem: this._dataItem
-    //
-    //   // destination.name: evt.target.value
-    // }, true);
-    // this._dataItem
+
+    // код по замене всех данных объекта destination на тот который выбрал пользователь
+    const getChangeDestination = (target) => { // target цель выбора пользователя
+      for (let item of destinations) { // прохождение по массиву всех объектов. destinations передали импортом
+        if (target === item.name) { // когда найдется выбор пользователя в нашем массиве
+          this.updateData(this._dataItem.destination = item); // то заменить прошлые данные на новый объект
+        }
+      }
+    };
+    getChangeDestination(evt.target.value);
   }
 
   _eventChangeOfferHandler(evt) {
@@ -333,40 +279,27 @@ export default class TripEventEditFormView extends SmartView { // AbstractView
     //   additionalAllOffers[0].check: !0
     // })
   }
+
   _eventChangeTypeHandler(evt) {
     evt.preventDefault();
-    if (evt.target.value === `taxi`) {
-      this.updateData(this._dataItem.type = this._dataItem.needOffers[0].type);
-      this.updateData(this._dataItem.offers[0].offers = this._dataItem.needOffers[0].offers);
-    } else if (evt.target.value === `bus`) {
-      this.updateData(this._dataItem.type = this._dataItem.needOffers[1].type);
-      this.updateData(this._dataItem.offers[0].offers = this._dataItem.needOffers[1].offers);
-    } else if (evt.target.value === `train`) {
-      this.updateData(this._dataItem.type = this._dataItem.needOffers[2].type);
-      this.updateData(this._dataItem.offers[0].offers = this._dataItem.needOffers[2].offers);
-    } else if (evt.target.value === `ship`) {
-      this.updateData(this._dataItem.type = this._dataItem.needOffers[3].type);
-      this.updateData(this._dataItem.offers[0].offers = this._dataItem.needOffers[3].offers);
-    } else if (evt.target.value === `transport`) {
-      this.updateData(this._dataItem.type = this._dataItem.needOffers[4].type);
-      this.updateData(this._dataItem.offers[0].offers = this._dataItem.needOffers[4].offers);
-    } else if (evt.target.value === `drive`) {
-      this.updateData(this._dataItem.type = this._dataItem.needOffers[5].type);
-      this.updateData(this._dataItem.offers[0].offers = this._dataItem.needOffers[5].offers);
-    } else if (evt.target.value === `flight`) {
-      this.updateData(this._dataItem.type = this._dataItem.needOffers[6].type);
-      this.updateData(this._dataItem.offers[0].offers = this._dataItem.needOffers[6].offers);
-    } else if (evt.target.value === `check-in`) {
-      this.updateData(this._dataItem.type = this._dataItem.needOffers[7].type);
-      this.updateData(this._dataItem.offers[0].offers = this._dataItem.needOffers[7].offers);
-    } else if (evt.target.value === `sightseeing`) {
-      this.updateData(this._dataItem.type = this._dataItem.needOffers[8].type);
-      this.updateData(this._dataItem.offers[0].offers = this._dataItem.needOffers[8].offers);
-    } else if (evt.target.value === `restaurant`) {
-      this.updateData(this._dataItem.type = this._dataItem.needOffers[9].type);
-      this.updateData(this._dataItem.offers[0].offers = this._dataItem.needOffers[9].offers);
-    }
+    const eventType = this._eventChangeOffer.querySelectorAll(`input`);
+    eventType.forEach((item) => {
+      item.addEventListener(`change`, () => {
+        item.setAttribute(`checked`, true);
+      });
+    });
 
+    // код по замене всех данных объекта destination на тот который выбрал пользователь
+    const getChangeOffers = (target) => { // target цель выбора пользователя
+      for (let item of dataOffers) { // прохождение по массиву всех объектов. offers массив всех доп предложений
+        if (target === item.type.toLowerCase()) { // когда найдется выбор пользователя в нашем массиве
+          this.updateData(this._dataItem.type = item.type);
+          this.updateData(this._dataItem.offers[0].offers = item.offers);
+          // this.updateData(this._dataItem.offers = item); // Не получилось одной строчкой заменить
+        }
+      }
+    };
+    getChangeOffers(evt.target.value);
   }
 
   // 8

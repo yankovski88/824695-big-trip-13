@@ -22,17 +22,15 @@ export default class TripInfo {
   // функция которая рендерит цену
   _renderTotalCost(tripItems) {
     const tripInfoElement = this._tripInfoContainer.querySelector(`.trip-main__trip-info`);
-
     this._totalPriceItem = 0;
 
-    for (let i = 0; i < tripItems.length; i++) {
-      this._totalPriceItem += tripItems[i].basePrice;
+    for (let itemFirst of tripItems) {
+      this._totalPriceItem += itemFirst.basePrice; // подсчет основных затрат
 
-      for (let item of tripItems[i].offers) { // обошел весь массив через of
+      for (let item of itemFirst.offers[0].offers) { // обошел весь массив через of
         this._totalPriceItem += item.price; // дополнительные затраты
       }
     }
-
     renderElement(tripInfoElement, new TripInfoCostView(this._totalPriceItem), RenderPosition.BEFOREEND);
   }
 
