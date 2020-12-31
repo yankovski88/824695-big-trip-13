@@ -3,7 +3,7 @@ import {getRandomInteger} from "../util/common.js";
 
 
 // массив из которого выберится случайный тип маршрута
-const TYPES = [`Taxi`, `Bus`, `Train`, `Ship`, `Transport`, `Drive`, `Flight`, `Check-in`, `Sightseeing`, `Restaurant`];
+// const TYPES = [`Taxi`, `Bus`, `Train`, `Ship`, `Transport`, `Drive`, `Flight`, `Check-in`, `Sightseeing`, `Restaurant`];
 
 // дата начала и конца поездки
 const generateDate = () => {
@@ -59,7 +59,15 @@ const getPhotos = () => {
 };
 
 // код по получению рандомного offer
-const getRandomOffer = (offers) => {
+// const getRandomOffer = (offers) => {
+//   const randomNumber = getRandomInteger(0, offers.length - 1);
+//   const items = [];
+//   items.push(offers[randomNumber]);
+//   return items;
+// };
+
+// создал массив чисто для случайной генерации одного офера для точки
+const getEventRandomOffer = (offers) => {
   const randomNumber = getRandomInteger(0, offers.length - 1);
   const items = [];
   items.push(offers[randomNumber]);
@@ -212,13 +220,41 @@ export const dataOffers = [
   },
   {
     "type": `Sightseeing`,
-    "offers": []
+    "offers": [{
+      "title": ``,
+      "price": ``,
+    }]
   },
   {
     "type": `Restaurant`,
-    "offers": []
+    "offers": [{
+      "title": ``,
+      "price": ``,
+    }]
   },
 ];
+
+
+// код который из массива с объектом возвращает тип
+const getTypeOffer = (offer) => {
+  let type;
+  for (let item of offer) {
+    type = item.type;
+  }
+  return type;
+};
+
+// код который из массива с объектом возвращает массив с объектами оффер
+const getOffers = (offer) => {
+  const arrs = [];
+  arrs.push(offer[0].offers[0]);
+  return arrs;
+};
+
+// код на получение всех доступных офферсов
+const getAllOffers = (offer) => {
+  return offer[0].offers;
+};
 
 // рандомный объект для event form
 export const getDestination = () => {
@@ -279,15 +315,17 @@ export const destinations = [{
 ];
 
 export const getTripEventItem = () => {
+  const randomCheckOffer = getEventRandomOffer(dataOffers);
   return {
-    "type": TYPES[getRandomInteger(1, TYPES.length - 1)],
+    "type": getTypeOffer(randomCheckOffer), // TYPES[getRandomInteger(1, TYPES.length - 1)],
     "basePrice": prices[getRandomInteger(0, prices.length - 1)],
     "dateFrom": generateDateStart(),
     "dateTo": generateDate(),
     "destination": getDestination(),
     "id": generateId(),
     "isFavorite": getRandomInteger(0, 1),
-    "offers": getRandomOffer(dataOffers),
+    "offers": getOffers(randomCheckOffer), // getEventRandomOffer(eventOffers),
+    "editFormOffers": getAllOffers(randomCheckOffer),
   };
 };
 

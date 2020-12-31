@@ -2,9 +2,6 @@ import dayjs from "dayjs";
 import SmartView from "./smart.js";
 import {destinations, dataOffers} from "../mock/mock-trip-event-item.js";
 
-// import AbstractView from "./abstract.js";
-
-
 // функция по установке времени в форме
 const createFieldTime = (dateStart, dateFinish) => {
   // установка формата времени
@@ -22,7 +19,7 @@ const createFieldTime = (dateStart, dateFinish) => {
 
 // функция по отрисовке всей формы
 const createTripEventEditForm = (dataItem) => { // сюда попадают данные и запоняется шаблон
-  const {dateFrom, dateTo, destination, basePrice, type, offers} = dataItem; // additionalOffers, photos,
+  const {dateFrom, dateTo, destination, basePrice, type, offers, editFormOffers} = dataItem; // additionalOffers, photos,
 
   // генерирует разметку фоток
   const createEventPhotoTemplate = () => {
@@ -41,18 +38,37 @@ const createTripEventEditForm = (dataItem) => { // сюда попадают д�
 
   // функция по отрисовке фрагмента всех преимуществ
   const getOffersTemplate = (formOffers) => {
-    return formOffers[0].offers.reduce((total, element) => {
 
-      return total + `<div class="event__offer-selector">
+    return formOffers.reduce((total, element) => {
+
+      // код который сравнивает два массива и если совподающие объекты, то возвращает true
+      const getCoincidence = () => {
+        let isItem;
+        for (let item of offers) {
+          if (item === element) {
+            isItem = true;
+          }
+        }
+        return isItem;
+      };
+
+      if (element.title !== ``) {
+        return total + `<div class="event__offer-selector">
                         <input class="event__offer-checkbox  visually-hidden" id="event-offer-luggage-${element.title}" type="checkbox" name="event-offer-luggage"  
-${element === true ? `` : `checked`}>
+${getCoincidence() !== true ? `` : `checked`}
+>
                             <label class="event__offer-label" for="event-offer-luggage-${element.title}">
                           <span class="event__offer-title">${element.title}</span>
                           &plus;&euro;&nbsp;
                           <span class="event__offer-price">${element.price}</span>
                         </label>
                       </div>`;
+      } else {
+        return total + ``;
+      }
     }, ``);
+
+
   };
 
   const createTime = createFieldTime(dateFrom, dateTo);
@@ -156,7 +172,7 @@ ${element === true ? `` : `checked`}>
 
                     <div class="event__available-offers">
                     
-     ${getOffersTemplate(offers)}
+     ${getOffersTemplate(editFormOffers)}
                     </div>
                   </section>
 
@@ -282,19 +298,17 @@ export default class TripEventEditFormView extends SmartView { // AbstractView
 
   _eventChangeTypeHandler(evt) {
     evt.preventDefault();
-    const eventType = this._eventChangeOffer.querySelectorAll(`input`);
-    eventType.forEach((item) => {
-      item.addEventListener(`change`, () => {
-        item.setAttribute(`checked`, true);
-      });
-    });
 
-    // код по замене всех данных объекта destination на тот который выбрал пользователь
+    // код по замене всех данных объекта offers на тот который выбрал пользователь
     const getChangeOffers = (target) => { // target цель выбора пользователя
       for (let item of dataOffers) { // прохождение по массиву всех объектов. offers массив всех доп предложений
+
         if (target === item.type.toLowerCase()) { // когда найдется выбор пользователя в нашем массиве
           this.updateData(this._dataItem.type = item.type);
-          this.updateData(this._dataItem.offers[0].offers = item.offers);
+          this.updateData(this._dataItem.editFormOffers = item.offers);
+          // this.updateData(this._dataItem.offers = item.offers); // код который перерисует, что выбрал ползьвавтель из offer в event
+
+          // this.updateData(this._dataItem.offers[0].offers = item.offers);
           // this.updateData(this._dataItem.offers = item); // Не получилось одной строчкой заменить
         }
       }
@@ -311,7 +325,6 @@ export default class TripEventEditFormView extends SmartView { // AbstractView
 
   _submitHandler(evt) {
     evt.preventDefault();
-
     this._callback.submit(this._dataItem);
   }
 
@@ -322,5 +335,6 @@ export default class TripEventEditFormView extends SmartView { // AbstractView
 
     const formEditEvent = this.getElement().querySelector(`form`);
     formEditEvent.addEventListener(`submit`, this._submitHandler);
+
   }
 }

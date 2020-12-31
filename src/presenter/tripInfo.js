@@ -27,10 +27,14 @@ export default class TripInfo {
     for (let itemFirst of tripItems) {
       this._totalPriceItem += itemFirst.basePrice; // подсчет основных затрат
 
-      for (let item of itemFirst.offers[0].offers) { // обошел весь массив через of
-        this._totalPriceItem += item.price; // дополнительные затраты
+      for (let item of itemFirst.offers) { // обошел весь массив через of itemFirst.offers[0].offers
+
+        if (item.price) {
+          this._totalPriceItem += parseInt(item.price, 10); // дополнительные затраты
+        }
       }
     }
+
     renderElement(tripInfoElement, new TripInfoCostView(this._totalPriceItem), RenderPosition.BEFOREEND);
   }
 

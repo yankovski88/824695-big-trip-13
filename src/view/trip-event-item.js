@@ -15,12 +15,18 @@ const createTripEventItem = (dataItems) => {
 
   // код в котором получаем offers в точку event
   const getOffers = (dataOffers) => {
-    return dataOffers[0].offers.reduce((total, element) => { // перебрал все элементы photos и присоединил их в total
-      return total + `<li class="event__offer">
+    // console.log(dataOffers);
+    return dataOffers.reduce((total, element) => { // перебрал все элементы photos и присоединил их в total
+      if (element.title !== ``) {
+        return total + `<li class="event__offer">
                       <span class="event__offer-title">${element.title}</span>
                       &plus;&euro;&nbsp;
                       <span class="event__offer-price">${element.price}</span>
                     </li>`;
+      } else {
+        return total + ``;
+      }
+
     }, ``);
   };
 
