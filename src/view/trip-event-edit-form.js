@@ -1,6 +1,6 @@
 import dayjs from "dayjs";
 import SmartView from "./smart.js";
-import {destinations, dataOffers} from "../mock/mock-trip-event-item.js";
+import {destinations, dataOffers, TYPES} from "../mock/mock-trip-event-item.js";
 
 // функция по установке времени в форме
 const createFieldTime = (dateStart, dateFinish) => {
@@ -41,21 +41,24 @@ const createTripEventEditForm = (dataItem) => { // сюда попадают д�
 
     return formOffers.reduce((total, element) => {
 
-      // код который сравнивает два массива и если совподающие объекты, то возвращает true
-      const getCoincidence = () => {
-        let isItem;
-        for (let item of offers) {
-          if (item === element) {
-            isItem = true;
-          }
-        }
-        return isItem;
-      };
-
+      // // код который сравнивает два массива и если совподающие объекты, то возвращает true
+      // const getCoincidence = () => {
+      //   let isItem;
+      //   for (let item of offers) {
+      //     if (item === element) {
+      //       isItem = true;
+      //     }
+      //   }
+      //   return isItem;
+      // };
+      // ${getCoincidence() !== true ? `` : `checked`}
+      const isActive = offers.some((el) => {
+        return el === element;
+      });
       if (element.title !== ``) {
         return total + `<div class="event__offer-selector">
                         <input class="event__offer-checkbox  visually-hidden" id="event-offer-luggage-${element.title}" type="checkbox" name="event-offer-luggage"  
-${getCoincidence() !== true ? `` : `checked`}
+${isActive ? `checked` : ``}
 >
                             <label class="event__offer-label" for="event-offer-luggage-${element.title}">
                           <span class="event__offer-title">${element.title}</span>
@@ -67,11 +70,24 @@ ${getCoincidence() !== true ? `` : `checked`}
         return total + ``;
       }
     }, ``);
-
-
   };
 
   const createTime = createFieldTime(dateFrom, dateTo);
+
+
+  // код рисут список type
+  const getEditType = (types) => {
+    return types.reduce((total, element)=>{
+      const isActiveType = [type].some((el) => {
+        return el === element;
+      });
+      return total + `<div class="event__type-item">
+                          <input ${isActiveType ? `checked` : ``}  id="event-type-${element.toLowerCase()}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${element.toLowerCase()}" >
+                          <label class="event__type-label  event__type-label--${element.toLowerCase()}" for="event-type-${element.toLowerCase()}-1">${element}</label>
+                        </div>`;
+    }, ``);
+  };
+
 
   return `<li class="trip-events__item">
               <form class="event event--edit" action="#" method="post">
@@ -87,55 +103,7 @@ ${getCoincidence() !== true ? `` : `checked`}
                                 <fieldset class="event__type-group">
                         <legend class="visually-hidden">Event type</legend>
 
-                        <div class="event__type-item">
-                          <input id="event-type-taxi-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="taxi">
-                          <label class="event__type-label  event__type-label--taxi" for="event-type-taxi-1">Taxi</label>
-                        </div>
-
-                        <div class="event__type-item">
-                          <input id="event-type-bus-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="bus">
-                          <label class="event__type-label  event__type-label--bus" for="event-type-bus-1">Bus</label>
-                        </div>
-
-                        <div class="event__type-item">
-                          <input id="event-type-train-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="train">
-                          <label class="event__type-label  event__type-label--train" for="event-type-train-1">Train</label>
-                        </div>
-
-                        <div class="event__type-item">
-                          <input id="event-type-ship-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="ship">
-                          <label class="event__type-label  event__type-label--ship" for="event-type-ship-1">Ship</label>
-                        </div>
-
-                        <div class="event__type-item">
-                          <input id="event-type-transport-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="transport">
-                          <label class="event__type-label  event__type-label--transport" for="event-type-transport-1">Transport</label>
-                        </div>
-
-                        <div class="event__type-item">
-                          <input id="event-type-drive-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="drive">
-                          <label class="event__type-label  event__type-label--drive" for="event-type-drive-1">Drive</label>
-                        </div>
-
-                        <div class="event__type-item">
-                          <input id="event-type-flight-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="flight">
-                          <label class="event__type-label  event__type-label--flight" for="event-type-flight-1">Flight</label>
-                        </div>
-
-                        <div class="event__type-item">
-                          <input id="event-type-check-in-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="check-in">
-                          <label class="event__type-label  event__type-label--check-in" for="event-type-check-in-1">Check-in</label>
-                        </div>
-
-                        <div class="event__type-item">
-                          <input id="event-type-sightseeing-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="sightseeing">
-                          <label class="event__type-label  event__type-label--sightseeing" for="event-type-sightseeing-1">Sightseeing</label>
-                        </div>
-
-                        <div class="event__type-item">
-                          <input id="event-type-restaurant-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="restaurant">
-                          <label class="event__type-label  event__type-label--restaurant" for="event-type-restaurant-1">Restaurant</label>
-                        </div>
+       ${getEditType(TYPES)}
                       </fieldset>
                     </div>
                   </div>
@@ -197,6 +165,7 @@ ${getCoincidence() !== true ? `` : `checked`}
 export default class TripEventEditFormView extends SmartView { // AbstractView
   constructor(dataItem) {
     super();
+    this._dataItemStart = dataItem;
     this._dataItem = dataItem;
     this._destinations = destinations;
     // this._data = TripEventEditFormView.parseDataItemToData(dataItem);     // 0 превращаем объект dataItem в объект data т.к. он более полный
@@ -225,7 +194,7 @@ export default class TripEventEditFormView extends SmartView { // AbstractView
   restoreHandlers() {
     this._setInnerHandlers(); // востанавливаем приватные обработчики
     this.setSubmitHandler(this._callback.submit); // востанавливаем внешние обработчики. вызвали обработчик который был сохранен в объекте.
-    // console.log(this._callback); // внутри только submit
+    // console.log(this._callback.submit); // внутри только submit
   }
 
 
@@ -248,8 +217,8 @@ export default class TripEventEditFormView extends SmartView { // AbstractView
     this._eventChangeOffer = this.getElement().querySelector(`.event__available-offers`); // удаление или добавление offer
     this._eventChangeOffer.addEventListener(`change`, this._eventChangeOfferHandler);
 
-    this._eventChangeOffer = this.getElement().querySelector(`.event__type-group`);
-    this._eventChangeOffer.addEventListener(`input`, this._eventChangeTypeHandler);
+    this._eventTypeGroup = this.getElement().querySelector(`.event__type-group`);
+    this._eventTypeGroup.addEventListener(`input`, this._eventChangeTypeHandler);
   }
 
 
@@ -296,6 +265,7 @@ export default class TripEventEditFormView extends SmartView { // AbstractView
     // })
   }
 
+
   _eventChangeTypeHandler(evt) {
     evt.preventDefault();
 
@@ -316,6 +286,7 @@ export default class TripEventEditFormView extends SmartView { // AbstractView
     getChangeOffers(evt.target.value);
   }
 
+
   // 8
   reset(dataStart) { // обнуляет данные до стартовых которые пришли в tripBoard
     this.updateData(
@@ -335,6 +306,5 @@ export default class TripEventEditFormView extends SmartView { // AbstractView
 
     const formEditEvent = this.getElement().querySelector(`form`);
     formEditEvent.addEventListener(`submit`, this._submitHandler);
-
   }
 }

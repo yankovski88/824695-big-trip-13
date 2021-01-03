@@ -45,6 +45,7 @@ export default class Event {
     // код который рендерит форму при клике на стрелку вниз в item
     this._tripEventItemComponent.setClickHandler(() => {
       this._replaceItemToForm();
+
       // при удалении элемента из дом обработчик можно не удалять. удалять на document и нов элемент обработчиком
       this._onFormSubmit(tripItem);
 
@@ -110,10 +111,16 @@ export default class Event {
   // обраотчик сохранения формы
   _onFormSubmit() {
     this._tripEventEditComponent.setSubmitHandler((dataItem) => {
+      this._replaceFormToItem(); // замена формы на точку маршрута
+
       this._changeData(dataItem); // 10 Это обработчик с tripBoard this._handleEventChange в котором находится
       // редоктируемый task
+      // this._onEventRollupBtnClick();
 
-      this._replaceFormToItem(); // замена формы на точку маршрута
+      // if (this._eventContainer.querySelector(`form`)) {
+      //   const eventRollupBtn = this._tripEventEditComponent.getElement().querySelector(`.event__rollup-btn`);
+      //   eventRollupBtn.addEventListener(`click`, this._onEventRollupBtnClick);
+      // }
     });
   }
 
@@ -127,7 +134,9 @@ export default class Event {
   }
 
   _onEventRollupBtnClick(evt) {
+    // console.log(`click`);
     evt.preventDefault();
+    this._tripEventEditComponent.reset(this._tripItem); // код для удаления не сохраненных данных в форме
     this._replaceFormToItem(); // замена формы на точку маршрута
   }
 
