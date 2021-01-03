@@ -42,24 +42,14 @@ const createTripEventEditForm = (dataItem) => { // сюда попадают д�
     return formOffers.reduce((total, element) => {
 
       // // код который сравнивает два массива и если совподающие объекты, то возвращает true
-      // const getCoincidence = () => {
-      //   let isItem;
-      //   for (let item of offers) {
-      //     if (item === element) {
-      //       isItem = true;
-      //     }
-      //   }
-      //   return isItem;
-      // };
-      // ${getCoincidence() !== true ? `` : `checked`}
       const isActive = offers.some((el) => {
         return el === element;
       });
+
       if (element.title !== ``) {
         return total + `<div class="event__offer-selector">
                         <input class="event__offer-checkbox  visually-hidden" id="event-offer-luggage-${element.title}" type="checkbox" name="event-offer-luggage"  
-${isActive ? `checked` : ``}
->
+${isActive ? `checked` : ``}>
                             <label class="event__offer-label" for="event-offer-luggage-${element.title}">
                           <span class="event__offer-title">${element.title}</span>
                           &plus;&euro;&nbsp;
@@ -165,13 +155,14 @@ ${isActive ? `checked` : ``}
 export default class TripEventEditFormView extends SmartView { // AbstractView
   constructor(dataItem) {
     super();
-    this._dataItemStart = dataItem;
     this._dataItem = dataItem;
     this._destinations = destinations;
     // this._data = TripEventEditFormView.parseDataItemToData(dataItem);     // 0 превращаем объект dataItem в объект data т.к. он более полный
 
 
     this._submitHandler = this._submitHandler.bind(this);
+    this._cancelClickHandler = this._cancelClickHandler.bind(this);
+
 
     this._changePriceHandler = this._changePriceHandler.bind(this); // бинд по замене price
     // 4
@@ -180,6 +171,8 @@ export default class TripEventEditFormView extends SmartView { // AbstractView
     this._changeDestinationHandler = this._changeDestinationHandler.bind(this);
     this._eventChangeOfferHandler = this._eventChangeOfferHandler.bind(this);
     this._eventChangeTypeHandler = this._eventChangeTypeHandler.bind(this);
+    this._rollupBtnClickHandler = this._rollupBtnClickHandler.bind(this);
+
 
     this._setInnerHandlers();
 
@@ -194,7 +187,8 @@ export default class TripEventEditFormView extends SmartView { // AbstractView
   restoreHandlers() {
     this._setInnerHandlers(); // востанавливаем приватные обработчики
     this.setSubmitHandler(this._callback.submit); // востанавливаем внешние обработчики. вызвали обработчик который был сохранен в объекте.
-    // console.log(this._callback.submit); // внутри только submit
+    this.setCancelHandler(this._callback.cancel);
+    this.setRollupBtnHandler(this._callback.rollupBtn);
   }
 
 
@@ -277,9 +271,6 @@ export default class TripEventEditFormView extends SmartView { // AbstractView
           this.updateData(this._dataItem.type = item.type);
           this.updateData(this._dataItem.editFormOffers = item.offers);
           // this.updateData(this._dataItem.offers = item.offers); // код который перерисует, что выбрал ползьвавтель из offer в event
-
-          // this.updateData(this._dataItem.offers[0].offers = item.offers);
-          // this.updateData(this._dataItem.offers = item); // Не получилось одной строчкой заменить
         }
       }
     };
@@ -288,12 +279,14 @@ export default class TripEventEditFormView extends SmartView { // AbstractView
 
 
   // 8
-  reset(dataStart) { // обнуляет данные до стартовых которые пришли в tripBoard
+  // код обнуляет данные до стартовых которые пришли в tripBoard
+  reset(dataStart) {
     this.updateData(
         dataStart
     );
   }
 
+  // обработчик который вызывает сохраннеый колбек на отправку формы
   _submitHandler(evt) {
     evt.preventDefault();
     this._callback.submit(this._dataItem);
@@ -306,5 +299,32 @@ export default class TripEventEditFormView extends SmartView { // AbstractView
 
     const formEditEvent = this.getElement().querySelector(`form`);
     formEditEvent.addEventListener(`submit`, this._submitHandler);
+  }
+
+  // обработчик который вызывает сохранненый колбек при клике на cencel
+  _cancelClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.cancel();
+  }
+
+  // установим публичный обработчик на cansel и стрелку вниз
+  setCancelHandler(callback) {
+    this._callback.cancel = callback;
+
+    const eventResetBtn = this.getElement().querySelector(`.event__reset-btn`);
+    eventResetBtn.addEventListener(`click`, this._cancelClickHandler);
+  }
+
+  _rollupBtnClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.rollupBtn();
+  }
+
+  // установим публичный обработчик на cansel и стрелку вниз
+  setRollupBtnHandler(callback) {
+    this._callback.rollupBtn = callback;
+
+    const eventRollupBtn = this.getElement().querySelector(`.event__rollup-btn`);
+    eventRollupBtn.addEventListener(`click`, this._rollupBtnClickHandler);
   }
 }

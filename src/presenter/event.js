@@ -41,18 +41,24 @@ export default class Event {
     this._tripEventItemComponent = new TripEventItemView(this._tripItem); // виюха для item
     this._tripEventEditComponent = new TripEventEditFormView(this._tripItem); // вьюха для формы редоктирования
 
-
     // код который рендерит форму при клике на стрелку вниз в item
     this._tripEventItemComponent.setClickHandler(() => {
       this._replaceItemToForm();
 
       // при удалении элемента из дом обработчик можно не удалять. удалять на document и нов элемент обработчиком
       this._onFormSubmit(tripItem);
+    });
 
-      if (this._eventContainer.querySelector(`form`)) {
-        const eventRollupBtn = this._tripEventEditComponent.getElement().querySelector(`.event__rollup-btn`);
-        eventRollupBtn.addEventListener(`click`, this._onEventRollupBtnClick);
-      }
+    // код который скрывает форму если кликнуть в форме редоктирования кнопку треугольник
+    this._tripEventEditComponent.setRollupBtnHandler(()=>{
+      this._tripEventEditComponent.reset(this._tripItem); // код для удаления не сохраненных данных в форме
+      this._replaceFormToItem();
+    });
+
+    // код который скрывает форму при клике на кенсел
+    this._tripEventEditComponent.setCancelHandler(() => {
+      this._tripEventEditComponent.reset(this._tripItem); // код для удаления не сохраненных данных в форме
+      this._replaceFormToItem();
     });
 
     // передали эти обработчики в соответствующие вьюхи
@@ -111,16 +117,9 @@ export default class Event {
   // обраотчик сохранения формы
   _onFormSubmit() {
     this._tripEventEditComponent.setSubmitHandler((dataItem) => {
-      this._replaceFormToItem(); // замена формы на точку маршрута
-
       this._changeData(dataItem); // 10 Это обработчик с tripBoard this._handleEventChange в котором находится
       // редоктируемый task
-      // this._onEventRollupBtnClick();
-
-      // if (this._eventContainer.querySelector(`form`)) {
-      //   const eventRollupBtn = this._tripEventEditComponent.getElement().querySelector(`.event__rollup-btn`);
-      //   eventRollupBtn.addEventListener(`click`, this._onEventRollupBtnClick);
-      // }
+      this._replaceFormToItem(); // замена формы на точку маршрута
     });
   }
 
@@ -133,9 +132,9 @@ export default class Event {
     }
   }
 
-  _onEventRollupBtnClick(evt) {
+  _onEventRollupBtnClick() { // evt
     // console.log(`click`);
-    evt.preventDefault();
+    // evt.preventDefault();
     this._tripEventEditComponent.reset(this._tripItem); // код для удаления не сохраненных данных в форме
     this._replaceFormToItem(); // замена формы на точку маршрута
   }
