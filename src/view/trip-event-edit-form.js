@@ -155,17 +155,13 @@ ${isActive ? `checked` : ``}>
 export default class TripEventEditFormView extends SmartView { // AbstractView
   constructor(dataItem) {
     super();
-    this._dataItem = dataItem;
     this._destinations = destinations;
-    // this._data = TripEventEditFormView.parseDataItemToData(dataItem);     // 0 превращаем объект dataItem в объект data т.к. он более полный
-
+    this._dataItem = TripEventEditFormView.parseDataItemToData(dataItem); // 0 превращаем объект dataItem в объект data т.к. он более полный, было this._dataItem = dataItem;
 
     this._submitHandler = this._submitHandler.bind(this);
     this._cancelClickHandler = this._cancelClickHandler.bind(this);
-
-
-    this._changePriceHandler = this._changePriceHandler.bind(this); // бинд по замене price
     // 4
+    this._changePriceHandler = this._changePriceHandler.bind(this); // бинд по замене price
     this._changeDateStartHandler = this._changeDateStartHandler.bind(this);
     this._changeDateEndHandler = this._changeDateEndHandler.bind(this);
     this._changeDestinationHandler = this._changeDestinationHandler.bind(this);
@@ -173,10 +169,27 @@ export default class TripEventEditFormView extends SmartView { // AbstractView
     this._eventChangeTypeHandler = this._eventChangeTypeHandler.bind(this);
     this._rollupBtnClickHandler = this._rollupBtnClickHandler.bind(this);
 
-
-    this._setInnerHandlers();
-
+    this._setInnerHandlers(); // обновляем внутренние обработчики
   }
+  // 0.1
+  // парсим типа, создаем копию данных с дополниетельным данными
+  static parseDataItemToData(dataItem) {
+    return Object.assign(
+        {},
+        dataItem
+        // {isDueDate: task.dueDate !== null,}
+    );
+  }
+
+  // 0.2 берем все данные которые накликал пользователь в форме редоктирвоания event. Далее эти данные отправим на перерисовку event.
+  static parseDataToDataItem(data) {
+    data = Object.assign({}, data);
+    // if (!data.isDueDate) {
+    //   data.dueDate = null;
+    // }
+    return data;
+  }
+
 
   getTemplate() {
     return createTripEventEditForm(this._dataItem);
@@ -196,17 +209,17 @@ export default class TripEventEditFormView extends SmartView { // AbstractView
   // обработчик который заново навешивает внутрение обработчики
   _setInnerHandlers() {
     this._eventInputPrice = this.getElement().querySelector(`.event__input--price`);
-    this._eventInputPrice.addEventListener(`input`, this._changePriceHandler); // input
+    this._eventInputPrice.addEventListener(`input`, this._changePriceHandler);
     // this.getElement() это класс с itema c формой редоктирования в внутри
 
     this._eventInputStartTime = this.getElement().querySelector(`#event-start-time-1`);
-    this._eventInputStartTime.addEventListener(`change`, this._changeDateStartHandler); // input
+    this._eventInputStartTime.addEventListener(`change`, this._changeDateStartHandler);
 
     this._eventInputEndTime = this.getElement().querySelector(`#event-end-time-1`);
-    this._eventInputEndTime.addEventListener(`change`, this._changeDateEndHandler); // input
+    this._eventInputEndTime.addEventListener(`change`, this._changeDateEndHandler);
 
     this._eventInputDestination = this.getElement().querySelector(`.event__input--destination`);
-    this._eventInputDestination.addEventListener(`change`, this._changeDestinationHandler); // input
+    this._eventInputDestination.addEventListener(`change`, this._changeDestinationHandler);
 
     this._eventChangeOffer = this.getElement().querySelector(`.event__available-offers`); // удаление или добавление offer
     this._eventChangeOffer.addEventListener(`change`, this._eventChangeOfferHandler);
@@ -277,12 +290,11 @@ export default class TripEventEditFormView extends SmartView { // AbstractView
     getChangeOffers(evt.target.value);
   }
 
-
   // 8
   // код обнуляет данные до стартовых которые пришли в tripBoard
-  reset(dataStart) {
+  reset(tripItem) {
     this.updateData(
-        dataStart
+        tripItem
     );
   }
 
@@ -291,7 +303,6 @@ export default class TripEventEditFormView extends SmartView { // AbstractView
     evt.preventDefault();
     this._callback.submit(this._dataItem);
   }
-
 
   // установим публичный обработчик на отправку формы
   setSubmitHandler(callback) {

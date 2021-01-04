@@ -132,9 +132,8 @@ export default class Event {
     }
   }
 
-  _onEventRollupBtnClick() { // evt
-    // console.log(`click`);
-    // evt.preventDefault();
+  _onEventRollupBtnClick(evt) {
+    evt.preventDefault();
     this._tripEventEditComponent.reset(this._tripItem); // код для удаления не сохраненных данных в форме
     this._replaceFormToItem(); // замена формы на точку маршрута
   }
