@@ -1,6 +1,8 @@
 import dayjs from "dayjs";
 import SmartView from "./smart.js";
 import {destinations, dataOffers, TYPES} from "../mock/mock-trip-event-item.js";
+import flatpickr from "flatpickr";
+//import "../../node_modules/flatpickr/dist/flatpickr.min.css";
 
 // функция по установке времени в форме
 const createFieldTime = (dateStart, dateFinish) => {
@@ -157,6 +159,7 @@ export default class TripEventEditFormView extends SmartView { // AbstractView
     super();
     this._destinations = destinations;
     this._dataItem = TripEventEditFormView.parseDataItemToData(dataItem); // 0 превращаем объект dataItem в объект data т.к. он более полный, было this._dataItem = dataItem;
+    this._datepicker = null; // 1 здесь будем хранить экземпляр _datepicker
 
     this._submitHandler = this._submitHandler.bind(this);
     this._cancelClickHandler = this._cancelClickHandler.bind(this);
@@ -168,8 +171,10 @@ export default class TripEventEditFormView extends SmartView { // AbstractView
     this._eventChangeOfferHandler = this._eventChangeOfferHandler.bind(this);
     this._eventChangeTypeHandler = this._eventChangeTypeHandler.bind(this);
     this._rollupBtnClickHandler = this._rollupBtnClickHandler.bind(this);
+    // this._dueDateChangeHandler = this._dueDateChangeHandler.bind(this); // 2 заведем обработчик на _datepicker
 
     this._setInnerHandlers(); // обновляем внутренние обработчики
+    // this._setDatepicker(); // 4 устанавливаем _setDatepicker с помощью пакета flatpickr
   }
   // 0.1
   // парсим типа, создаем копию данных с дополниетельным данными
@@ -202,6 +207,7 @@ export default class TripEventEditFormView extends SmartView { // AbstractView
     this.setSubmitHandler(this._callback.submit); // востанавливаем внешние обработчики. вызвали обработчик который был сохранен в объекте.
     this.setCancelHandler(this._callback.cancel);
     this.setRollupBtnHandler(this._callback.rollupBtn);
+    // this._setDatepicker(); // 5 востанавливаем обработчик
   }
 
 
@@ -228,7 +234,7 @@ export default class TripEventEditFormView extends SmartView { // AbstractView
     this._eventTypeGroup.addEventListener(`input`, this._eventChangeTypeHandler);
   }
 
-
+  // 3.1.
   _changePriceHandler(evt) { // оброботчик в котором будем менять данные по цене
     evt.preventDefault();
     this.updateData({ // передаем только одну строчку которую хотим обновить т.к. assign создано выше
@@ -236,7 +242,7 @@ export default class TripEventEditFormView extends SmartView { // AbstractView
     }, true); // при нажатии enter закрывается форма
   }
 
-  // // 3.1.
+
   _changeDateStartHandler(evt) {
     evt.preventDefault();
     this.updateData({
@@ -338,4 +344,39 @@ export default class TripEventEditFormView extends SmartView { // AbstractView
     const eventRollupBtn = this.getElement().querySelector(`.event__rollup-btn`);
     eventRollupBtn.addEventListener(`click`, this._rollupBtnClickHandler);
   }
+
+  // // 3 обработчик устанавливаем setDatepicker
+  // _setDatepicker() {
+  //   if (this._datepicker) { // если был ранее _datepicker
+  //     // В случае обновления компонента удаляем вспомогательные DOM-элементы,
+  //     // которые создает flatpickr при инициализации
+  //     this._datepicker.destroy(); // то удаляем его
+  //     this._datepicker = null; // и зануляем его
+  //   }
+  //
+  //   if (this._dataItem) { // проверка или нужно вообще покаывать поле datepicker, вдруг пользователь скрыл
+  //     // flatpickr есть смысл инициализировать только в случае,
+  //     // если поле выбора даты доступно для заполнения
+  //     this._datepicker = flatpickr(
+  //       this.getElement().querySelector(`#event-start-time-1`), // вставляем поле куда нужно вставить datepicker
+  //       {
+  //         dateFormat: `j F`,
+  //         defaultDate: startTime,
+  //         onChange: this._dueDateChangeHandler // На событие flatpickr передаём наш колбэк. типа addEventListner на datePicker. Пользоваетель в календаре выберет дату и мы ее сюда запишем
+  //       }
+  //     );
+  //   }
+  // }
+
+  // // 4
+  // _dueDateChangeHandler([userDate]) {
+  //   // По заданию дедлайн у задачи устанавливается без учёта времеми,
+  //   // но объект даты без времени завести нельзя,
+  //   // поэтому будем считать срок у всех задач -
+  //   // это 23:59:59 установленной даты
+  //
+  //   this.updateData({
+  //     dateFrom: dayjs(userDate).hour(23).minute(59).second(59).toDate()
+  //   });
+  // }
 }
