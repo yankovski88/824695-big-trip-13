@@ -33,6 +33,7 @@ export default class Event {
   init(tripItem) {
     this._tripItem = tripItem;
 
+
     // предыдущие компоненты будут null
     const prevTripEventItemComponent = this._tripEventItemComponent;
     const prevTripEventEditComponent = this._tripEventEditComponent;
@@ -40,17 +41,24 @@ export default class Event {
     this._tripEventItemComponent = new TripEventItemView(this._tripItem); // виюха для item
     this._tripEventEditComponent = new TripEventEditFormView(this._tripItem); // вьюха для формы редоктирования
 
-
     // код который рендерит форму при клике на стрелку вниз в item
     this._tripEventItemComponent.setClickHandler(() => {
       this._replaceItemToForm();
+
       // при удалении элемента из дом обработчик можно не удалять. удалять на document и нов элемент обработчиком
       this._onFormSubmit(tripItem);
+    });
 
-      if (this._eventContainer.querySelector(`form`)) {
-        const eventRollupBtn = this._tripEventEditComponent.getElement().querySelector(`.event__rollup-btn`);
-        eventRollupBtn.addEventListener(`click`, this._onEventRollupBtnClick);
-      }
+    // код который скрывает форму если кликнуть в форме редоктирования кнопку треугольник
+    this._tripEventEditComponent.setRollupBtnHandler(()=>{
+      this._tripEventEditComponent.reset(this._tripItem); // код для удаления не сохраненных данных в форме
+      this._replaceFormToItem();
+    });
+
+    // код который скрывает форму при клике на кенсел
+    this._tripEventEditComponent.setCancelHandler(() => {
+      this._tripEventEditComponent.reset(this._tripItem); // код для удаления не сохраненных данных в форме
+      this._replaceFormToItem();
     });
 
     // передали эти обработчики в соответствующие вьюхи
@@ -107,11 +115,10 @@ export default class Event {
   }
 
   // обраотчик сохранения формы
-  _onFormSubmit(task) {
-    this._tripEventEditComponent.setSubmitHandler(() => {
-      this._changeData(task); // 10 Это обработчик с tripBoard this._handleEventChange в котором находится
+  _onFormSubmit() {
+    this._tripEventEditComponent.setSubmitHandler((dataItem) => {
+      this._changeData(dataItem); // 10 Это обработчик с tripBoard this._handleEventChange в котором находится
       // редоктируемый task
-
       this._replaceFormToItem(); // замена формы на точку маршрута
     });
   }
@@ -120,29 +127,30 @@ export default class Event {
   _onEscKeyPress(evt) {
     if (evt.key === `Escape` || evt.key === `Esc`) {
       evt.preventDefault();
+      this._tripEventEditComponent.reset(this._tripItem); // код для удаления не сохраненных данных в форме
       this._replaceFormToItem();
     }
   }
 
   _onEventRollupBtnClick(evt) {
     evt.preventDefault();
+    this._tripEventEditComponent.reset(this._tripItem); // код для удаления не сохраненных данных в форме
     this._replaceFormToItem(); // замена формы на точку маршрута
   }
 
-  // этот обработчик вызывает _changeData который пришел из tripBoard _handleEventChange который является колбеком
-  // для изменения данных. Этому колбеку нужно сообщить измененные данные. И здесь эти данные будем менять!!!
+  // этот метод вызывает _changeData который пришел из tripBoard _handleEventChange который является тоже методом
+  // для изменения данных. Этому методу нужно сообщить измененные данные. И здесь эти данные будем менять!!!
   _handleFavoriteClick() {
     this._changeData( // и после замены сооббщаем в changeData
         Object.assign(
             {},
             this._tripItem, // берем текущий объект описывающий задачу
             {
-              favorite: !this._tripItem.favorite // и меняем в нем признак избранности. isFavorite
+              isFavorite: !this._tripItem.isFavorite // и меняем в нем признак избранности. isFavorite
             // и сообщить этот новый объект в _changeData
             }
         )
     );
   }
-
 
 }

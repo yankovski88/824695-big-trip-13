@@ -2,6 +2,8 @@
 import TripInfoCostView from "../view/trip-info-cost";
 import TripInfoView from "../view/trip-info.js";
 import {renderElement, RenderPosition} from "../util/render";
+// import {SortType} from "../const";
+import dayjs from "dayjs";
 
 
 export default class TripInfo {
@@ -20,24 +22,28 @@ export default class TripInfo {
   // функция которая рендерит цену
   _renderTotalCost(tripItems) {
     const tripInfoElement = this._tripInfoContainer.querySelector(`.trip-main__trip-info`);
-
     this._totalPriceItem = 0;
 
-    for (let i = 0; i < tripItems.length; i++) {
-      this._totalPriceItem += tripItems[i].price;
+    for (let itemFirst of tripItems) {
+      this._totalPriceItem += itemFirst.basePrice; // подсчет основных затрат
 
-      for (let item of tripItems[i].additionalOffers) { // обошел весь массив через of
-        this._totalPriceItem += item.price; // дополнительные затраты
+      for (let item of itemFirst.offers) { // обошел весь массив через of itemFirst.offers[0].offers
+
+        if (item.price) {
+          this._totalPriceItem += parseInt(item.price, 10); // дополнительные затраты
+        }
       }
     }
+
     renderElement(tripInfoElement, new TripInfoCostView(this._totalPriceItem), RenderPosition.BEFOREEND);
   }
 
   // функция которая выводит дистанцию дат и точек маршрута
   _renderDestination(tripItems) {
+    tripItems.sort((a, b) => dayjs(a.dateFrom).diff(dayjs(b.dateFrom))); // сортируем массив дат по порядку
     for (let i = 0; i < tripItems.length; i++) {
-      this._destinations.push(tripItems[i].destinationItem);
-      this._startDateInfo.push(tripItems[i].dateStart);
+      this._destinations.push(tripItems[i].destination.name);
+      this._startDateInfo.push(tripItems[i].dateFrom);
     }
 
     renderElement(this._tripInfoContainer, this._tripInfoComponent, RenderPosition.AFTERBEGIN); // рендер промежкутка даты

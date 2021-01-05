@@ -1,5 +1,6 @@
 import dayjs from "dayjs";
-import AbstractView from "./abstract.js";
+import SmartView from "./smart.js";
+import {destinations, dataOffers, TYPES} from "../mock/mock-trip-event-item.js";
 
 // функция по установке времени в форме
 const createFieldTime = (dateStart, dateFinish) => {
@@ -16,15 +17,14 @@ const createFieldTime = (dateStart, dateFinish) => {
     </div>`;
 };
 
-
+// функция по отрисовке всей формы
 const createTripEventEditForm = (dataItem) => { // сюда попадают данные и запоняется шаблон
-  const {description, photos, additionalOffers, dateStart, dateFinish, price, destinationItem, type} = dataItem;
-
+  const {dateFrom, dateTo, destination, basePrice, type, offers, editFormOffers} = dataItem; // additionalOffers, photos,
 
   // генерирует разметку фоток
   const createEventPhotoTemplate = () => {
-    return photos.reduce((total, element) => { // перебрал все элементы photos и присоединил их в total
-      return total + `<img class="event__photo" src="${element}" alt="Event photo">`;
+    return destination.pictures.reduce((total, element) => { // перебрал все элементы photos и присоединил их в total
+      return total + `<img class="event__photo" src="${element.src}" alt="${element.description}">`;
     }, ``);
   };
 
@@ -35,22 +35,49 @@ const createTripEventEditForm = (dataItem) => { // сюда попадают д�
       </button>`;
   };
 
+
   // функция по отрисовке фрагмента всех преимуществ
-  const getOffersTemplate = () => {
-    return additionalOffers.reduce((total, element) => {
-      return total + `
-                      <div class="event__offer-selector">
-                        <input class="event__offer-checkbox  visually-hidden" id="event-offer-luggage-${element.id}" type="checkbox" name="event-offer-luggage" checked>
-                        <label class="event__offer-label" for="event-offer-luggage-${element.id}">
-                          <span class="event__offer-title">${element.offer}</span>
+  const getOffersTemplate = (formOffers) => {
+
+    return formOffers.reduce((total, element) => {
+
+      // // код который сравнивает два массива и если совподающие объекты, то возвращает true
+      const isActive = offers.some((el) => {
+        return el === element;
+      });
+
+      if (element.title !== ``) {
+        return total + `<div class="event__offer-selector">
+                        <input class="event__offer-checkbox  visually-hidden" id="event-offer-luggage-${element.title}" type="checkbox" name="event-offer-luggage"  
+${isActive ? `checked` : ``}>
+                            <label class="event__offer-label" for="event-offer-luggage-${element.title}">
+                          <span class="event__offer-title">${element.title}</span>
                           &plus;&euro;&nbsp;
                           <span class="event__offer-price">${element.price}</span>
                         </label>
                       </div>`;
+      } else {
+        return total + ``;
+      }
     }, ``);
   };
 
-  const createTime = createFieldTime(dateStart, dateFinish);
+  const createTime = createFieldTime(dateFrom, dateTo);
+
+
+  // код рисут список type
+  const getEditType = (types) => {
+    return types.reduce((total, element)=>{
+      const isActiveType = [type].some((el) => {
+        return el === element;
+      });
+      return total + `<div class="event__type-item">
+                          <input ${isActiveType ? `checked` : ``}  id="event-type-${element.toLowerCase()}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${element.toLowerCase()}" >
+                          <label class="event__type-label  event__type-label--${element.toLowerCase()}" for="event-type-${element.toLowerCase()}-1">${element}</label>
+                        </div>`;
+    }, ``);
+  };
+
 
   return `<li class="trip-events__item">
               <form class="event event--edit" action="#" method="post">
@@ -66,55 +93,7 @@ const createTripEventEditForm = (dataItem) => { // сюда попадают д�
                                 <fieldset class="event__type-group">
                         <legend class="visually-hidden">Event type</legend>
 
-                        <div class="event__type-item">
-                          <input id="event-type-taxi-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="taxi">
-                          <label class="event__type-label  event__type-label--taxi" for="event-type-taxi-1">Taxi</label>
-                        </div>
-
-                        <div class="event__type-item">
-                          <input id="event-type-bus-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="bus" checked>
-                          <label class="event__type-label  event__type-label--bus" for="event-type-bus-1">Bus</label>
-                        </div>
-
-                        <div class="event__type-item">
-                          <input id="event-type-train-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="train">
-                          <label class="event__type-label  event__type-label--train" for="event-type-train-1">Train</label>
-                        </div>
-
-                        <div class="event__type-item">
-                          <input id="event-type-ship-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="ship">
-                          <label class="event__type-label  event__type-label--ship" for="event-type-ship-1">Ship</label>
-                        </div>
-
-                        <div class="event__type-item">
-                          <input id="event-type-transport-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="transport">
-                          <label class="event__type-label  event__type-label--transport" for="event-type-transport-1">Transport</label>
-                        </div>
-
-                        <div class="event__type-item">
-                          <input id="event-type-drive-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="drive">
-                          <label class="event__type-label  event__type-label--drive" for="event-type-drive-1">Drive</label>
-                        </div>
-
-                        <div class="event__type-item">
-                          <input id="event-type-flight-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="flight">
-                          <label class="event__type-label  event__type-label--flight" for="event-type-flight-1">Flight</label>
-                        </div>
-
-                        <div class="event__type-item">
-                          <input id="event-type-check-in-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="check-in">
-                          <label class="event__type-label  event__type-label--check-in" for="event-type-check-in-1">Check-in</label>
-                        </div>
-
-                        <div class="event__type-item">
-                          <input id="event-type-sightseeing-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="sightseeing">
-                          <label class="event__type-label  event__type-label--sightseeing" for="event-type-sightseeing-1">Sightseeing</label>
-                        </div>
-
-                        <div class="event__type-item">
-                          <input id="event-type-restaurant-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="restaurant">
-                          <label class="event__type-label  event__type-label--restaurant" for="event-type-restaurant-1">Restaurant</label>
-                        </div>
+       ${getEditType(TYPES)}
                       </fieldset>
                     </div>
                   </div>
@@ -123,7 +102,7 @@ const createTripEventEditForm = (dataItem) => { // сюда попадают д�
                     <label class="event__label  event__type-output" for="event-destination-1">
                       ${type}
                     </label>
-                    <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destinationItem}" list="destination-list-1">
+                    <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destination.name}" list="destination-list-1">
                     <datalist id="destination-list-1">
                       <option value="Amsterdam"></option>
                       <option value="Geneva"></option>
@@ -131,12 +110,12 @@ const createTripEventEditForm = (dataItem) => { // сюда попадают д�
                     </datalist>
                   </div>
 
-   ${createTime }
+   ${createTime}
 
                   <div class="event__field-group  event__field-group--price">
                     <label class="event__label" for="event-price-1">
                       <span class="visually-hidden">Price</span>
-                      &euro; ${price}
+                      &euro; ${basePrice}
                     </label>
                     <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="">
                   </div>
@@ -151,13 +130,13 @@ const createTripEventEditForm = (dataItem) => { // сюда попадают д�
 
                     <div class="event__available-offers">
                     
-                    ${getOffersTemplate()}
+     ${getOffersTemplate(editFormOffers)}
                     </div>
                   </section>
 
                   <section class="event__section  event__section--destination">
                     <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-                    <p class="event__destination-description">${description}</p>
+                    <p class="event__destination-description">${destination.description}</p>
 
                     <div class="event__photos-container">
                       <div class="event__photos-tape">
@@ -173,24 +152,157 @@ const createTripEventEditForm = (dataItem) => { // сюда попадают д�
 };
 
 
-export default class TripEventEditFormView extends AbstractView {
+export default class TripEventEditFormView extends SmartView { // AbstractView
   constructor(dataItem) {
     super();
-    this._dataItem = dataItem;
+    this._destinations = destinations;
+    this._dataItem = TripEventEditFormView.parseDataItemToData(dataItem); // 0 превращаем объект dataItem в объект data т.к. он более полный, было this._dataItem = dataItem;
 
     this._submitHandler = this._submitHandler.bind(this);
+    this._cancelClickHandler = this._cancelClickHandler.bind(this);
+    // 4
+    this._changePriceHandler = this._changePriceHandler.bind(this); // бинд по замене price
+    this._changeDateStartHandler = this._changeDateStartHandler.bind(this);
+    this._changeDateEndHandler = this._changeDateEndHandler.bind(this);
+    this._changeDestinationHandler = this._changeDestinationHandler.bind(this);
+    this._eventChangeOfferHandler = this._eventChangeOfferHandler.bind(this);
+    this._eventChangeTypeHandler = this._eventChangeTypeHandler.bind(this);
+    this._rollupBtnClickHandler = this._rollupBtnClickHandler.bind(this);
+
+    this._setInnerHandlers(); // обновляем внутренние обработчики
   }
+  // 0.1
+  // парсим типа, создаем копию данных с дополниетельным данными
+  static parseDataItemToData(dataItem) {
+    return Object.assign(
+        {},
+        dataItem
+        // {isDueDate: task.dueDate !== null,}
+    );
+  }
+
+  // 0.2 берем все данные которые накликал пользователь в форме редоктирвоания event. Далее эти данные отправим на перерисовку event.
+  static parseDataToDataItem(data) {
+    data = Object.assign({}, data);
+    // if (!data.isDueDate) {
+    //   data.dueDate = null;
+    // }
+    return data;
+  }
+
 
   getTemplate() {
     return createTripEventEditForm(this._dataItem);
   }
 
-  _submitHandler(evt) {
-    evt.preventDefault();
-
-    this._callback.submit();
+  // 5
+  // публичный метод который заново навешивает обработчики
+  restoreHandlers() {
+    this._setInnerHandlers(); // востанавливаем приватные обработчики
+    this.setSubmitHandler(this._callback.submit); // востанавливаем внешние обработчики. вызвали обработчик который был сохранен в объекте.
+    this.setCancelHandler(this._callback.cancel);
+    this.setRollupBtnHandler(this._callback.rollupBtn);
   }
 
+
+  // 3
+  // обработчик который заново навешивает внутрение обработчики
+  _setInnerHandlers() {
+    this._eventInputPrice = this.getElement().querySelector(`.event__input--price`);
+    this._eventInputPrice.addEventListener(`input`, this._changePriceHandler);
+    // this.getElement() это класс с itema c формой редоктирования в внутри
+
+    this._eventInputStartTime = this.getElement().querySelector(`#event-start-time-1`);
+    this._eventInputStartTime.addEventListener(`change`, this._changeDateStartHandler);
+
+    this._eventInputEndTime = this.getElement().querySelector(`#event-end-time-1`);
+    this._eventInputEndTime.addEventListener(`change`, this._changeDateEndHandler);
+
+    this._eventInputDestination = this.getElement().querySelector(`.event__input--destination`);
+    this._eventInputDestination.addEventListener(`change`, this._changeDestinationHandler);
+
+    this._eventChangeOffer = this.getElement().querySelector(`.event__available-offers`); // удаление или добавление offer
+    this._eventChangeOffer.addEventListener(`change`, this._eventChangeOfferHandler);
+
+    this._eventTypeGroup = this.getElement().querySelector(`.event__type-group`);
+    this._eventTypeGroup.addEventListener(`input`, this._eventChangeTypeHandler);
+  }
+
+
+  _changePriceHandler(evt) { // оброботчик в котором будем менять данные по цене
+    evt.preventDefault();
+    this.updateData({ // передаем только одну строчку которую хотим обновить т.к. assign создано выше
+      basePrice: evt.target.value // 12 // this._dataItem.price
+    }, true); // при нажатии enter закрывается форма
+  }
+
+  // // 3.1.
+  _changeDateStartHandler(evt) {
+    evt.preventDefault();
+    this.updateData({
+      dateFrom: evt.target.value
+    }, true);
+  }
+
+  _changeDateEndHandler(evt) {
+    evt.preventDefault();
+    this.updateData({
+      dateTo: evt.target.value
+    }, true);
+  }
+
+  _changeDestinationHandler(evt) {
+    evt.preventDefault();
+
+    // код по замене всех данных объекта destination на тот который выбрал пользователь
+    const getChangeDestination = (target) => { // target цель выбора пользователя
+      for (let item of destinations) { // прохождение по массиву всех объектов. destinations передали импортом
+        if (target === item.name) { // когда найдется выбор пользователя в нашем массиве
+          this.updateData(this._dataItem.destination = item); // то заменить прошлые данные на новый объект
+        }
+      }
+    };
+    getChangeDestination(evt.target.value);
+  }
+
+  _eventChangeOfferHandler(evt) {
+    evt.preventDefault();
+    // this.updateData({
+    //   additionalAllOffers[0].check: !0
+    // })
+  }
+
+
+  _eventChangeTypeHandler(evt) {
+    evt.preventDefault();
+
+    // код по замене всех данных объекта offers на тот который выбрал пользователь
+    const getChangeOffers = (target) => { // target цель выбора пользователя
+      for (let item of dataOffers) { // прохождение по массиву всех объектов. offers массив всех доп предложений
+
+        if (target === item.type.toLowerCase()) { // когда найдется выбор пользователя в нашем массиве
+          this.updateData(this._dataItem.type = item.type);
+          this.updateData(this._dataItem.editFormOffers = item.offers);
+          // this.updateData(this._dataItem.offers = item.offers); // код который перерисует, что выбрал ползьвавтель из offer в event
+        }
+      }
+    };
+    getChangeOffers(evt.target.value);
+  }
+
+  // 8
+  // код обнуляет данные до стартовых которые пришли в tripBoard
+  reset(tripItem) {
+    this.updateData(
+        tripItem
+    );
+  }
+
+  // обработчик который вызывает сохраннеый колбек на отправку формы
+  _submitHandler(evt) {
+    evt.preventDefault();
+    this._callback.submit(this._dataItem);
+  }
 
   // установим публичный обработчик на отправку формы
   setSubmitHandler(callback) {
@@ -198,5 +310,32 @@ export default class TripEventEditFormView extends AbstractView {
 
     const formEditEvent = this.getElement().querySelector(`form`);
     formEditEvent.addEventListener(`submit`, this._submitHandler);
+  }
+
+  // обработчик который вызывает сохранненый колбек при клике на cencel
+  _cancelClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.cancel();
+  }
+
+  // установим публичный обработчик на cansel и стрелку вниз
+  setCancelHandler(callback) {
+    this._callback.cancel = callback;
+
+    const eventResetBtn = this.getElement().querySelector(`.event__reset-btn`);
+    eventResetBtn.addEventListener(`click`, this._cancelClickHandler);
+  }
+
+  _rollupBtnClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.rollupBtn();
+  }
+
+  // установим публичный обработчик на cansel и стрелку вниз
+  setRollupBtnHandler(callback) {
+    this._callback.rollupBtn = callback;
+
+    const eventRollupBtn = this.getElement().querySelector(`.event__rollup-btn`);
+    eventRollupBtn.addEventListener(`click`, this._rollupBtnClickHandler);
   }
 }

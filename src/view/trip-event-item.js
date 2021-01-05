@@ -3,7 +3,7 @@ import {getDateDiff} from "../util/render.js";
 import AbstractView from "./abstract.js";
 
 const createTripEventItem = (dataItems) => {
-  const {id, type, price, dateStart, dateFinish, additionalOffers, destinationItem, favorite} = dataItems;
+  const {id, type, basePrice, dateFrom, dateTo, destination, isFavorite, offers} = dataItems; // favorite
 
   // код который определяет favorite или нет и если да то добовляет active
   const getFavorite = (favoriteItem) => {
@@ -13,23 +13,27 @@ const createTripEventItem = (dataItems) => {
     return ``;
   };
 
-  const getAdditionalOffers = () => {
-    return additionalOffers.reduce((total, element) => {
-      return total + `
-     <li class="event__offer">
-                    <span class="event__offer-title">${element.offer}</span>
-                    &plus;&euro;&nbsp;
-                    <span class="event__offer-price">${element.price}</span>
-                  </li>
-  `;
-    }, ``);
+  // код в котором получаем offers в точку event
+  const getOffers = (dataOffers) => {
+    // console.log(dataOffers);
+    return dataOffers.reduce((total, element) => { // перебрал все элементы photos и присоединил их в total
+      if (element.title !== ``) {
+        return total + `<li class="event__offer">
+                      <span class="event__offer-title">${element.title}</span>
+                      &plus;&euro;&nbsp;
+                      <span class="event__offer-price">${element.price}</span>
+                    </li>`;
+      } else {
+        return total + ``;
+      }
 
+    }, ``);
   };
 
-  const startDate = dayjs(dateStart).format(`HH:mm`); // часы в item
-  const finishDate = dayjs(dateFinish).format(`HH:mm`);
+  const startDate = dayjs(dateFrom).format(`HH:mm`); // часы в item
+  const finishDate = dayjs(dateTo).format(`HH:mm`);
 
-  const dateStartDay = dayjs(dateStart).format(`MMM DD`); // дата в item
+  const dateStartDay = dayjs(dateFrom).format(`MMM DD`); // дата в item
 
   return `<li class="trip-events__item" id="${id}">
               <div class="event">
@@ -38,7 +42,7 @@ const createTripEventItem = (dataItems) => {
                   <img class="event__type-icon" width="42" height="42" src="img/icons/${type.toLowerCase()}.png" alt="Event type icon"
                   value="${type}">
                 </div>
-                <h3 class="event__title">${type} ${destinationItem}</h3>
+                <h3 class="event__title">${type} ${destination.name}</h3>
                 <div class="event__schedule">
                   <p class="event__time">
                     <time class="event__start-time" datetime=${startDate}>${startDate}</time>
@@ -47,17 +51,17 @@ const createTripEventItem = (dataItems) => {
                   </p>
                
 
-                  <p class="event__duration">${getDateDiff(dayjs(dateStart), dayjs(dateFinish))}</p>
+                  <p class="event__duration">${getDateDiff(dayjs(dateFrom), dayjs(dateTo))}</p>
                 </div>
                 <p class="event__price">
-                  &euro;&nbsp;<span class="event__price-value">${price}</span> 
+                  &euro;&nbsp;<span class="event__price-value">${basePrice}</span> 
                 </p>
                 <h4 class="visually-hidden">Offers:</h4>
                 <ul class="event__selected-offers">
-                ${getAdditionalOffers()}
-               
+    ${getOffers(offers)}
+                    
                 </ul>
-                <button class="event__favorite-btn  ${getFavorite(favorite)}" type="button">
+                <button class="event__favorite-btn  ${getFavorite(isFavorite)}" type="button">
                   <span class="visually-hidden">Add to favorite</span>
                   <svg class="event__favorite-icon" width="28" height="28" viewBox="0 0 28 28">
                     <path d="M14 21l-8.22899 4.3262 1.57159-9.1631L.685209 9.67376 9.8855 8.33688 14 0l4.1145 8.33688 9.2003 1.33688-6.6574 6.48934 1.5716 9.1631L14 21z"/>

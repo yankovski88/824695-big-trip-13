@@ -43,7 +43,7 @@ export default class TripBoard {
     }
   }
 
-  // функция если форма открыта, то закрыть, воспитатель
+  // метод если форма открыта, то закрыть, воспитатель
   _handleModeChange() { // 2 наблюдатель
     Object
       .values(this._eventPresenter)
@@ -52,13 +52,14 @@ export default class TripBoard {
       });
   }
 
-  // обработчик который заменяет данные, клик на кнопку Edit
+  // метод который заменяет данные, клик на кнопку Edit
   _handleEventChange(updatedEvent) {
-    this._tripItems = updateItem(this._tripItems, updatedEvent); // изменили моки
-    this._eventPresenter[updatedEvent.id].init(updatedEvent); // после делает инициализацию т.е.ПЕРЕресовали компонентик
+    this._tripItems = updateItem(this._tripItems, updatedEvent); // 1)часть изменили моки
+    this._eventPresenter[updatedEvent.id].init(updatedEvent); // 2)часть Обновляем, вместо init можно было создать свою
+    // отдельную функцию типа update, нушли в конкретный прзентер и именно его перересовали там же и init взяли
     // updatedEvent это задача в которой изменили favorite
     // this._eventPresenter это весь список id: event который был добавлен при рендере Event
-    // updatedEvent[updatedEvent.id] это 1608250670855: Event {…}
+    // this._eventPresenter[updatedEvent.id] это 1608250670855: Event {…}
     // init этот с renderItem
     // .init(updatedEvent) презентер с id в котором были изменения перерисовывается
 
@@ -76,21 +77,25 @@ export default class TripBoard {
   _sortTripItems(sortType) {
     switch (sortType) {
       case SortType.DAY:
-        this._tripItems.sort((a, b) => dayjs(a.dateStart).diff(dayjs(b.dateStart)));
+        this._tripItems.sort((a, b) => dayjs(a.dateFrom).diff(dayjs(b.dateFrom)));
         break;
       case SortType.PRICE:
-        this._tripItems.sort((a, b) => b.price - a.price);
+        this._tripItems.sort((a, b) => b.basePrice - a.basePrice);
         break;
       case SortType.TIME:
-        for (let item of this._tripItems) { // перебрал все данные массива с объектами для отрисовки
-          item[[`timeDuration`]] = item.dateFinish - item.dateStart; // добавил новое поле с разницей времени
+        this._tripItems.sort((a, b) => {
+          const timeDurationFirst = a.dateTo - a.dateFrom; // итерируемся по каждому значению разницы времени
+          const timeDurationSecond = b.dateTo - b.dateFrom; // также и для вторго времени
+
+          return timeDurationSecond - timeDurationFirst; // возвращаем отсортированный массив от Max
         }
-        this._tripItems.sort((a, b) => b.timeDuration - a.timeDuration); // отсортировал по этому полю разницы времени
+        );
         break;
     }
     this._currentSortType = sortType;
   }
 
+  // метод который сортирует, удаляет старые item и рендерит новые отсортированные item
   _handleSortTypeChange(sortType) { // получаем сигнал из вьюхи что был клик и теперь надо обработать его
     this._sortTripItems(sortType); // использовали функции сортировки
     this._clearEventList(); // очищаем список
