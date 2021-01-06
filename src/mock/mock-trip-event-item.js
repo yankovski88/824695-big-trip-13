@@ -58,21 +58,6 @@ const getPhotos = () => {
   return photos;
 };
 
-// код по получению рандомного offer
-// const getRandomOffer = (offers) => {
-//   const randomNumber = getRandomInteger(0, offers.length - 1);
-//   const items = [];
-//   items.push(offers[randomNumber]);
-//   return items;
-// };
-
-// // создал массив чисто для случайной генерации одного офера для точки
-// const getEventRandomOffer = (offers) => {
-//   const randomNumber = getRandomInteger(0, offers.length - 1);
-//   const items = [];
-//   items.push(offers[randomNumber]);
-//   return items;
-// };
 
 // пункт назанчения
 const destinationItems = [`Amsterdam`, `Chamonix`, `Geneva`, `Minsk`];
@@ -235,22 +220,6 @@ export const dataOffers = [
 ];
 
 
-// // код который из массива с объектом возвращает тип
-// const getTypeOffer = (offer) => {
-//   let type;
-//   for (let item of offer) {
-//     type = item.type;
-//   }
-//   return type;
-// };
-
-// // код который из массива с объектом возвращает массив с объектами оффер
-// const getOffers = (offer) => {
-//   const arrs = [];
-//   arrs.push(offer[0].offers[0]);
-//   return arrs;
-// };
-
 // код возращает массив offers = [{}, {},]
 const getActiveOffers = (type, offers) => {
   let typeOffers;
@@ -271,13 +240,6 @@ const getAllOffers = (type, offers) => {
   }
   return typeOffers;
 };
-
-// console.log(getActiveOffers(`Taxi`, dataOffers));
-
-// // код на получение всех доступных офферсов
-// const getAllOffers = (offer) => {
-//   return offer[0].offers;
-// };
 
 
 // рандомный объект для event form
@@ -339,18 +301,17 @@ export const destinations = [{
 ];
 
 export const getTripEventItem = () => {
-  // const randomCheckOffer = getEventRandomOffer(dataOffers);
   const randomType = TYPES[getRandomInteger(1, TYPES.length - 1)];
   return {
-    "type": randomType, // TYPES[getRandomInteger(1, TYPES.length - 1)], // getTypeOffer(randomCheckOffer)
+    "type": randomType,
     "basePrice": prices[getRandomInteger(0, prices.length - 1)],
     "dateFrom": generateDateStart(),
     "dateTo": generateDate(),
     "destination": getDestination(),
     "id": generateId(),
     "isFavorite": getRandomInteger(0, 1),
-    "offers": getActiveOffers(randomType, dataOffers), // getOffers(randomCheckOffer), //, //  // getEventRandomOffer(eventOffers),
-    "editFormOffers": getAllOffers(randomType, dataOffers) // getAllOffers(randomCheckOffer),
+    "offers": getActiveOffers(randomType, dataOffers),
+    "editFormOffers": getAllOffers(randomType, dataOffers)
   };
 };
 

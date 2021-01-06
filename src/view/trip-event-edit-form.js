@@ -387,14 +387,14 @@ export default class TripEventEditFormView extends SmartView { // AbstractView
 
   _dueStartDateChangeHandler(userDate) {
     this.updateData({
-      dateFrom: dayjs(userDate) // .hour(23).minute(59).second(59).toDate()
+      dateFrom: dayjs(userDate).toDate() // .hour(23).minute(59).second(59).toDate()
     }, true);
   }
 
   // 4
   _dueFinishDateChangeHandler([userDate]) {
     this.updateData({
-      dateTo: dayjs(userDate) // .hour(23).minute(59).second(59).toDate()
+      dateTo: dayjs(userDate).toDate() // .hour(23).minute(59).second(59).toDate()
     }, true);
   }
 }
