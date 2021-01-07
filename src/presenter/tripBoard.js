@@ -10,7 +10,8 @@ import TripEventsSortView from "../view/trip-events-sort-view";
 import {SortType} from "../const";
 
 export default class TripBoard {
-  constructor(tripBoardContainer) {
+  constructor(tripBoardContainer, pointsModel) {
+    this._pointsModel = pointsModel; // 6 создали свойство класса, чтобы в дальнейшем переиспользовать
     this._tripBoardContainer = tripBoardContainer;
     this._eventListEmptyMessageComponent = new EventListEmptyMessageView();
     this._tripEventsListComponent = new TripEventsList();
@@ -41,6 +42,10 @@ export default class TripBoard {
       this._renderList();
       this._renderEventItems(this._tripItems);
     }
+  }
+
+  _getPoints(){
+    return this._pointsModel.getPoints(); // 7 реализуем получение данных точки маршрута для модели. Говорим модель дай все дайнные которые у тебя есть.
   }
 
   // метод если форма открыта, то закрыть, воспитатель
