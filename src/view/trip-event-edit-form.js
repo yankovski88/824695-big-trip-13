@@ -23,12 +23,8 @@ const createFieldTime = (dateStart, dateFinish) => {
 const createTripEventEditForm = (dataItem) => { // сюда попадают данные и запоняется шаблон
   const {dateFrom, dateTo, destination, basePrice, type, offers, editFormOffers} = dataItem; // additionalOffers, photos,
 
-  const isSubmitDisabled = ()=>{
-    let isDate = true;
-    if (dateFrom > dateTo) {
-      isDate = false;
-    }
-    return isDate;
+  const isDateValid = ()=>{
+    return dateFrom < dateTo
   };
 
   // генерирует разметку фоток
@@ -130,7 +126,7 @@ ${isActive ? `checked` : ``}>
                     <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${basePrice}">
                   </div>
 
-                  <button class="event__save-btn  btn  btn--blue" type="submit" ${isSubmitDisabled() ? `` : `disabled`}>Save</button>
+                  <button class="event__save-btn  btn  btn--blue" type="submit" ${isDateValid() ? `` : `disabled`}>Save</button>
                   <button class="event__reset-btn" type="reset">Cancel</button>
     ${createEventRollupBtn()}
                 </header>
@@ -388,13 +384,13 @@ export default class TripEventEditFormView extends SmartView { // AbstractView
   _dueStartDateChangeHandler(userDate) {
     this.updateData({
       dateFrom: dayjs(userDate).toDate() // .hour(23).minute(59).second(59).toDate()
-    }, true);
+    });
   }
 
   // 4
   _dueFinishDateChangeHandler([userDate]) {
     this.updateData({
       dateTo: dayjs(userDate).toDate() // .hour(23).minute(59).second(59).toDate()
-    }, true);
+    });
   }
 }
