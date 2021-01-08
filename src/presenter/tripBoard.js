@@ -29,23 +29,45 @@ export default class TripBoard {
     this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
   }
 
-  init(tripItems) {
-    this._tripItems = tripItems.slice(); // храним отсоортированные задачи
-    this._sortTripItems(this._currentSortType); // отсортировал список по умолчанию по дням
+  init() { // tripItems
+    // this._tripItems = tripItems.slice(); // храним отсоортированные задачи
+    // this._sortTripItems(this._currentSortType); // отсортировал список по умолчанию по дням
+    this._getPoints(this._currentSortType);
+    // this._sourcedTripItems = tripItems.slice(); // храним исходные задачи
+console.log(this._pointsModel._points);
+    if (!this._pointsModel._points.length) { //     if (!this._tripItems.length) {
 
-    this._sourcedTripItems = tripItems.slice(); // храним исходные задачи
-
-    if (!this._tripItems.length) {
       this._renderEmptyMessage();
     } else {
       this._renderSort();
       this._renderList();
-      this._renderEventItems(this._tripItems);
+      this._renderEventItems(this._pointsModel._points); //       this._renderEventItems(this._tripItems);
     }
   }
 
-  _getPoints(){
-    return this._pointsModel.getPoints(); // 7 реализуем получение данных точки маршрута для модели. Говорим модель дай все дайнные которые у тебя есть.
+  _getPoints(sortDefault){
+    return this._pointsModel.getPoints(sortDefault); // 7 реализуем получение данных точки маршрута для модели.
+    // Говорим модель дай все дайнные которые у тебя есть.
+
+
+    // _sortTripItems(this._currentSortType) { // sortType
+      switch (this._currentSortType) {
+        case SortType.DAY:
+return  this._pointsModel.getPoints().slice().sort((a, b) => dayjs(a.dateFrom).diff(dayjs(b.dateFrom))); //
+        case SortType.PRICE:
+          return    this._pointsModel.getPoints().slice().sort((a, b) => b.basePrice - a.basePrice);
+          // break;
+        case SortType.TIME:
+          return  this._pointsModel.getPoints().slice().sort((a, b) => {
+              const timeDurationFirst = a.dateTo - a.dateFrom; // итерируемся по каждому значению разницы времени
+              const timeDurationSecond = b.dateTo - b.dateFrom; // также и для вторго времени
+
+              return timeDurationSecond - timeDurationFirst; // возвращаем отсортированный массив от Max
+            }
+          );
+      }
+    return  this._pointsModel.getPoints()
+    // }
   }
 
   // метод если форма открыта, то закрыть, воспитатель
@@ -59,7 +81,8 @@ export default class TripBoard {
 
   // метод который заменяет данные, клик на кнопку Edit
   _handleEventChange(updatedEvent) {
-    this._tripItems = updateItem(this._tripItems, updatedEvent); // 1)часть изменили моки
+    // this._tripItems = updateItem(this._tripItems, updatedEvent); // 1)часть изменили моки
+
     this._eventPresenter[updatedEvent.id].init(updatedEvent); // 2)часть Обновляем, вместо init можно было создать свою
     // отдельную функцию типа update, нушли в конкретный прзентер и именно его перересовали там же и init взяли
     // updatedEvent это задача в которой изменили favorite
@@ -79,32 +102,33 @@ export default class TripBoard {
     // контейнера проприсовали сообщение
   }
 
-  _sortTripItems(sortType) {
-    switch (sortType) {
-      case SortType.DAY:
-        this._tripItems.sort((a, b) => dayjs(a.dateFrom).diff(dayjs(b.dateFrom)));
-        break;
-      case SortType.PRICE:
-        this._tripItems.sort((a, b) => b.basePrice - a.basePrice);
-        break;
-      case SortType.TIME:
-        this._tripItems.sort((a, b) => {
-          const timeDurationFirst = a.dateTo - a.dateFrom; // итерируемся по каждому значению разницы времени
-          const timeDurationSecond = b.dateTo - b.dateFrom; // также и для вторго времени
-
-          return timeDurationSecond - timeDurationFirst; // возвращаем отсортированный массив от Max
-        }
-        );
-        break;
-    }
-    this._currentSortType = sortType;
-  }
+  // _sortTripItems(sortType) {
+  //   switch (sortType) {
+  //     case SortType.DAY:
+  //       this._tripItems.sort((a, b) => dayjs(a.dateFrom).diff(dayjs(b.dateFrom)));
+  //       break;
+  //     case SortType.PRICE:
+  //       this._tripItems.sort((a, b) => b.basePrice - a.basePrice);
+  //       break;
+  //     case SortType.TIME:
+  //       this._tripItems.sort((a, b) => {
+  //         const timeDurationFirst = a.dateTo - a.dateFrom; // итерируемся по каждому значению разницы времени
+  //         const timeDurationSecond = b.dateTo - b.dateFrom; // также и для вторго времени
+  //
+  //         return timeDurationSecond - timeDurationFirst; // возвращаем отсортированный массив от Max
+  //       }
+  //       );
+  //       break;
+  //   }
+  //   this._currentSortType = sortType;
+  // }
 
   // метод который сортирует, удаляет старые item и рендерит новые отсортированные item
   _handleSortTypeChange(sortType) { // получаем сигнал из вьюхи что был клик и теперь надо обработать его
-    this._sortTripItems(sortType); // использовали функции сортировки
+    // this._sortTripItems(sortType); // использовали функции сортировки
+    this._currentSortType = sortType; //
     this._clearEventList(); // очищаем список
-    this._renderEventItems(this._tripItems); // рендерим список заново
+    this._renderEventItems(this._pointsModel._points); // рендерим список заново // this._renderEventItems(this._tripItems)
   }
 
   _renderSort() {
@@ -131,7 +155,7 @@ export default class TripBoard {
     this._eventPresenter[tripItem.id] = eventPresenter; // в объект записываем id с сылкой на этот event презентер
   }
 
-  _renderEventItems(tripItems) {
+  _renderEventItems(tripItems) { //
     tripItems.forEach((item) => {
       this._renderItem(item);
     });

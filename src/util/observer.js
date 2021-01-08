@@ -10,7 +10,8 @@ export default class Observer{
     this._observers = this._observers.filter((existedObserver) => existedObserver !== observer); // удаляем колбек
   }
 
-  _notify(event, payload){ // _notify это метод который сам будет решать когда может уведомлять подписчиков. event это тип события. payload это полезная нагрузка
+  _notify(event, payload){ // _notify это метод который сам будет решать когда может уведомлять подписчиков.
+                           // event это тип события. payload это полезная нагрузка
     this._observers.forEach((observer) => observer(event, payload))
   }
 }

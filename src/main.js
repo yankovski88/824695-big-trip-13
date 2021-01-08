@@ -37,6 +37,6 @@ renderFilter();
 const tripBoardPresenter = new TripBoard(tripEventElement, pointsModel); // создал призентер с контейнером в который вставим все
 const tripInfoPresenter = new TripInfo(tripMainElement); // tripInfoElement
 tripInfoPresenter.init(tripItems); // элемент info
-tripBoardPresenter.init(tripItems); // элементы доски
+tripBoardPresenter.init(); // элементы доски // tripItems
 
 

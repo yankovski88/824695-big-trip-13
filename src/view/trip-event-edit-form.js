@@ -23,9 +23,9 @@ const createFieldTime = (dateStart, dateFinish) => {
 const createTripEventEditForm = (dataItem) => { // сюда попадают данные и запоняется шаблон
   const {dateFrom, dateTo, destination, basePrice, type, offers, editFormOffers} = dataItem; // additionalOffers, photos,
 
-  const isDateValid = ()=>{
-    return dateFrom < dateTo
-  };
+  // const isDateValid = ()=>{
+  //   return dateFrom < dateTo
+  // };
 
   // генерирует разметку фоток
   const createEventPhotoTemplate = () => {
@@ -125,8 +125,10 @@ ${isActive ? `checked` : ``}>
                     </label>
                     <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${basePrice}">
                   </div>
+<!--{isDateValid() ?  : disabled}-->
+                  <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
 
-                  <button class="event__save-btn  btn  btn--blue" type="submit" ${isDateValid() ? `` : `disabled`}>Save</button>
+  
                   <button class="event__reset-btn" type="reset">Cancel</button>
     ${createEventRollupBtn()}
                 </header>
@@ -165,6 +167,8 @@ export default class TripEventEditFormView extends SmartView { // AbstractView
     this._dataItem = TripEventEditFormView.parseDataItemToData(dataItem); // 0 превращаем объект dataItem в объект data т.к. он более полный, было this._dataItem = dataItem;
     this._datepickerFinish = null; // 1 здесь будем хранить экземпляр _datepicker т.е. открытый показанный _datepicker. Это нужно для того чтобы потом можно после закрытия формы удалить.
     this._datepickerStart = null;
+    this._dateFrom = this._dataItem.dateFrom;
+    this._dateTo = this._dataItem.dateTo;
 
     this._submitHandler = this._submitHandler.bind(this);
     this._cancelClickHandler = this._cancelClickHandler.bind(this);
@@ -176,6 +180,7 @@ export default class TripEventEditFormView extends SmartView { // AbstractView
     this._rollupBtnClickHandler = this._rollupBtnClickHandler.bind(this);
     this._dueFinishDateChangeHandler = this._dueFinishDateChangeHandler.bind(this); // 2 заведем обработчик на _datepicker
     this._dueStartDateChangeHandler = this._dueStartDateChangeHandler.bind(this); // 2 заведем обработчик на _datepicker
+    // this._isDateValid = this._isDateValid.bind(this); // 2 заведем обработчик на _datepicker
 
 
     this._setInnerHandlers(); // обновляем внутренние обработчики
@@ -216,7 +221,6 @@ export default class TripEventEditFormView extends SmartView { // AbstractView
     this.setRollupBtnHandler(this._callback.rollupBtn);
     this._setDatepickerFinish(); // 5 востанавливаем обработчик
     this._setDatepickerStart(); // 5 востанавливаем обработчик
-
   }
 
   // 3
@@ -330,7 +334,19 @@ export default class TripEventEditFormView extends SmartView { // AbstractView
 
     const eventRollupBtn = this.getElement().querySelector(`.event__rollup-btn`);
     eventRollupBtn.addEventListener(`click`, this._rollupBtnClickHandler);
+
+
   }
+// _isDateValid (userDate){
+//     if(dayjs(userDate).toDate() > this._dateTo){
+//
+//       console.log(this._dateTo);
+//       console.log(dayjs(userDate).toDate());
+//
+//       return this._dateFrom < this._dateTo
+//     }
+//     // return this._dateFrom < this._dateTo
+//   };
 
   // 3 обработчик устанавливаем setDatepicker
   _setDatepickerFinish() {
@@ -350,11 +366,13 @@ export default class TripEventEditFormView extends SmartView { // AbstractView
             enableTime: true, // добавлена настройка времени
             dateFormat: `d/m/y H:i`, // формат даты и времени
             defaultDate: this._dataItem.dateTo, // startTime,
-            onChange: this._dueFinishDateChangeHandler // На событие flatpickr передаём наш колбэк. типа addEventListner на datePicker. Пользоваетель в календаре выберет дату и мы ее сюда запишем
+            onChange: this._dueFinishDateChangeHandler, // На событие flatpickr передаём наш колбэк. типа addEventListner на datePicker. Пользоваетель в календаре выберет дату и мы ее сюда запишем
+            // onClose: this._isDateValid,
           }
       );
     }
   }
+
 
   _setDatepickerStart() {
     // код на удаление _datepicker если он был открыт ранее
@@ -376,21 +394,23 @@ export default class TripEventEditFormView extends SmartView { // AbstractView
             dateFormat: `d/m/y H:i`, // формат даты и времени
             defaultDate: this._dataItem.dateFrom, // конечная дата со временем
             onChange: this._dueStartDateChangeHandler, // На событие flatpickr передаём наш колбэк. типа addEventListner на datePicker. Пользоваетель в календаре выберет дату и мы ее сюда запишем
+            // onClose: this._isDateValid,
           }
       );
     }
   }
 
+
   _dueStartDateChangeHandler(userDate) {
     this.updateData({
       dateFrom: dayjs(userDate).toDate() // .hour(23).minute(59).second(59).toDate()
-    });
+    }, true);
   }
 
   // 4
   _dueFinishDateChangeHandler([userDate]) {
     this.updateData({
       dateTo: dayjs(userDate).toDate() // .hour(23).minute(59).second(59).toDate()
-    });
+    }, true);
   }
 }
