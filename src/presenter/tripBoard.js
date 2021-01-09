@@ -7,7 +7,7 @@ import {renderElement, RenderPosition} from "../util/render";
 import Event from "./event.js";
 import TripEventsSortView from "../view/trip-events-sort-view";
 
-import {SortType} from "../const";
+import {SortType, UpdateType, UserAction} from "../const.js"; // 31
 
 export default class TripBoard {
   constructor(tripBoardContainer, pointsModel) {
@@ -74,23 +74,53 @@ return  this._pointsModel.getPoints().slice().sort((a, b) => dayjs(a.dateFrom).d
     // }
   }
 
-  // 19
+
+
+  // 20 это что пользователь может делать с нашей задачей
+  _handleViewAction(actionType, updateType, update) {
+    console.log(actionType, updateType, update);
+    // Здесь будем вызывать обновление модели.
+    // actionType - действие пользователя, нужно чтобы понять, какой метод модели вызвать. Нужен только для сообщения
+    // updateType - тип изменений, нужно чтобы понять, что после нужно обновить
+    // update - обновленные данные. Это уйдет в модель
+
+    switch (actionType) { // 32
+      case UserAction.UPDATE_POINT: // на действие пользователя по обновлению точки
+        this._pointsModel.updatePoint(updateType, update); // бедет дрегаться метода модели updatePoint
+        break;
+      case UserAction.ADD_POINT:
+        this._pointsModel.addPoint(updateType, update);
+        break;
+      case UserAction.DELETE_POINT:
+        this._pointsModel.deletePoint(updateType, update);
+        break;
+    }
+  }
+
+
+  // 19 это колбек в котором модель вызывает его по обсерверу
   _handleModelEvent(updateType, data){
     console.log(updateType, data);
     // В зависимости от типа изменений решаем, что делать:
     // - обновить часть списка (например, когда поменялось описание)
     // - обновить список (например, когда задача ушла в архив)
     // - обновить всю доску (например, при переключении фильтра)
+
+    switch (updateType) { // 33
+      case UpdateType.PATCH:
+        // - обновить часть списка (например, когда поменялось описание)
+        this._eventPresenter[data.id].init(data); // реинициализируем маленькую частичку типо галочки
+        break;
+      case UpdateType.MINOR:
+        // - обновить список (например, когда задача ушла в архив)
+        break;
+      case UpdateType.MAJOR:
+        // - обновить всю доску (например, при переключении фильтра)
+        break;
+    }
   }
 
-  // 20 это что пользователь может делать с нашей задачей
-  _handleViewAction(actionType, updateType, update) {
-    console.log(actionType, updateType, update);
-    // Здесь будем вызывать обновление модели.
-    // actionType - действие пользователя, нужно чтобы понять, какой метод модели вызвать
-    // updateType - тип изменений, нужно чтобы понять, что после нужно обновить
-    // update - обновленные данные. Это уйдет в модель
-  }
+
   // метод если форма открыта, то закрыть, воспитатель
   _handleModeChange() { // 2 наблюдатель
     Object
