@@ -2,6 +2,8 @@
 import {remove, renderElement, RenderPosition} from "../util/render";
 import TripEventEditFormView from "../view/trip-event-edit-form";
 import TripEventItemView from "../view/trip-event-item";
+import {UserAction, UpdateType} from "../const.js"; // 24
+
 
 // 4 наблюдатель
 const Mode = {
@@ -24,7 +26,7 @@ export default class Event {
     this._destinations = [];
     this._startDateInfo = [];
 
-    this._onFormSubmit = this._onFormSubmit.bind(this);
+    this._handleFormSubmit = this._handleFormSubmit.bind(this);
     this._onEscKeyPress = this._onEscKeyPress.bind(this);
     this._onEventRollupBtnClick = this._onEventRollupBtnClick.bind(this);
     this._handleFavoriteClick = this._handleFavoriteClick.bind(this);
@@ -46,7 +48,7 @@ export default class Event {
       this._replaceItemToForm();
 
       // при удалении элемента из дом обработчик можно не удалять. удалять на document и нов элемент обработчиком
-      this._onFormSubmit(tripItem);
+      this._handleFormSubmit(tripItem);
     });
 
     // код который скрывает форму если кликнуть в форме редоктирования кнопку треугольник
@@ -108,16 +110,19 @@ export default class Event {
   _replaceFormToItem() {
     this._tripEventEditComponent.getElement().replaceWith(this._tripEventItemComponent.getElement());
     document.removeEventListener(`keydown`, this._onEscKeyPress);
-    document.removeEventListener(`submit`, this._onFormSubmit);
+    document.removeEventListener(`submit`, this._handleFormSubmit);
     document.removeEventListener(`click`, this._onEventRollupBtnClick);
 
     this._mode = Mode.DEFAULT; // 13 наблюдатель. Текущий режим по умолчанию
   }
 
   // обраотчик сохранения формы
-  _onFormSubmit() {
+  _handleFormSubmit() {
     this._tripEventEditComponent.setSubmitHandler((dataItem) => {
-      this._changeData(dataItem); // 10 Это обработчик с tripBoard this._handleEventChange в котором находится
+      this._changeData(
+        UserAction.UPDATE_POINT, // 25
+        UpdateType.MINOR, // 26 идет обновление точки так что минор
+        dataItem); // 10 Это обработчик с tripBoard this._handleEventChange в котором находится
       // редоктируемый task
       this._replaceFormToItem(); // замена формы на точку маршрута
     });
@@ -142,6 +147,8 @@ export default class Event {
   // для изменения данных. Этому методу нужно сообщить измененные данные. И здесь эти данные будем менять!!!
   _handleFavoriteClick() {
     this._changeData( // и после замены сооббщаем в changeData
+      UserAction.UPDATE_POINT, // 22
+      UpdateType.MINOR, // 23 точка никуда не девается, а только помечается меняется или нет, так что это минор.
         Object.assign(
             {},
             this._tripItem, // берем текущий объект описывающий задачу

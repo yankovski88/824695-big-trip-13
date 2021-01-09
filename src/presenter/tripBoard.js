@@ -2,7 +2,7 @@ import dayjs from "dayjs";
 import EventListEmptyMessageView from "../view/trip-event-msg.js";
 import TripEventsList from "../view/trip-events-list.js";
 import {renderElement, RenderPosition} from "../util/render";
-import {updateItem} from "../util/common.js"; // функция на обновление данных
+// import {updateItem} from "../util/common.js"; // функция на обновление данных
 
 import Event from "./event.js";
 import TripEventsSortView from "../view/trip-events-sort-view";
@@ -23,25 +23,29 @@ export default class TripBoard {
 
     this._currentSortType = SortType.DAY; // сортировка по умолчанию
 
-    this._handleEventChange = this._handleEventChange.bind(this); // функция по обновлению данных, после клика favorite
+    // this._handleEventChange = this._handleEventChange.bind(this); // функция по обновлению данных, после клика favorite
+
     this._handleModeChange = this._handleModeChange.bind(this); // 1 наблюдатель
 
     this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
+    this._handleModelEvent = this._handleModelEvent.bind(this); // 18
+    this._pointsModel.addObserver(this._handleModelEvent); // 17 это обработка уведомлений от модели. В модель задач с помощью обсерверов передали колбек который будет вызывать модель.
+    this._handleViewAction = this._handleViewAction.bind(this); // 21
+
   }
 
-  init() { // tripItems
+  init() { // 10 tripItems
     // this._tripItems = tripItems.slice(); // храним отсоортированные задачи
     // this._sortTripItems(this._currentSortType); // отсортировал список по умолчанию по дням
     this._getPoints(this._currentSortType);
     // this._sourcedTripItems = tripItems.slice(); // храним исходные задачи
-console.log(this._pointsModel._points);
-    if (!this._pointsModel._points.length) { //     if (!this._tripItems.length) {
+    if (!this._pointsModel._points.length) { // 8     if (!this._tripItems.length) {
 
       this._renderEmptyMessage();
     } else {
       this._renderSort();
       this._renderList();
-      this._renderEventItems(this._pointsModel._points); //       this._renderEventItems(this._tripItems);
+      this._renderEventItems(this._pointsModel._points); // 9       this._renderEventItems(this._tripItems);
     }
   }
 
@@ -51,7 +55,7 @@ console.log(this._pointsModel._points);
 
 
     // _sortTripItems(this._currentSortType) { // sortType
-      switch (this._currentSortType) {
+      switch (this._currentSortType) { // 11
         case SortType.DAY:
 return  this._pointsModel.getPoints().slice().sort((a, b) => dayjs(a.dateFrom).diff(dayjs(b.dateFrom))); //
         case SortType.PRICE:
@@ -70,6 +74,23 @@ return  this._pointsModel.getPoints().slice().sort((a, b) => dayjs(a.dateFrom).d
     // }
   }
 
+  // 19
+  _handleModelEvent(updateType, data){
+    console.log(updateType, data);
+    // В зависимости от типа изменений решаем, что делать:
+    // - обновить часть списка (например, когда поменялось описание)
+    // - обновить список (например, когда задача ушла в архив)
+    // - обновить всю доску (например, при переключении фильтра)
+  }
+
+  // 20 это что пользователь может делать с нашей задачей
+  _handleViewAction(actionType, updateType, update) {
+    console.log(actionType, updateType, update);
+    // Здесь будем вызывать обновление модели.
+    // actionType - действие пользователя, нужно чтобы понять, какой метод модели вызвать
+    // updateType - тип изменений, нужно чтобы понять, что после нужно обновить
+    // update - обновленные данные. Это уйдет в модель
+  }
   // метод если форма открыта, то закрыть, воспитатель
   _handleModeChange() { // 2 наблюдатель
     Object
@@ -79,19 +100,19 @@ return  this._pointsModel.getPoints().slice().sort((a, b) => dayjs(a.dateFrom).d
       });
   }
 
-  // метод который заменяет данные, клик на кнопку Edit
-  _handleEventChange(updatedEvent) {
-    // this._tripItems = updateItem(this._tripItems, updatedEvent); // 1)часть изменили моки
-
-    this._eventPresenter[updatedEvent.id].init(updatedEvent); // 2)часть Обновляем, вместо init можно было создать свою
-    // отдельную функцию типа update, нушли в конкретный прзентер и именно его перересовали там же и init взяли
-    // updatedEvent это задача в которой изменили favorite
-    // this._eventPresenter это весь список id: event который был добавлен при рендере Event
-    // this._eventPresenter[updatedEvent.id] это 1608250670855: Event {…}
-    // init этот с renderItem
-    // .init(updatedEvent) презентер с id в котором были изменения перерисовывается
-
-  }
+  // // метод который заменяет данные, клик на кнопку Edit
+  // _handleEventChange(updatedEvent) { // 12
+  //   // this._tripItems = updateItem(this._tripItems, updatedEvent); // 1)часть изменили моки
+  //
+  //   this._eventPresenter[updatedEvent.id].init(updatedEvent); // 2)часть Обновляем, вместо init можно было создать свою
+  //   // отдельную функцию типа update, нушли в конкретный прзентер и именно его перересовали там же и init взяли
+  //   // updatedEvent это задача в которой изменили favorite
+  //   // this._eventPresenter это весь список id: event который был добавлен при рендере Event
+  //   // this._eventPresenter[updatedEvent.id] это 1608250670855: Event {…}
+  //   // init этот с renderItem
+  //   // .init(updatedEvent) презентер с id в котором были изменения перерисовывается
+  //
+  // }
 
   // функция которая выводить пустое сообщение если нет Item
   _renderEmptyMessage() {
@@ -124,7 +145,7 @@ return  this._pointsModel.getPoints().slice().sort((a, b) => dayjs(a.dateFrom).d
   // }
 
   // метод который сортирует, удаляет старые item и рендерит новые отсортированные item
-  _handleSortTypeChange(sortType) { // получаем сигнал из вьюхи что был клик и теперь надо обработать его
+  _handleSortTypeChange(sortType) { // 13 получаем сигнал из вьюхи что был клик и теперь надо обработать его
     // this._sortTripItems(sortType); // использовали функции сортировки
     this._currentSortType = sortType; //
     this._clearEventList(); // очищаем список
@@ -149,13 +170,13 @@ return  this._pointsModel.getPoints().slice().sort((a, b) => dayjs(a.dateFrom).d
   }
 
   _renderItem(tripItem) {
-    const eventPresenter = new Event(this._tripEventsListComponent.getElement(), this._handleEventChange, this._handleModeChange);
+    const eventPresenter = new Event(this._tripEventsListComponent.getElement(), this._handleViewAction, this._handleModeChange); // 27 this._handleEventChange,
     // 3 наблюдатель
     eventPresenter.init(tripItem);
     this._eventPresenter[tripItem.id] = eventPresenter; // в объект записываем id с сылкой на этот event презентер
   }
 
-  _renderEventItems(tripItems) { //
+  _renderEventItems(tripItems) { // 14
     tripItems.forEach((item) => {
       this._renderItem(item);
     });
