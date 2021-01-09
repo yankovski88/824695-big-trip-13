@@ -63,6 +63,10 @@ const createElement = (template) => {
 
 
 const remove = (component) => {
+  if (component === null) { // 43
+    return;
+  }
+
   if (!(component instanceof AbstractView)) {
     throw new Error(`Can remove only components`);
   }

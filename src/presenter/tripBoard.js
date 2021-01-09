@@ -1,7 +1,7 @@
 import dayjs from "dayjs";
 import EventListEmptyMessageView from "../view/trip-event-msg.js";
 import TripEventsList from "../view/trip-events-list.js";
-import {renderElement, RenderPosition} from "../util/render";
+import {renderElement, RenderPosition, remove} from "../util/render"; // 41
 // import {updateItem} from "../util/common.js"; // функция на обновление данных
 
 import Event from "./event.js";
@@ -15,7 +15,9 @@ export default class TripBoard {
     this._tripBoardContainer = tripBoardContainer;
     this._eventListEmptyMessageComponent = new EventListEmptyMessageView();
     this._tripEventsListComponent = new TripEventsList();
-    this._tripEventsSortComponent = new TripEventsSortView();
+    // this._tripEventsSortComponent = new TripEventsSortView();
+    this._tripEventsSortComponent = null; // 34
+
 
 
     this._eventPresenter = {}; // это объект в котором будут хранится инстансы всех предложений презенторов
@@ -35,29 +37,58 @@ export default class TripBoard {
   }
 
   init() { // 10 tripItems
-    // this._tripItems = tripItems.slice(); // храним отсоортированные задачи
-    // this._sortTripItems(this._currentSortType); // отсортировал список по умолчанию по дням
-    this._getPoints(this._currentSortType);
-    // this._sourcedTripItems = tripItems.slice(); // храним исходные задачи
-    if (!this._pointsModel._points.length) { // 8     if (!this._tripItems.length) {
+    this._renderBoard();
 
-      this._renderEmptyMessage();
-    } else {
-      this._renderSort();
-      this._renderList();
-      this._renderEventItems(this._pointsModel._points); // 9       this._renderEventItems(this._tripItems);
-    }
+    // // this._tripItems = tripItems.slice(); // храним отсоортированные задачи
+    // // this._sortTripItems(this._currentSortType); // отсортировал список по умолчанию по дням
+    // this._getPoints(this._currentSortType);
+    // // this._sourcedTripItems = tripItems.slice(); // храним исходные задачи
+    // if (!this._pointsModel._points.length) { // 8     if (!this._tripItems.length) {
+    //
+    //   this._renderEmptyMessage();
+    // } else {
+    //   this._renderSort();
+    //   this._renderList();
+    //   this._renderEventItems(this._pointsModel._points); // 9       this._renderEventItems(this._tripItems);
+    // }
   }
 
-  _getPoints(sortDefault){
-    return this._pointsModel.getPoints(sortDefault); // 7 реализуем получение данных точки маршрута для модели.
+  // 40
+  _renderBoard() {
+    const points = this._getPoints();
+    const pointCount = points.length;
+
+    if (pointCount === 0) {
+      this._renderEmptyMessage();
+      return;
+    }
+
+    this._renderSort();
+    this._renderList(); // ??
+
+    // Теперь, когда _renderBoard рендерит доску не только на старте,
+    // но и по ходу работы приложения, нужно заменить
+    // константу TASK_COUNT_PER_STEP на свойство _renderedTaskCount,
+    // чтобы в случае перерисовки сохранить N-показанных карточек
+    this._renderEventItems( points
+      // tasks.slice(0, Math.min(taskCount, this._renderedTaskCount))
+    );
+    // if (taskCount > this._renderedTaskCount) {
+    //   this._renderLoadMoreButton();
+    // }
+  }
+
+
+
+  _getPoints(){ // sortDefault
+    // return this._pointsModel.getPoints(sortDefault); // 7 реализуем получение данных точки маршрута для модели.
     // Говорим модель дай все дайнные которые у тебя есть.
 
 
     // _sortTripItems(this._currentSortType) { // sortType
       switch (this._currentSortType) { // 11
         case SortType.DAY:
-return  this._pointsModel.getPoints().slice().sort((a, b) => dayjs(a.dateFrom).diff(dayjs(b.dateFrom))); //
+          return  this._pointsModel.getPoints().slice().sort((a, b) => dayjs(a.dateFrom).diff(dayjs(b.dateFrom))); //
         case SortType.PRICE:
           return    this._pointsModel.getPoints().slice().sort((a, b) => b.basePrice - a.basePrice);
           // break;
@@ -78,7 +109,7 @@ return  this._pointsModel.getPoints().slice().sort((a, b) => dayjs(a.dateFrom).d
 
   // 20 это что пользователь может делать с нашей задачей
   _handleViewAction(actionType, updateType, update) {
-    console.log(actionType, updateType, update);
+    // console.log(actionType, updateType, update);
     // Здесь будем вызывать обновление модели.
     // actionType - действие пользователя, нужно чтобы понять, какой метод модели вызвать. Нужен только для сообщения
     // updateType - тип изменений, нужно чтобы понять, что после нужно обновить
@@ -100,7 +131,7 @@ return  this._pointsModel.getPoints().slice().sort((a, b) => dayjs(a.dateFrom).d
 
   // 19 это колбек в котором модель вызывает его по обсерверу
   _handleModelEvent(updateType, data){
-    console.log(updateType, data);
+    // console.log(updateType, data);
     // В зависимости от типа изменений решаем, что делать:
     // - обновить часть списка (например, когда поменялось описание)
     // - обновить список (например, когда задача ушла в архив)
@@ -113,10 +144,43 @@ return  this._pointsModel.getPoints().slice().sort((a, b) => dayjs(a.dateFrom).d
         break;
       case UpdateType.MINOR:
         // - обновить список (например, когда задача ушла в архив)
+        this._clearBoard(); // 35
+        this._renderBoard(); // 36
         break;
       case UpdateType.MAJOR:
         // - обновить всю доску (например, при переключении фильтра)
+        this._clearBoard({resetSortType: true}); // 37
+        this._renderBoard(); // 38
         break;
+    }
+  }
+
+  // 39
+  _clearBoard({resetRenderedPointCount = false, resetSortType = false} = {}) {
+    const pointCount = this._getPoints().length;
+
+    Object // удаляем все типа карточки
+      .values(this._eventPresenter)
+      .forEach((presenter) => presenter.destroy());
+    this._eventPresenter = {};
+
+    // очищаем доску полностью
+    remove(this._tripEventsSortComponent); // сортировка
+    remove( this._eventListEmptyMessageComponent); // заглушка если нет точек
+    // remove(this._loadMoreButtonComponent);
+
+    // if (resetRenderedPointCount) {
+    //   this._renderedPointCount = POINT_COUNT_PER_STEP;
+    // } else {
+    //   // На случай, если перерисовка доски вызвана
+    //   // уменьшением количества задач (например, удаление или перенос в архив)
+    //   // нужно скорректировать число показанных задач
+    //   this._renderedTaskCount = Math.min(pointCount, this._renderedTaskCount);
+    // }
+
+    // если надо сбросить сортировку то мы просто перезаписываем сортировку по дефолту
+    if (resetSortType) {
+      this._currentSortType = SortType.DEFAULT;
     }
   }
 
@@ -129,6 +193,9 @@ return  this._pointsModel.getPoints().slice().sort((a, b) => dayjs(a.dateFrom).d
         presenter.resetView(); // сбрось вью до начальной предложения (карточки)
       });
   }
+
+
+
 
   // // метод который заменяет данные, клик на кнопку Edit
   // _handleEventChange(updatedEvent) { // 12
@@ -177,14 +244,30 @@ return  this._pointsModel.getPoints().slice().sort((a, b) => dayjs(a.dateFrom).d
   // метод который сортирует, удаляет старые item и рендерит новые отсортированные item
   _handleSortTypeChange(sortType) { // 13 получаем сигнал из вьюхи что был клик и теперь надо обработать его
     // this._sortTripItems(sortType); // использовали функции сортировки
+    if(this._currentSortType === sortType){ // 46?
+      return
+    }
+
     this._currentSortType = sortType; //
-    this._clearEventList(); // очищаем список
-    this._renderEventItems(this._pointsModel._points); // рендерим список заново // this._renderEventItems(this._tripItems)
+    // this._clearEventList(); // очищаем список
+    // this._renderEventItems(this._pointsModel._points); // рендерим список заново // this._renderEventItems(this._tripItems)
+
+    this._clearBoard(); // хочу чтобы доска очистилась и сбросилось число отображенных задач {resetRenderedPointCount: true}
+    this._renderBoard();
   }
 
-  _renderSort() {
-    renderElement(this._tripBoardContainer, this._tripEventsSortComponent, RenderPosition.BEFOREEND);
+  _renderSort() { // + 42
+
+    if (this._tripEventsSortComponent !== null) {
+      this._tripEventsSortComponent = null;
+    }
+    this._tripEventsSortComponent = new TripEventsSortView(this._currentSortType);
+
+    // this._sortComponent = new SortView(this._currentSortType);
+
     this._tripEventsSortComponent.setSortTypeChangeHandler(this._handleSortTypeChange);
+    renderElement(this._tripBoardContainer, this._tripEventsSortComponent, RenderPosition.BEFOREEND);
+
   }
 
   // метод по удалениею всех всех предложений
@@ -212,4 +295,33 @@ return  this._pointsModel.getPoints().slice().sort((a, b) => dayjs(a.dateFrom).d
     });
 
   }
+
+  // // 40
+  // _renderBoard() {
+  //   const points = this._getPoints();
+  //   const pointCount = points.length;
+  //
+  //   if (pointCount === 0) {
+  //     this._renderEmptyMessage();
+  //     return;
+  //   }
+  //
+  //   this._renderSort();
+  //
+  //   // Теперь, когда _renderBoard рендерит доску не только на старте,
+  //   // но и по ходу работы приложения, нужно заменить
+  //   // константу TASK_COUNT_PER_STEP на свойство _renderedTaskCount,
+  //   // чтобы в случае перерисовки сохранить N-показанных карточек
+  //   this._renderEventItems( points
+  //     // tasks.slice(0, Math.min(taskCount, this._renderedTaskCount))
+  //   );
+  //   // if (taskCount > this._renderedTaskCount) {
+  //   //   this._renderLoadMoreButton();
+  //   // }
+  // }
+
+
+
+
 }
+
