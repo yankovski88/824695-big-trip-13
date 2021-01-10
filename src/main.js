@@ -6,7 +6,14 @@ import TripBoard from "./presenter/tripBoard";
 import TripInfo from "./presenter/tripInfo";
 import PointsModel from "./model/points.js"; // 3 импорт модель
 import FilterModel from "./model/filter.js"; // 48
-console.log(FilterModel);
+
+const filters = [ // 48
+  {
+    type: `everything`,
+    name: `EVERYTHING`,
+    count: 0
+  }
+];
 
 const DATA_COUNT = 15;
 
@@ -19,7 +26,7 @@ const tripItems = new Array(DATA_COUNT).fill().map(getTripEventItem);
 const pointsModel = new PointsModel(); // 4 создали экземпляр модели
 pointsModel.setPoints(tripItems); // передаем моковые данные
 
-// const filterModel = new FilterModel(); // 49
+const filterModel = new FilterModel(); // 49
 
 const tripMainElement = document.querySelector(`.trip-main`);
 const tripControlsElement = tripMainElement.querySelector(`.trip-main__trip-controls`);
@@ -29,7 +36,7 @@ const renderMenu = () => {
 };
 
 const renderFilter = () => {
-  renderElement(tripControlsElement, new TripFilterView(), RenderPosition.BEFOREEND); // рендер фильтр хедер
+  renderElement(tripControlsElement, new TripFilterView(filters, `everything`), RenderPosition.BEFOREEND); // 50 рендер фильтр хедер
 };
 
 const tripEventElement = document.querySelector(`.trip-events`);
