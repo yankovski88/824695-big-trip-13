@@ -270,13 +270,13 @@ export default class TripBoard {
 
   }
 
-  // метод по удалениею всех всех предложений
-  _clearEventList() {
-    Object
-      .values(this._eventPresenter)
-      .forEach((presenter) => presenter.destroy()); // удаляем все значения
-    this._eventPresenter = {}; // перезаписываем объект чтобы убить все ссылки на event презентеры
-  }
+  // // метод по удалениею всех всех предложений
+  // _clearEventList() {
+  //   Object
+  //     .values(this._eventPresenter)
+  //     .forEach((presenter) => presenter.destroy()); // удаляем все значения
+  //   this._eventPresenter = {}; // перезаписываем объект чтобы убить все ссылки на event презентеры
+  // }
 
   _renderList() {
     renderElement(this._tripBoardContainer, this._tripEventsListComponent, RenderPosition.BEFOREEND);
