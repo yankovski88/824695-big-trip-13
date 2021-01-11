@@ -300,6 +300,11 @@ export const destinations = [{
 
 ];
 
+
+
+
+
+
 export const getTripEventItem = () => {
   const randomType = TYPES[getRandomInteger(1, TYPES.length - 1)];
   return {
@@ -315,4 +320,25 @@ export const getTripEventItem = () => {
   };
 };
 
-
+const a = getTripEventItem();
+const b = getTripEventItem();
+const c = getTripEventItem();
+const e = getTripEventItem();
+const g = getTripEventItem();
+const date = new Date();
+const points = [getTripEventItem(), getTripEventItem(), getTripEventItem(),getTripEventItem(),getTripEventItem()];
+// console.log(points)
+// export const FilterType = { // 46
+//   EVERYTHING: `everything`,
+//   FUTURE: `future`,
+//   PAST: `past`,
+// };
+// const filter = { // 57
+//   // [FilterType.EVERYTHING]: (points) => points.filter((point) => point.dateFrom !== 0),
+//   [FilterType.FUTURE]: (points) => points.filter((point) => point.dateFrom >= date), // isTaskExpired(task.dueDate)),
+//   // [FilterType.PAST]: (points) => points.filter((point) => point.dateFrom < date), // isTaskExpiringToday(task.dueDate)),
+//   // [FilterType.ARCHIVE]: (tasks) => tasks.filter((task) => task.isArchive)
+// };
+// // const big = points.filter((point) => point.dateFrom > date);
+// // console.log(big);
+// console.log(filter[FilterType.FUTURE](points));

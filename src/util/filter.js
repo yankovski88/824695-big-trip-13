@@ -1,9 +1,9 @@
 import {FilterType} from "../const";
-// import {isTaskExpired, isTaskExpiringToday, isTaskRepeating} from "./task";
-// console.log([FilterType.EVERYTHING]);
+
+const date = new Date();
 
 export const filter = { // 57
-  // [FilterType.EVERYTHING]: (tasks) => tasks.filter((task) => !task.isArchive),
-  // [FilterType.FUTURE]: (tasks) => tasks.filter((task) => isTaskExpired(task.dueDate)),
-  // [FilterType.PAST]: (tasks) => tasks.filter((task) => isTaskExpiringToday(task.dueDate)),
+  [FilterType.EVERYTHING]: (points) => points.filter((point) => point.dateFrom),
+  [FilterType.FUTURE]: (points) => points.filter((point) => point.dateFrom >= date),
+  [FilterType.PAST]: (points) => points.filter((point) => point.dateFrom < date),
 };

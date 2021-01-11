@@ -3,6 +3,7 @@ import EventListEmptyMessageView from "../view/trip-event-msg.js";
 import TripEventsList from "../view/trip-events-list.js";
 import {renderElement, RenderPosition, remove} from "../util/render"; // 41
 // import {updateItem} from "../util/common.js"; // функция на обновление данных
+import {filter} from "../util/filter.js"; // 62
 
 import Event from "./event.js";
 import TripEventsSortView from "../view/trip-events-sort-view";
@@ -10,7 +11,8 @@ import TripEventsSortView from "../view/trip-events-sort-view";
 import {SortType, UpdateType, UserAction} from "../const.js"; // 31
 
 export default class TripBoard {
-  constructor(tripBoardContainer, pointsModel) {
+  constructor(tripBoardContainer, pointsModel, filterModel) { // 63
+    this._filterModel = filterModel; // 64
     this._pointsModel = pointsModel; // 6 создали свойство класса, чтобы в дальнейшем переиспользовать
     this._tripBoardContainer = tripBoardContainer;
     this._eventListEmptyMessageComponent = new EventListEmptyMessageView();
@@ -33,6 +35,7 @@ export default class TripBoard {
     this._handleModelEvent = this._handleModelEvent.bind(this); // 18
     this._pointsModel.addObserver(this._handleModelEvent); // 17 это обработка уведомлений от модели. В модель задач с помощью обсерверов передали колбек который будет вызывать модель.
     this._handleViewAction = this._handleViewAction.bind(this); // 21
+    this._filterModel.addObserver(this._handleModelEvent); // 65
 
   }
 
@@ -79,27 +82,45 @@ export default class TripBoard {
   }
 
 
-
+ // _getPoints() это метод который используют все рендеры методы для получения данных для отрисовки
   _getPoints(){ // sortDefault
     // return this._pointsModel.getPoints(sortDefault); // 7 реализуем получение данных точки маршрута для модели.
     // Говорим модель дай все дайнные которые у тебя есть.
 
 
+    const filterType = this._filterModel.getFilter(); // 66 взяли из одной модели тип фильтра
+    const points = this._pointsModel.getPoints(); // 67 // взяли задачи из другой модели
+    // console.log(points);
+    const filtredPoints = filter[filterType](points); // 68 в утил находим функцию по фильтрации
+    // filter в объекте фильтр по типу фильтра [filterType] получаем функцию фильтрации и передаем ей все точки из модели точек (points)
+// далее ниже в свиче идет их сортировка отфильтрованных фильтром
+    console.log(filter[filterType](points));
+
     // _sortTripItems(this._currentSortType) { // sortType
       switch (this._currentSortType) { // 11
         case SortType.DAY:
-          return  this._pointsModel.getPoints().slice().sort((a, b) => dayjs(a.dateFrom).diff(dayjs(b.dateFrom))); //
+          // return  this._pointsModel.getPoints().slice().sort((a, b) => dayjs(a.dateFrom).diff(dayjs(b.dateFrom))); //
+          return filtredPoints.sort((a, b) => dayjs(a.dateFrom).diff(dayjs(b.dateFrom))); // 69
         case SortType.PRICE:
-          return    this._pointsModel.getPoints().slice().sort((a, b) => b.basePrice - a.basePrice);
-          // break;
-        case SortType.TIME:
-          return  this._pointsModel.getPoints().slice().sort((a, b) => {
-              const timeDurationFirst = a.dateTo - a.dateFrom; // итерируемся по каждому значению разницы времени
-              const timeDurationSecond = b.dateTo - b.dateFrom; // также и для вторго времени
+          // return    this._pointsModel.getPoints().slice().sort((a, b) => b.basePrice - a.basePrice);
+          return filtredPoints.sort((a, b) => b.basePrice - a.basePrice); // 70
 
-              return timeDurationSecond - timeDurationFirst; // возвращаем отсортированный массив от Max
-            }
-          );
+        // break;
+        case SortType.TIME:
+          // return  this._pointsModel.getPoints().slice().sort((a, b) => {
+          //     const timeDurationFirst = a.dateTo - a.dateFrom; // итерируемся по каждому значению разницы времени
+          //     const timeDurationSecond = b.dateTo - b.dateFrom; // также и для вторго времени
+          //
+          //     return timeDurationSecond - timeDurationFirst; // возвращаем отсортированный массив от Max
+          //   }
+          // );
+          return filtredPoints.sort((a, b) => { // 71
+            const timeDurationFirst = a.dateTo - a.dateFrom; // итерируемся по каждому значению разницы времени
+            const timeDurationSecond = b.dateTo - b.dateFrom; // также и для вторго времени
+
+            return timeDurationSecond - timeDurationFirst; // возвращаем отсортированный массив от Max
+          }); // 70
+
       }
     return  this._pointsModel.getPoints()
     // }

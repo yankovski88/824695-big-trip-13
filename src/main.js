@@ -43,12 +43,10 @@ const renderMenu = () => {
 
 const tripEventElement = document.querySelector(`.trip-events`);
 
-// const tripControlsElement = document.querySelector(`.trip-controls`); // 60.1
-
 renderMenu();
 // renderFilter();
 // 5 передаем экземпляр модели в конструктор
-const tripBoardPresenter = new TripBoard(tripEventElement, pointsModel); // создал призентер с контейнером в который вставим все
+const tripBoardPresenter = new TripBoard(tripEventElement, pointsModel, filterModel); // 61 создал призентер с контейнером в который вставим все
 const tripInfoPresenter = new TripInfo(tripMainElement); // tripInfoElement
 tripInfoPresenter.init(tripItems); // элемент info
 tripBoardPresenter.init(); // элементы доски // tripItems
