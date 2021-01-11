@@ -6,14 +6,16 @@ import TripBoard from "./presenter/tripBoard";
 import TripInfo from "./presenter/tripInfo";
 import PointsModel from "./model/points.js"; // 3 импорт модель
 import FilterModel from "./model/filter.js"; // 48
+import FilterPresenter from "./presenter/filter.js"; // 58
 
-const filters = [ // 48
-  {
-    type: `everything`,
-    name: `EVERYTHING`,
-    count: 0
-  }
-];
+
+// const filters = [ // 48
+//   {
+//     type: `everything`,
+//     name: `EVERYTHING`,
+//     count: 0
+//   }
+// ];
 
 const DATA_COUNT = 15;
 
@@ -35,19 +37,22 @@ const renderMenu = () => {
   renderElement(visuallyHiddenFirstH2Element, new TripMenuView(), RenderPosition.AFTEREND); // рендер меню
 };
 
-const renderFilter = () => {
-  renderElement(tripControlsElement, new TripFilterView(filters, `everything`), RenderPosition.BEFOREEND); // 50 рендер фильтр хедер
-};
+// const renderFilter = () => {
+//   renderElement(tripControlsElement, new TripFilterView(filters, `everything`), RenderPosition.BEFOREEND); // 50 рендер фильтр хедер
+// };
 
 const tripEventElement = document.querySelector(`.trip-events`);
 
+// const tripControlsElement = document.querySelector(`.trip-controls`); // 60.1
 
 renderMenu();
-renderFilter();
+// renderFilter();
 // 5 передаем экземпляр модели в конструктор
 const tripBoardPresenter = new TripBoard(tripEventElement, pointsModel); // создал призентер с контейнером в который вставим все
 const tripInfoPresenter = new TripInfo(tripMainElement); // tripInfoElement
 tripInfoPresenter.init(tripItems); // элемент info
 tripBoardPresenter.init(); // элементы доски // tripItems
 
+const filterPresenter = new FilterPresenter(tripControlsElement, filterModel); // 60 pointsModel
 
+filterPresenter.init();

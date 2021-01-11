@@ -279,6 +279,7 @@ export default class TripBoard {
   // }
 
   _renderList() {
+    console.log(this._tripEventsListComponent);
     renderElement(this._tripBoardContainer, this._tripEventsListComponent, RenderPosition.BEFOREEND);
   }
 

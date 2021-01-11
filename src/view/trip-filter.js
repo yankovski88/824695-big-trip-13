@@ -1,9 +1,8 @@
 import AbstractView from "./abstract.js";
 
 const createTripFilter = (filter, currentFilterType) => {
+  console.log(filter);
   const {type, name, count} = filter[0]; // 51
-  console.log(type);
-  console.log(currentFilterType);
 
   return `<form class="trip-filters" action="#" method="get">
 <div class="trip-filters__filter">
@@ -41,7 +40,6 @@ export default class TripFilterView extends AbstractView {
     super();
     this._filters = filters;
     this._currentFilter = currentFilterType;
-console.log(this._filters);
     this._filterTypeChangeHandler = this._filterTypeChangeHandler.bind(this);
   }
 
