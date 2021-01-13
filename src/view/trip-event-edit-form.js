@@ -181,6 +181,7 @@ export default class TripEventEditFormView extends SmartView { // AbstractView
     this._dueFinishDateChangeHandler = this._dueFinishDateChangeHandler.bind(this); // 2 заведем обработчик на _datepicker
     this._dueStartDateChangeHandler = this._dueStartDateChangeHandler.bind(this); // 2 заведем обработчик на _datepicker
     // this._isDateValid = this._isDateValid.bind(this); // 2 заведем обработчик на _datepicker
+    this._formDeleteClickHandler = this._formDeleteClickHandler.bind(this); // 1del
 
 
     this._setInnerHandlers(); // обновляем внутренние обработчики
@@ -221,6 +222,7 @@ export default class TripEventEditFormView extends SmartView { // AbstractView
     this.setRollupBtnHandler(this._callback.rollupBtn);
     this._setDatepickerFinish(); // 5 востанавливаем обработчик
     this._setDatepickerStart(); // 5 востанавливаем обработчик
+    this.setDeleteClickHandler(this._callback.deleteClick); // 5del
   }
 
   // 3
@@ -334,8 +336,6 @@ export default class TripEventEditFormView extends SmartView { // AbstractView
 
     const eventRollupBtn = this.getElement().querySelector(`.event__rollup-btn`);
     eventRollupBtn.addEventListener(`click`, this._rollupBtnClickHandler);
-
-
   }
 // _isDateValid (userDate){
 //     if(dayjs(userDate).toDate() > this._dateTo){
@@ -412,5 +412,32 @@ export default class TripEventEditFormView extends SmartView { // AbstractView
     this.updateData({
       dateTo: dayjs(userDate).toDate() // .hour(23).minute(59).second(59).toDate()
     }, true);
+  }
+
+  // Перегружаем метод родителя removeElement,
+  // чтобы при удалении удалялся более ненужный календарь
+  removeElement() { // 4del
+    super.removeElement();
+
+    if (this._datepicker) {
+      this._datepicker.destroy();
+      this._datepicker = null;
+    }
+  }
+
+  // _formDeleteClickHandler(evt){ // 3del вызывается колбек
+  //   evt.preventDefault();
+  //   this._callback.delete()
+  // }
+  _formDeleteClickHandler(evt) { // 3del вызывается колбек
+    evt.preventDefault();
+    this._callback.deleteClick(this._dataItem); // НЕ знаю что выбрать этот или нижний вариант
+  }
+
+  setDeleteClickHandler(callback){ // 2del установил обработчик на удаление
+    this._callback.deleteClick = callback; // добавление колбека в объект, для последующего его вызова по ссылке
+
+    const eventResetBtnDel = this.getElement().querySelector(`.event__reset-btn`);
+    eventResetBtnDel.addEventListener(`click`, this._formDeleteClickHandler);
   }
 }

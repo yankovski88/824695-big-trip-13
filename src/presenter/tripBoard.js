@@ -34,12 +34,10 @@ export default class TripBoard {
     this._handleModelEvent = this._handleModelEvent.bind(this); // 18 это обработка уведомлений от модели.
     this._pointsModel.addObserver(this._handleModelEvent); // 17  В модель точек с помощью обсерверов передали колбек который будет вызывать модель.
     this._filterModel.addObserver(this._handleModelEvent); // 65
-
   }
 
   init() { // 10 tripItems
     this._renderBoard();
-
     // // this._tripItems = tripItems.slice(); // храним отсоортированные задачи
     // // this._sortTripItems(this._currentSortType); // отсортировал список по умолчанию по дням
     // this._getPoints(this._currentSortType);

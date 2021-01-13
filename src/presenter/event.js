@@ -30,6 +30,8 @@ export default class Event {
     this._onEscKeyPress = this._onEscKeyPress.bind(this);
     this._onEventRollupBtnClick = this._onEventRollupBtnClick.bind(this);
     this._handleFavoriteClick = this._handleFavoriteClick.bind(this);
+    this._handleDeleteClick = this._handleDeleteClick.bind(this); // 7del
+
   }
   init(tripItem) {
     this._tripItem = tripItem;
@@ -38,6 +40,7 @@ export default class Event {
     const prevTripEventEditComponent = this._tripEventEditComponent;
     this._tripEventItemComponent = new TripEventItemView(this._tripItem); // виюха для item
     this._tripEventEditComponent = new TripEventEditFormView(this._tripItem); // вьюха для формы редоктирования
+    this._tripEventEditComponent.setDeleteClickHandler(this._handleDeleteClick); // 6del установили обработчик на удаление
 
     // код который рендерит форму при клике на стрелку вниз в item
     this._tripEventItemComponent.setClickHandler(() => {
@@ -153,4 +156,12 @@ export default class Event {
     );
   }
 
+
+  _handleDeleteClick(point) { // 8del
+    this._changeData(
+      UserAction.DELETE_POINT,
+      UpdateType.MINOR,
+      point
+    );
+  }
 }
