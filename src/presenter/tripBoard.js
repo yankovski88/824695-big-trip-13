@@ -211,10 +211,10 @@ export default class TripBoard {
 
   // функция которая выводить пустое сообщение если нет Item
   _renderEmptyMessage() {
-    const main = document.querySelector(`main`);
+    const main = document.querySelector(`.page-body__page-main`);
     const pageBodyContainer = main.querySelector(`.page-body__container`);
-    main.removeChild(pageBodyContainer);
-    renderElement(main, this._eventListEmptyMessageComponent, RenderPosition.BEFOREEND); // вместо удаленнного
+    // main.removeChild(pageBodyContainer); // не понимаю почему ранее добавил
+    renderElement(pageBodyContainer, this._eventListEmptyMessageComponent, RenderPosition.BEFOREEND); // вместо удаленнного
     // контейнера проприсовали сообщение
   }
 

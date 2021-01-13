@@ -416,11 +416,11 @@ export default class TripEventEditFormView extends SmartView { // AbstractView
 
   // Перегружаем метод родителя removeElement,
   // чтобы при удалении удалялся более ненужный календарь
-  removeElement() { // 4del
-    super.removeElement();
+  removeElement() { // 4del назвали метод удаления также как и родителя
+    super.removeElement(); // вызывали родительский метод удаления
 
-    if (this._datepicker) {
-      this._datepicker.destroy();
+    if (this._datepicker) { // и если есть datepicker
+      this._datepicker.destroy(); // то удаляем его
       this._datepicker = null;
     }
   }
@@ -429,12 +429,12 @@ export default class TripEventEditFormView extends SmartView { // AbstractView
   //   evt.preventDefault();
   //   this._callback.delete()
   // }
-  _formDeleteClickHandler(evt) { // 3del вызывается колбек
+  _formDeleteClickHandler(evt) { // 3del вызывается колбек. ЭТО МЕТОД.
     evt.preventDefault();
     this._callback.deleteClick(this._dataItem); // НЕ знаю что выбрать этот или нижний вариант
   }
 
-  setDeleteClickHandler(callback){ // 2del установил обработчик на удаление
+  setDeleteClickHandler(callback){ // 2del установил обработчик на удаление. Это МЕТОД
     this._callback.deleteClick = callback; // добавление колбека в объект, для последующего его вызова по ссылке
 
     const eventResetBtnDel = this.getElement().querySelector(`.event__reset-btn`);

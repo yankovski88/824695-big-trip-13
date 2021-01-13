@@ -158,10 +158,10 @@ export default class Event {
 
 
   _handleDeleteClick(point) { // 8del
-    this._changeData(
-      UserAction.DELETE_POINT,
-      UpdateType.MINOR,
-      point
+    this._changeData( // этот тот метод который вызовет изменения в модели
+      UserAction.DELETE_POINT, // передаем что хотим удалить
+      UpdateType.MINOR, // что изменения минор
+      point // ну и сам изменяемый элемент
     );
   }
 }

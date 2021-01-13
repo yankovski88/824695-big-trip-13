@@ -17,7 +17,7 @@ import FilterPresenter from "./presenter/filter.js"; // 58
 //   }
 // ];
 
-const DATA_COUNT = 7;
+const DATA_COUNT = 6;
 
 const tripItems = new Array(DATA_COUNT).fill().map(getTripEventItem);
 // Array создаем массив
