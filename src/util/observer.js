@@ -12,6 +12,7 @@ export default class Observer{
 
   _notify(event, payload){ // _notify это метод который сам будет решать когда может уведомлять подписчиков.
                            // event это тип события. payload это полезная нагрузка
+    // здесь происходит запуск всех колбеков переданных с tripBoard
     this._observers.forEach((observer) => observer(event, payload))
   }
 }

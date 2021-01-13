@@ -2,7 +2,6 @@ import dayjs from "dayjs";
 import EventListEmptyMessageView from "../view/trip-event-msg.js";
 import TripEventsList from "../view/trip-events-list.js";
 import {renderElement, RenderPosition, remove} from "../util/render"; // 41
-// import {updateItem} from "../util/common.js"; // функция на обновление данных
 import {filter} from "../util/filter.js"; // 62
 
 import Event from "./event.js";
@@ -21,20 +20,19 @@ export default class TripBoard {
     this._tripEventsSortComponent = null; // 34
 
 
-
     this._eventPresenter = {}; // это объект в котором будут хранится инстансы всех предложений презенторов
-    // инстансы это экземляр твоего класса
+    // инстансы это экземляр твоего класса.
+    // Пример 1610420383719: Event {_eventContainer: ul.trip-events__list, _tripEventItemComponent: TripEventItemView, _tripEventEditComponent: TripEventEditFormView
 
     this._currentSortType = SortType.DAY; // сортировка по умолчанию
-
-    // this._handleEventChange = this._handleEventChange.bind(this); // функция по обновлению данных, после клика favorite
 
     this._handleModeChange = this._handleModeChange.bind(this); // 1 наблюдатель
 
     this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
-    this._handleModelEvent = this._handleModelEvent.bind(this); // 18
-    this._pointsModel.addObserver(this._handleModelEvent); // 17 это обработка уведомлений от модели. В модель задач с помощью обсерверов передали колбек который будет вызывать модель.
-    this._handleViewAction = this._handleViewAction.bind(this); // 21
+
+    this._handleViewAction = this._handleViewAction.bind(this); // 21 оброботчик вызывает обновление модели
+    this._handleModelEvent = this._handleModelEvent.bind(this); // 18 это обработка уведомлений от модели.
+    this._pointsModel.addObserver(this._handleModelEvent); // 17  В модель точек с помощью обсерверов передали колбек который будет вызывать модель.
     this._filterModel.addObserver(this._handleModelEvent); // 65
 
   }
@@ -58,87 +56,70 @@ export default class TripBoard {
 
   // 40
   _renderBoard() {
-    const points = this._getPoints();
-    const pointCount = points.length;
+    const points = this._getPoints(); // берем все данные из модели по точкам маршрута
+    const pointCount = points.length; // считаем их колличество
 
-    if (pointCount === 0) {
-      this._renderEmptyMessage();
+    if (pointCount === 0) { // если оно равно 0
+      this._renderEmptyMessage(); // то вывести этот метод, а он выводит пустое сообщение
       return;
     }
 
-    this._renderSort();
-    this._renderList(); // ??
+    this._renderSort(); // или вызываем сортировку, и делаем ее по умолчанию
+    this._renderList(); // рендерм список в который добавим точки маршрута
+    this._renderEventItems(points); // вызываем рендер всех точек маршрута
 
-    // Теперь, когда _renderBoard рендерит доску не только на старте,
-    // но и по ходу работы приложения, нужно заменить
-    // константу TASK_COUNT_PER_STEP на свойство _renderedTaskCount,
-    // чтобы в случае перерисовки сохранить N-показанных карточек
-    this._renderEventItems( points
-      // tasks.slice(0, Math.min(taskCount, this._renderedTaskCount))
-    );
-    // if (taskCount > this._renderedTaskCount) {
-    //   this._renderLoadMoreButton();
-    // }
+    // this._renderEventItems(points.slice(0, Math.min(pointCount, this._renderedPointCount)));
+    // вызываем рендер всех точек маршрута кроме удаленных
   }
 
 
- // _getPoints() это метод который используют все рендеры методы для получения данных для отрисовки
-  _getPoints(){ // sortDefault
-    // return this._pointsModel.getPoints(sortDefault); // 7 реализуем получение данных точки маршрута для модели.
-    // Говорим модель дай все дайнные которые у тебя есть.
-
-
+  _getPoints() { // это и есть метод для хождения в модели. // Говорим модель дай все дайнные которые у тебя есть. sortDefault
+    // _getPoints() это метод который используют все рендеры методы для получения данных для отрисовки
+    // _getPoints() также этот метод всегда возвращает актуальную сортировку
     const filterType = this._filterModel.getFilter(); // 66 взяли из одной модели тип фильтра
     const points = this._pointsModel.getPoints(); // 67 // взяли задачи из другой модели
-    // console.log(points);
-    const filtredPoints = filter[filterType](points); // 68 в утил находим функцию по фильтрации
+    const filtredPoints = filter[filterType](points); // 68 filtredPoints это уже отфильтрованный массив типа будующее, прошлое, все
     // filter в объекте фильтр по типу фильтра [filterType] получаем функцию фильтрации и передаем ей все точки из модели точек (points)
-// далее ниже в свиче идет их сортировка отфильтрованных фильтром
-    console.log(filter[filterType](points));
+    // далее ниже в свиче идет их сортировка отфильтрованных фильтром
 
-    // _sortTripItems(this._currentSortType) { // sortType
-      switch (this._currentSortType) { // 11
-        case SortType.DAY:
-          // return  this._pointsModel.getPoints().slice().sort((a, b) => dayjs(a.dateFrom).diff(dayjs(b.dateFrom))); //
-          return filtredPoints.sort((a, b) => dayjs(a.dateFrom).diff(dayjs(b.dateFrom))); // 69
-        case SortType.PRICE:
-          // return    this._pointsModel.getPoints().slice().sort((a, b) => b.basePrice - a.basePrice);
-          return filtredPoints.sort((a, b) => b.basePrice - a.basePrice); // 70
-
-        // break;
-        case SortType.TIME:
-          // return  this._pointsModel.getPoints().slice().sort((a, b) => {
-          //     const timeDurationFirst = a.dateTo - a.dateFrom; // итерируемся по каждому значению разницы времени
-          //     const timeDurationSecond = b.dateTo - b.dateFrom; // также и для вторго времени
-          //
-          //     return timeDurationSecond - timeDurationFirst; // возвращаем отсортированный массив от Max
-          //   }
-          // );
-          return filtredPoints.sort((a, b) => { // 71
-            const timeDurationFirst = a.dateTo - a.dateFrom; // итерируемся по каждому значению разницы времени
-            const timeDurationSecond = b.dateTo - b.dateFrom; // также и для вторго времени
-
-            return timeDurationSecond - timeDurationFirst; // возвращаем отсортированный массив от Max
-          }); // 70
-
-      }
-    return  this._pointsModel.getPoints()
-    // }
+    // теперь любое получение данных из модели будет учитывать любую выбраную пользователем сортировку
+    switch (this._currentSortType) { // 11
+      case SortType.DAY:
+        // return  this._pointsModel.getPoints().slice().sort((a, b) => dayjs(a.dateFrom).diff(dayjs(b.dateFrom))); //
+        return filtredPoints.slice().sort((a, b) => dayjs(a.dateFrom).diff(dayjs(b.dateFrom))); // 69
+      case SortType.PRICE:
+        // return    this._pointsModel.getPoints().slice().sort((a, b) => b.basePrice - a.basePrice);
+        return filtredPoints.slice().sort((a, b) => b.basePrice - a.basePrice); // 70
+      // break;
+      case SortType.TIME:
+        // return  this._pointsModel.getPoints().slice().sort((a, b) => {
+        //     const timeDurationFirst = a.dateTo - a.dateFrom; // итерируемся по каждому значению разницы времени
+        //     const timeDurationSecond = b.dateTo - b.dateFrom; // также и для вторго времени
+        //
+        //     return timeDurationSecond - timeDurationFirst; // возвращаем отсортированный массив от Max
+        //   }
+        // );
+        return filtredPoints.slice().sort((a, b) => { // 71
+          const timeDurationFirst = a.dateTo - a.dateFrom; // итерируемся по каждому значению разницы времени
+          const timeDurationSecond = b.dateTo - b.dateFrom; // также и для вторго времени
+          return timeDurationSecond - timeDurationFirst; // возвращаем отсортированный массив от Max
+        }); // 70
+    }
+    return this._pointsModel.getPoints() // возвращает массив в исходном состоянии если не сработал switch
   }
 
 
 
-  // 20 это что пользователь может делать с нашей задачей
-  _handleViewAction(actionType, updateType, update) {
-    // console.log(actionType, updateType, update);
+  _handleViewAction(actionType, updateType, update) { // 20 на основании того что хочет пользователь обновить модель
+    // Здесь обрабатываем, что моедель изменилась и сходя из event(changeData)
     // Здесь будем вызывать обновление модели.
     // actionType - действие пользователя, нужно чтобы понять, какой метод модели вызвать. Нужен только для сообщения
-    // updateType - тип изменений, нужно чтобы понять, что после нужно обновить
+    // updateType - тип изменений, нужно чтобы понять, что после нужно обновить. На это опираемся в _handleModelEvent
     // update - обновленные данные. Это уйдет в модель
 
     switch (actionType) { // 32
       case UserAction.UPDATE_POINT: // на действие пользователя по обновлению точки
-        this._pointsModel.updatePoint(updateType, update); // бедет дрегаться метода модели updatePoint
+        this._pointsModel.updatePoint(updateType, update); // бедет дергаться метод модели updatePoint
         break;
       case UserAction.ADD_POINT:
         this._pointsModel.addPoint(updateType, update);
@@ -150,14 +131,9 @@ export default class TripBoard {
   }
 
 
-  // 19 это колбек в котором модель вызывает его по обсерверу
-  _handleModelEvent(updateType, data){
-    // console.log(updateType, data);
-    // В зависимости от типа изменений решаем, что делать:
-    // - обновить часть списка (например, когда поменялось описание)
-    // - обновить список (например, когда задача ушла в архив)
-    // - обновить всю доску (например, при переключении фильтра)
-
+  // 19 это колбек в котором модель вызывает его по обсерверу. Передаем его как налюдателя
+  // этот метод передается как колбек observera. Он должен обработать что модель изменилась. И понять, что перерисовать берем updateType
+  _handleModelEvent(updateType, data) { // В зависимости от типа изменений решаем, что делать
     switch (updateType) { // 33
       case UpdateType.PATCH:
         // - обновить часть списка (например, когда поменялось описание)
@@ -170,25 +146,24 @@ export default class TripBoard {
         break;
       case UpdateType.MAJOR:
         // - обновить всю доску (например, при переключении фильтра)
-        this._clearBoard({resetSortType: true}); // 37
+        this._clearBoard({resetSortType: true}); // 37 {resetSortType: true} это сброс выбраной сортировки
         this._renderBoard(); // 38
         break;
     }
   }
 
   // 39
-  _clearBoard({resetRenderedPointCount = false, resetSortType = false} = {}) {
-    const pointCount = this._getPoints().length;
+  _clearBoard({resetSortType = false} = {}) { // resetRenderedPointCount = false,
+    // const pointCount = this._getPoints().length;
 
     Object // удаляем все типа карточки
       .values(this._eventPresenter)
-      .forEach((presenter) => presenter.destroy());
-    this._eventPresenter = {};
+      .forEach((presenter) => presenter.destroy()); // удаляем все значения
+    this._eventPresenter = {}; // перезаписываем объект чтобы убить все ссылки на event презентеры
 
     // очищаем доску полностью
     remove(this._tripEventsSortComponent); // сортировка
-    remove( this._eventListEmptyMessageComponent); // заглушка если нет точек
-    // remove(this._loadMoreButtonComponent);
+    remove(this._eventListEmptyMessageComponent); // заглушка если нет точек
 
     // if (resetRenderedPointCount) {
     //   this._renderedPointCount = POINT_COUNT_PER_STEP;
@@ -199,9 +174,15 @@ export default class TripBoard {
     //   this._renderedTaskCount = Math.min(pointCount, this._renderedTaskCount);
     // }
 
+
+    // На случай, если перерисовка доски вызвана
+    // уменьшением количества задач (например, удаление или перенос в архив)
+    // нужно скорректировать число показанных задач
+    // this._renderedPointCount = Math.min(pointCount, this._renderedPointCount); // ПОКА не знаю для чего это
+
     // если надо сбросить сортировку то мы просто перезаписываем сортировку по дефолту
     if (resetSortType) {
-      this._currentSortType = SortType.DEFAULT;
+      this._currentSortType = SortType.DAY;
     }
   }
 
@@ -214,8 +195,6 @@ export default class TripBoard {
         presenter.resetView(); // сбрось вью до начальной предложения (карточки)
       });
   }
-
-
 
 
   // // метод который заменяет данные, клик на кнопку Edit
@@ -265,10 +244,9 @@ export default class TripBoard {
   // метод который сортирует, удаляет старые item и рендерит новые отсортированные item
   _handleSortTypeChange(sortType) { // 13 получаем сигнал из вьюхи что был клик и теперь надо обработать его
     // this._sortTripItems(sortType); // использовали функции сортировки
-    if(this._currentSortType === sortType){ // 46?
+    if (this._currentSortType === sortType) { // 46?
       return
     }
-
     this._currentSortType = sortType; //
     // this._clearEventList(); // очищаем список
     // this._renderEventItems(this._pointsModel._points); // рендерим список заново // this._renderEventItems(this._tripItems)
@@ -278,17 +256,14 @@ export default class TripBoard {
   }
 
   _renderSort() { // + 42
-
     if (this._tripEventsSortComponent !== null) {
       this._tripEventsSortComponent = null;
     }
     this._tripEventsSortComponent = new TripEventsSortView(this._currentSortType);
-
     // this._sortComponent = new SortView(this._currentSortType);
 
     this._tripEventsSortComponent.setSortTypeChangeHandler(this._handleSortTypeChange);
     renderElement(this._tripBoardContainer, this._tripEventsSortComponent, RenderPosition.BEFOREEND);
-
   }
 
   // // метод по удалениею всех всех предложений
@@ -300,20 +275,23 @@ export default class TripBoard {
   // }
 
   _renderList() {
-    console.log(this._tripEventsListComponent);
     renderElement(this._tripBoardContainer, this._tripEventsListComponent, RenderPosition.BEFOREEND);
   }
 
   _renderItem(tripItem) {
     const eventPresenter = new Event(this._tripEventsListComponent.getElement(), this._handleViewAction, this._handleModeChange); // 27 this._handleEventChange,
     // 3 наблюдатель
-    eventPresenter.init(tripItem);
     this._eventPresenter[tripItem.id] = eventPresenter; // в объект записываем id с сылкой на этот event презентер
+// this._eventPresenter[tripItem.id] это 1608250670855: Event {…}
+    eventPresenter.init(tripItem); // .init(tripItem) презентер с id в котором были изменения перерисовывается
+    // this._eventPresenter это весь список id: event который был добавлен при рендере Event
+    // init этот с renderItem
   }
 
-  _renderEventItems(tripItems) { // 14
-    tripItems.forEach((item) => {
-      this._renderItem(item);
+
+  _renderEventItems(tripItems) { // 14 метод который получает массив объектов точек
+    tripItems.forEach((item) => { // проходим по этому массиву
+      this._renderItem(item); // передаем каждый объект в this._renderItem где дальше он все отрисует
     });
 
   }
@@ -341,8 +319,6 @@ export default class TripBoard {
   //   //   this._renderLoadMoreButton();
   //   // }
   // }
-
-
 
 
 }

@@ -85,10 +85,8 @@ export default class TripEventItemView extends AbstractView {
     // this._callback.click() вот эта функция в контексте this обращается к виндовс, а в нем нет метода click. И чтобы
     // устранить делаем bind в this._clickHandler через bind передали новый контекст this, а передали контекст
     // конструктора, а в нем уже лежит объект с колбеком click
-
     this._clickHandler = this._clickHandler.bind(this);
-
-    this._clickFavoriteHandler = this._clickFavoriteHandler.bind(this);
+    this._clickFavoriteHandler = this._clickFavoriteHandler.bind(this); // бинд обработчика
   }
 
   getTemplate() {
@@ -126,13 +124,13 @@ export default class TripEventItemView extends AbstractView {
     // this._clickHandler колбэк который должен сработать и им является приватный метод _clickHandler
   }
 
-  _clickFavoriteHandler() {
+  _clickFavoriteHandler() { // создали ссылку для вызова этого колбека из объекта который из abstarct
     this._callback.clickFavorite();
   }
 
   // метод по установке клика на зведу, будет вызываться в presenter
   setFavoriteClickHandler(callback) {
-    this._callback.clickFavorite = callback;
+    this._callback.clickFavorite = callback; // в объект унаследованого от abstract сохраняем колбек
     const btnFavorite = this.getElement().querySelector(`.event__favorite-btn`);
     btnFavorite.addEventListener(`click`, this._clickFavoriteHandler);
   }

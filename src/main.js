@@ -17,7 +17,7 @@ import FilterPresenter from "./presenter/filter.js"; // 58
 //   }
 // ];
 
-const DATA_COUNT = 15;
+const DATA_COUNT = 7;
 
 const tripItems = new Array(DATA_COUNT).fill().map(getTripEventItem);
 // Array создаем массив
@@ -47,6 +47,7 @@ renderMenu();
 // renderFilter();
 // 5 передаем экземпляр модели в конструктор
 const tripBoardPresenter = new TripBoard(tripEventElement, pointsModel, filterModel); // 61 создал призентер с контейнером в который вставим все
+// tripEventElement это контейнер в который нужно отрисовать
 const tripInfoPresenter = new TripInfo(tripMainElement); // tripInfoElement
 tripInfoPresenter.init(tripItems); // элемент info
 tripBoardPresenter.init(); // элементы доски // tripItems

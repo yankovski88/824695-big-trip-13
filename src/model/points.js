@@ -33,8 +33,7 @@ export default class PointsModel extends Observer {
     this._notify(updateType, update);
   }
 
-  // 29
-  addPoint(updateType, update) {
+  addPoint(updateType, update) {  // 29
     this._points = [
       update,
       ...this._points
@@ -43,14 +42,12 @@ export default class PointsModel extends Observer {
     this._notify(updateType, update);
   }
 
-  // 30
-  deletePoint(updateType, update) {
+  deletePoint(updateType, update) {  // 30
     const index = this._points.findIndex((point) => point.id === update.id);
 
     if (index === -1) {
       throw new Error(`Can't delete unexisting point`);
     }
-
     this._points = [
       ...this._points.slice(0, index),
       ...this._points.slice(index + 1)

@@ -31,38 +31,30 @@ export default class Event {
     this._onEventRollupBtnClick = this._onEventRollupBtnClick.bind(this);
     this._handleFavoriteClick = this._handleFavoriteClick.bind(this);
   }
-
   init(tripItem) {
     this._tripItem = tripItem;
-
-
     // предыдущие компоненты будут null
     const prevTripEventItemComponent = this._tripEventItemComponent;
     const prevTripEventEditComponent = this._tripEventEditComponent;
-
     this._tripEventItemComponent = new TripEventItemView(this._tripItem); // виюха для item
     this._tripEventEditComponent = new TripEventEditFormView(this._tripItem); // вьюха для формы редоктирования
 
     // код который рендерит форму при клике на стрелку вниз в item
     this._tripEventItemComponent.setClickHandler(() => {
       this._replaceItemToForm();
-
       // при удалении элемента из дом обработчик можно не удалять. удалять на document и нов элемент обработчиком
       this._handleFormSubmit(tripItem);
     });
-
     // код который скрывает форму если кликнуть в форме редоктирования кнопку треугольник
-    this._tripEventEditComponent.setRollupBtnHandler(()=>{
+    this._tripEventEditComponent.setRollupBtnHandler(() => {
       this._tripEventEditComponent.reset(this._tripItem); // код для удаления не сохраненных данных в форме
       this._replaceFormToItem();
     });
-
     // код который скрывает форму при клике на кенсел
     this._tripEventEditComponent.setCancelHandler(() => {
       this._tripEventEditComponent.reset(this._tripItem); // код для удаления не сохраненных данных в форме
       this._replaceFormToItem();
     });
-
     // передали эти обработчики в соответствующие вьюхи
     this._tripEventItemComponent.setFavoriteClickHandler(this._handleFavoriteClick); // нужно сделать клик по favorite
 
@@ -146,17 +138,18 @@ export default class Event {
   // этот метод вызывает _changeData который пришел из tripBoard _handleEventChange который является тоже методом
   // для изменения данных. Этому методу нужно сообщить измененные данные. И здесь эти данные будем менять!!!
   _handleFavoriteClick() {
+    // debugger
     this._changeData( // и после замены сооббщаем в changeData
       UserAction.UPDATE_POINT, // 22
       UpdateType.MINOR, // 23 точка никуда не девается, а только помечается меняется или нет, так что это минор.
-        Object.assign(
-            {},
-            this._tripItem, // берем текущий объект описывающий задачу
-            {
-              isFavorite: !this._tripItem.isFavorite // и меняем в нем признак избранности. isFavorite
-            // и сообщить этот новый объект в _changeData
-            }
-        )
+      Object.assign(
+        {},
+        this._tripItem, // берем текущий объект описывающий задачу
+        {
+          isFavorite: !this._tripItem.isFavorite // и меняем в нем признак избранности. isFavorite
+          // и сообщить этот новый объект в _changeData
+        }
+      )
     );
   }
 
