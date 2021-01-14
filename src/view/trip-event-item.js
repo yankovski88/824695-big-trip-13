@@ -75,9 +75,9 @@ const createTripEventItem = (dataItems) => {
 };
 
 export default class TripEventItemView extends AbstractView {
-  constructor(dataItems) {
+  constructor(dataItem) {
     super();
-    this._dataItems = dataItems;
+    this._dataItem = dataItem;
     // Получается если функция this._clickHandler не в конструкторе, то она теряет контекст конструктора и не видит
     // в нем объект с кобеком
     //
@@ -90,7 +90,8 @@ export default class TripEventItemView extends AbstractView {
   }
 
   getTemplate() {
-    return createTripEventItem(this._dataItems);
+    console.log(this._dataItem);
+    return createTripEventItem(this._dataItem);
   }
 
   // в колбеке пишем код который был в колбеке

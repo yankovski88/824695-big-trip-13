@@ -17,7 +17,7 @@ import FilterPresenter from "./presenter/filter.js"; // 58
 //   }
 // ];
 
-const DATA_COUNT = 6;
+const DATA_COUNT = 5;
 
 const tripItems = new Array(DATA_COUNT).fill().map(getTripEventItem);
 // Array создаем массив
@@ -26,7 +26,8 @@ const tripItems = new Array(DATA_COUNT).fill().map(getTripEventItem);
 // map(tripEventItem) заполняет эти массивы методом map();
 
 const pointsModel = new PointsModel(); // 4 создали экземпляр модели
-pointsModel.setPoints(tripItems); // передаем моковые данные
+pointsModel.setPoints(tripItems); // передаем моковые данные точнее делаем их копию и записываем в массив.
+// Если захотим вызывать моки тогда нужно испльзовать getPoints
 
 const filterModel = new FilterModel(); // 49
 
@@ -48,10 +49,11 @@ renderMenu();
 // 5 передаем экземпляр модели в конструктор
 const tripBoardPresenter = new TripBoard(tripEventElement, pointsModel, filterModel); // 61 создал призентер с контейнером в который вставим все
 // tripEventElement это контейнер в который нужно отрисовать
-const tripInfoPresenter = new TripInfo(tripMainElement); // tripInfoElement
-tripInfoPresenter.init(tripItems); // элемент info
+const tripInfoPresenter = new TripInfo(tripMainElement, pointsModel); // tripInfoElement
+
+tripInfoPresenter.init(); // элемент info Нужно ИСАПРАВИТЬ т.к. у нас уже модель, а не просто данные tripItems
 tripBoardPresenter.init(); // элементы доски // tripItems
 
 const filterPresenter = new FilterPresenter(tripControlsElement, filterModel); // 60 pointsModel
-
 filterPresenter.init();
+

@@ -11,10 +11,10 @@ const Mode = {
   EDITING: `EDITING`
 };
 
-export default class Event {
-  // changeData поддерживаем получение колбека _handleEventChange который приходит с наружи
+export default class EventPresenter {
+  // changeData поддерживаем получение колбека _handleViewAction который приходит с наружи
   constructor(eventContainer, changeData, changeMode) { // поддерживаем колбек который приходит с наружи   // 5 наблюдатель
-    this._eventContainer = eventContainer;
+    this._eventContainer = eventContainer; // куда рендерить
     this._changeData = changeData; // 3 нов. записываем в свойства класса
     this._changeMode = changeMode; // 6 наблюдатель
 
@@ -142,7 +142,7 @@ export default class Event {
   // для изменения данных. Этому методу нужно сообщить измененные данные. И здесь эти данные будем менять!!!
   _handleFavoriteClick() {
     // debugger
-    this._changeData( // и после замены сооббщаем в changeData
+    this._changeData( // и после замены сообщаем в changeData
       UserAction.UPDATE_POINT, // 22
       UpdateType.MINOR, // 23 точка никуда не девается, а только помечается меняется или нет, так что это минор.
       Object.assign(

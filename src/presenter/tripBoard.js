@@ -4,11 +4,12 @@ import TripEventsList from "../view/trip-events-list.js";
 import {renderElement, RenderPosition, remove} from "../util/render"; // 41
 import {filter} from "../util/filter.js"; // 62
 
-import Event from "./event.js";
+import EventPresenter from "./event.js";
 import TripEventsSortView from "../view/trip-events-sort-view";
 
 import {SortType, UpdateType, UserAction} from "../const.js"; // 31
 
+// класс который занимается отрисовкой всего того, что входит в борд
 export default class TripBoard {
   constructor(tripBoardContainer, pointsModel, filterModel) { // 63
     this._filterModel = filterModel; // 64
@@ -18,7 +19,6 @@ export default class TripBoard {
     this._tripEventsListComponent = new TripEventsList();
     // this._tripEventsSortComponent = new TripEventsSortView();
     this._tripEventsSortComponent = null; // 34
-
 
     this._eventPresenter = {}; // это объект в котором будут хранится инстансы всех предложений презенторов
     // инстансы это экземляр твоего класса.
@@ -36,6 +36,7 @@ export default class TripBoard {
     this._filterModel.addObserver(this._handleModelEvent); // 65
   }
 
+  // В main.js в управлющем файле инициализируем TripBoard.init(). Он запустит всю логику MVP.  И ТОЛЬКО ПО БОРДУ!
   init() { // 10 tripItems
     this._renderBoard();
     // // this._tripItems = tripItems.slice(); // храним отсоортированные задачи
@@ -52,7 +53,7 @@ export default class TripBoard {
     // }
   }
 
-  // 40
+  // 40 рендарим доску со всеми списками, точками маршрута, а если их нет, то выводим пустое сообщение
   _renderBoard() {
     const points = this._getPoints(); // берем все данные из модели по точкам маршрута
     const pointCount = points.length; // считаем их колличество
@@ -69,7 +70,6 @@ export default class TripBoard {
     // this._renderEventItems(points.slice(0, Math.min(pointCount, this._renderedPointCount)));
     // вызываем рендер всех точек маршрута кроме удаленных
   }
-
 
   _getPoints() { // это и есть метод для хождения в модели. // Говорим модель дай все дайнные которые у тебя есть. sortDefault
     // _getPoints() это метод который используют все рендеры методы для получения данных для отрисовки
@@ -106,8 +106,7 @@ export default class TripBoard {
     return this._pointsModel.getPoints() // возвращает массив в исходном состоянии если не сработал switch
   }
 
-
-
+  // обработать действие просмотра
   _handleViewAction(actionType, updateType, update) { // 20 на основании того что хочет пользователь обновить модель
     // Здесь обрабатываем, что моедель изменилась и сходя из event(changeData)
     // Здесь будем вызывать обновление модели.
@@ -128,7 +127,7 @@ export default class TripBoard {
     }
   }
 
-
+  // обработать событие модели
   // 19 это колбек в котором модель вызывает его по обсерверу. Передаем его как налюдателя
   // этот метод передается как колбек observera. Он должен обработать что модель изменилась. И понять, что перерисовать берем updateType
   _handleModelEvent(updateType, data) { // В зависимости от типа изменений решаем, что делать
@@ -150,7 +149,7 @@ export default class TripBoard {
     }
   }
 
-  // 39
+  // 39 очистить доску
   _clearBoard({resetSortType = false} = {}) { // resetRenderedPointCount = false,
     // const pointCount = this._getPoints().length;
 
@@ -184,7 +183,6 @@ export default class TripBoard {
     }
   }
 
-
   // метод если форма открыта, то закрыть, воспитатель
   _handleModeChange() { // 2 наблюдатель
     Object
@@ -209,7 +207,7 @@ export default class TripBoard {
   //
   // }
 
-  // функция которая выводить пустое сообщение если нет Item
+  // метод который выводит пустое сообщение если нет Item
   _renderEmptyMessage() {
     const main = document.querySelector(`.page-body__page-main`);
     const pageBodyContainer = main.querySelector(`.page-body__container`);
@@ -253,6 +251,7 @@ export default class TripBoard {
     this._renderBoard();
   }
 
+  // метод который рендерит сортировку
   _renderSort() { // + 42
     if (this._tripEventsSortComponent !== null) {
       this._tripEventsSortComponent = null;
@@ -272,12 +271,14 @@ export default class TripBoard {
   //   this._eventPresenter = {}; // перезаписываем объект чтобы убить все ссылки на event презентеры
   // }
 
+  // метод который рендерит список в который отрендарим точки маршрута
   _renderList() {
     renderElement(this._tripBoardContainer, this._tripEventsListComponent, RenderPosition.BEFOREEND);
   }
 
+  // рендарим одну точку маршрута
   _renderItem(tripItem) {
-    const eventPresenter = new Event(this._tripEventsListComponent.getElement(), this._handleViewAction, this._handleModeChange); // 27 this._handleEventChange,
+    const eventPresenter = new EventPresenter(this._tripEventsListComponent.getElement(), this._handleViewAction, this._handleModeChange); // 27 this._handleEventChange,
     // 3 наблюдатель
     this._eventPresenter[tripItem.id] = eventPresenter; // в объект записываем id с сылкой на этот event презентер
 // this._eventPresenter[tripItem.id] это 1608250670855: Event {…}
@@ -286,7 +287,7 @@ export default class TripBoard {
     // init этот с renderItem
   }
 
-
+// рендарим все точки маршрута
   _renderEventItems(tripItems) { // 14 метод который получает массив объектов точек
     tripItems.forEach((item) => { // проходим по этому массиву
       this._renderItem(item); // передаем каждый объект в this._renderItem где дальше он все отрисует

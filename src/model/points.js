@@ -4,19 +4,21 @@ import Observer from "../util/observer.js";
 export default class PointsModel extends Observer {
   constructor() {
     super();
-    this._points = []; // храним точки маршрута
+    this._points = []; // храним все точки маршрута
   }
 
+  // метод для записи всех точек маршрута
   setPoints(points) {
-    this._points = points.slice(); // метод для записи точек маршрута
+    this._points = points.slice();
   }
 
+  // метод по возврату всех точек маршрута
   getPoints() {
-    return this._points; // возвращаем данные точек маршрута
+    return this._points;
   }
 
 
-// 28
+  // 28 обновить точку
   updatePoint(updateType, update) {
     const index = this._points.findIndex((point) => point.id === update.id);
 
@@ -33,6 +35,7 @@ export default class PointsModel extends Observer {
     this._notify(updateType, update);
   }
 
+  // добавить точку
   addPoint(updateType, update) {  // 29
     this._points = [
       update,
@@ -42,6 +45,7 @@ export default class PointsModel extends Observer {
     this._notify(updateType, update);
   }
 
+  // удалить точку
   deletePoint(updateType, update) {  // 30
     const index = this._points.findIndex((point) => point.id === update.id);
 

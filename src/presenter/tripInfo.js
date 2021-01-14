@@ -7,18 +7,22 @@ import dayjs from "dayjs";
 
 
 export default class TripInfo {
-  constructor(tripInfoContainer) {
+  constructor(tripInfoContainer, pointsModel) {
     this._tripInfoContainer = tripInfoContainer;
     this._destinations = [];
     this._startDateInfo = [];
     this._tripInfoComponent = new TripInfoView(this._destinations, this._startDateInfo);
+    this._pointsModel = pointsModel
   }
 
-  init(tripItems) {
-    this._renderDestination(tripItems);
-    this._renderTotalCost(tripItems);
+  init() { // tripItems
+    this._renderDestination(this._pointsModel.getPoints());
+    this._renderTotalCost(this._pointsModel.getPoints());
   }
 
+  // _getPoints(){
+  //   const points = this._pointsModel.getPoints(); // 67 // взяли задачи из другой модели
+  // }
   // функция которая рендерит цену
   _renderTotalCost(tripItems) {
     const tripInfoElement = this._tripInfoContainer.querySelector(`.trip-main__trip-info`);
