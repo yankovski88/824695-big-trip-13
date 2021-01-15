@@ -3,6 +3,65 @@ import SmartView from "./smart.js";
 import {destinations, dataOffers, TYPES} from "../mock/mock-trip-event-item.js";
 import flatpickr from "flatpickr";
 import "../../node_modules/flatpickr/dist/flatpickr.min.css";
+import {generateId, getDestination} from "../mock/mock-trip-event-item";
+import {getRandomInteger} from "../util/common";
+
+const BLANK_POINT = {
+  // return {
+  //   "type": randomType,
+  //   "basePrice": prices[getRandomInteger(0, prices.length - 1)],
+  //   "dateFrom": generateDateStart(),
+  //   "dateTo": generateDate(),
+  //   "destination": getDestination(),
+  //   "id": generateId(),
+  //   "isFavorite": getRandomInteger(0, 1),
+  //   "offers": getActiveOffers(randomType, dataOffers),
+  //   "editFormOffers": getAllOffers(randomType, dataOffers)
+  // };
+  "type": `Flight`,
+  "dateFrom": new Date(),
+    "dateTo": new Date(),
+  "id": generateId(),
+  "isFavorite": getRandomInteger(0, 0),
+  "destination": {
+    "description": `Lorem ipsum dolor sit amet, consectetur adipiscing…quet varius magna, non porta ligula feugiat eget.`,
+    "name": `Geneva`,
+    "pictures": [
+      {
+        "src": `http://picsum.photos/248/152?r=0.1689645545216163`,
+        "description": `event Geneva`
+      }
+    ]
+  },
+  "basePrice": ``,
+  "editFormOffers": [
+    {
+      "title": `Add luggage`,
+      "price": 50,
+    },
+    {
+      "title": `Switch to comfort class`,
+      "price": 80,
+    },
+    {
+      "title": `Add meal`,
+      "price": 15,
+    },
+    {
+      "title": `Choose seats`,
+      "price": 5,
+    },
+    {
+      "title": `Travel by train`,
+      "price": 40,
+    },
+  ],
+
+  "offers": [{
+    "title": ``,
+    "price": ``,
+  },]
+};
 
 // функция по установке времени в форме
 const createFieldTime = (dateStart, dateFinish) => {
@@ -24,54 +83,54 @@ const createFieldTime = (dateStart, dateFinish) => {
 };
 
 // функция по отрисовке всей формы
-const createTripEventEditForm = () => { // сюда попадают данные и запоняется шаблон dataItem
-  const type = `Flight`;
-  const destination =  {"description": `Lorem ipsum dolor sit amet, consectetur adipiscing…quet varius magna, non porta ligula feugiat eget.`,
-    "name": `Geneva`,
-    "pictures": [
-    {
-      "src": `http://picsum.photos/248/152?r=0.1689645545216163`,
-      "description": `event Geneva`
-    }
-  ]
-}
-  const basePrice = ``;
+const createTripEventEditForm = (dataItem) => { // сюда попадают данные и запоняется шаблон dataItem
+//   const type = `Flight`;
+//   const destination =  {"description": `Lorem ipsum dolor sit amet, consectetur adipiscing…quet varius magna, non porta ligula feugiat eget.`,
+//     "name": `Geneva`,
+//     "pictures": [
+//     {
+//       "src": `http://picsum.photos/248/152?r=0.1689645545216163`,
+//       "description": `event Geneva`
+//     }
+//   ]
+// }
+//   const basePrice = ``;
+//
+//   const editFormOffers = [
+//    {
+//      "title": `Add luggage`,
+//      "price": 50,
+//    },
+//    {
+//      "title": `Switch to comfort class`,
+//      "price": 80,
+//    },
+//    {
+//      "title": `Add meal`,
+//      "price": 15,
+//    },
+//    {
+//      "title": `Choose seats`,
+//      "price": 5,
+//    },
+//    {
+//      "title": `Travel by train`,
+//      "price": 40,
+//    },
+//  ];
+//
+//   const offers = [ {
+//     "title": ``,
+//     "price": ``,
+//   },];
 
-  const editFormOffers = [
-   {
-     "title": `Add luggage`,
-     "price": 50,
-   },
-   {
-     "title": `Switch to comfort class`,
-     "price": 80,
-   },
-   {
-     "title": `Add meal`,
-     "price": 15,
-   },
-   {
-     "title": `Choose seats`,
-     "price": 5,
-   },
-   {
-     "title": `Travel by train`,
-     "price": 40,
-   },
- ];
-
-  const offers = [ {
-    "title": ``,
-    "price": ``,
-  },];
-
-  // const {dateFrom, dateTo, destination, basePrice, type, offers, editFormOffers} = dataItem; // additionalOffers, photos,
+  const {dateFrom, dateTo, destination, basePrice, type, offers, editFormOffers} = dataItem; // additionalOffers, photos,
 
 
   // const isDateValid = ()=>{
   //   return dateFrom < dateTo
   // };
-
+// console.log(BLANK_POINT);
   // генерирует разметку фоток
   const createEventPhotoTemplate = () => {
     return destination.pictures.reduce((total, element) => { // перебрал все элементы photos и присоединил их в total
@@ -93,9 +152,9 @@ const createTripEventEditForm = () => { // сюда попадают данны�
     return formOffers.reduce((total, element) => {
 
       // // код который сравнивает два массива и если совподающие объекты, то возвращает true
-        const isActive = offers.some((el) => {
-          return el === element;
-        });
+      const isActive = offers.some((el) => {
+        return el === element;
+      });
       if (element.title !== ``) {
         return total + `<div class="event__offer-selector">
                         <input class="event__offer-checkbox  visually-hidden" id="event-offer-luggage-${element.title}" type="checkbox" name="event-offer-luggage"  
@@ -112,12 +171,12 @@ ${isActive ? `checked` : ``}>
     }, ``);
   };
 
-  const createTime = createFieldTime(new Date(), new Date());
+  const createTime = createFieldTime(dateFrom, dateTo);
 
 
   // код рисут список type
   const getEditType = (types) => {
-    return types.reduce((total, element)=>{
+    return types.reduce((total, element) => {
       const isActiveType = [type].some((el) => {
         return el === element;
       });
@@ -206,7 +265,8 @@ ${isActive ? `checked` : ``}>
 
 
 export default class AddNewPointView extends SmartView { // AbstractView
-  constructor(dataItem) {
+  constructor(dataItem = BLANK_POINT) {
+    console.log(dataItem);
     super();
     this._destinations = destinations;
     this._dataItem = AddNewPointView.parseDataItemToData(dataItem); // 0 превращаем объект dataItem в объект data т.к. он более полный, было this._dataItem = dataItem;
@@ -234,6 +294,7 @@ export default class AddNewPointView extends SmartView { // AbstractView
     this._setDatepickerFinish(); // 4 устанавливаем _setDatepicker с помощью пакета flatpickr
 
   }
+
   // 0.1
   // парсим типа, создаем копию данных с дополниетельным данными
   static parseDataItemToData(dataItem) {
@@ -322,9 +383,13 @@ export default class AddNewPointView extends SmartView { // AbstractView
 
     // код по замене всех данных объекта offers на тот который выбрал пользователь
     const getChangeOffers = (target) => { // target цель выбора пользователя
+
       for (let item of dataOffers) { // прохождение по массиву всех объектов. offers массив всех доп предложений
 
         if (target === item.type.toLowerCase()) { // когда найдется выбор пользователя в нашем массиве
+          // console.log(this._dataItem.type);
+          console.log(item.type);
+
           this.updateData(this._dataItem.type = item.type);
           this.updateData(this._dataItem.editFormOffers = item.offers);
           // this.updateData(this._dataItem.offers = item.offers); // код который перерисует, что выбрал ползьвавтель из offer в event

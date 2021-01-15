@@ -6,7 +6,9 @@ import TripBoard from "./presenter/tripBoard";
 import TripInfo from "./presenter/tripInfo";
 import PointsModel from "./model/points.js"; // 3 импорт модель
 import FilterModel from "./model/filter.js"; // 48
-import FilterPresenter from "./presenter/filter.js"; // 58
+import FilterPresenter from "./presenter/filter.js";
+import {generateId} from "./mock/mock-trip-event-item";
+import {getRandomInteger} from "./util/common"; // 58
 
 
 // const filters = [ // 48
@@ -57,10 +59,60 @@ tripBoardPresenter.init(); // элементы доски // tripItems
 const filterPresenter = new FilterPresenter(tripControlsElement, filterModel); // 60 pointsModel
 filterPresenter.init();
 
+
+
+const BLANK_POINT = {
+  "type": `Flight`,
+  "dateFrom": new Date(),
+  "dateTo": new Date(),
+  "id": generateId(),
+  "isFavorite": getRandomInteger(0, 0),
+  "destination": {
+    "description": `Lorem ipsum dolor sit amet, consectetur adipiscing…quet varius magna, non porta ligula feugiat eget.`,
+    "name": `Geneva`,
+    "pictures": [
+      {
+        "src": `http://picsum.photos/248/152?r=0.1689645545216163`,
+        "description": `event Geneva`
+      }
+    ]
+  },
+  "basePrice": ``,
+  "editFormOffers": [
+    {
+      "title": `Add luggage`,
+      "price": 50,
+    },
+    {
+      "title": `Switch to comfort class`,
+      "price": 80,
+    },
+    {
+      "title": `Add meal`,
+      "price": 15,
+    },
+    {
+      "title": `Choose seats`,
+      "price": 5,
+    },
+    {
+      "title": `Travel by train`,
+      "price": 40,
+    },
+  ],
+
+  "offers": [{
+    "title": ``,
+    "price": ``,
+  },]
+};
+
+
+
 // 1add код который создаем новую точку маршрута
 const addBtn = document.querySelector(`.trip-main__event-add-btn`);
 addBtn.addEventListener(`click`, (evt) => { // нашли кноку создания новой точки маршрута
   evt.preventDefault();
   addBtn.setAttribute(`disabled`, true);
-  tripBoardPresenter.createPoint(); // в борд презентере вызовем метод который показывает форму создания точки tripItems[0]
+  tripBoardPresenter.createPoint(BLANK_POINT); // в борд презентере вызовем метод который показывает форму создания точки tripItems[0]
 });
