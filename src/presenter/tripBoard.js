@@ -1,13 +1,14 @@
 import dayjs from "dayjs";
 import EventListEmptyMessageView from "../view/trip-event-msg.js";
 import TripEventsList from "../view/trip-events-list.js";
-import {renderElement, RenderPosition, remove} from "../util/render"; // 41
-import {filter} from "../util/filter.js"; // 62
-
 import EventPresenter from "./event.js";
 import TripEventsSortView from "../view/trip-events-sort-view";
+import PointNewPresenter from "./point-new.js"; // 3add импортируем прзентер добавления точки
 
-import {SortType, UpdateType, UserAction} from "../const.js"; // 31
+import {filter} from "../util/filter.js"; // 62
+import {renderElement, RenderPosition, remove} from "../util/render"; // 41
+import {SortType, UpdateType, UserAction, FilterType} from "../const.js"; // 31
+
 
 // класс который занимается отрисовкой всего того, что входит в борд
 export default class TripBoard {
@@ -34,6 +35,9 @@ export default class TripBoard {
     this._handleModelEvent = this._handleModelEvent.bind(this); // 18 это обработка уведомлений от модели.
     this._pointsModel.addObserver(this._handleModelEvent); // 17  В модель точек с помощью обсерверов передали колбек который будет вызывать модель.
     this._filterModel.addObserver(this._handleModelEvent); // 65
+
+    // 4add т.к. мы имопртируем презентер PointNewPresenter, то нужно создать инстанс презентера новой точки маршрута
+    this._pointNewPresenter = new PointNewPresenter(this._tripEventsListComponent, this._handleViewAction);
   }
 
   // В main.js в управлющем файле инициализируем TripBoard.init(). Он запустит всю логику MVP.  И ТОЛЬКО ПО БОРДУ!
@@ -53,9 +57,17 @@ export default class TripBoard {
     // }
   }
 
+  // 2add метод который создает точку маршрута
+  createPoint(tripItem) {
+    this._currentSortType = SortType.DAY; // параметр сортировки изначально день
+    this._filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING); // передаем обновление модели с этими параметрами
+    this._pointNewPresenter.init(tripItem); // должна производится инитицилизация которая отвечает за форму добавления
+  }
+
+
   // 40 рендарим доску со всеми списками, точками маршрута, а если их нет, то выводим пустое сообщение
   _renderBoard() {
-    const points = this._getPoints(); // берем все данные из модели по точкам маршрута
+    const points = this._getPoints(); // берем все данные из модели по точкам маршрута уже отсортированные и отфильтрованные
     const pointCount = points.length; // считаем их колличество
 
     if (pointCount === 0) { // если оно равно 0
@@ -153,6 +165,8 @@ export default class TripBoard {
   _clearBoard({resetSortType = false} = {}) { // resetRenderedPointCount = false,
     // const pointCount = this._getPoints().length;
 
+    this._pointNewPresenter.destroy(); // 6add
+
     Object // удаляем все типа карточки
       .values(this._eventPresenter)
       .forEach((presenter) => presenter.destroy()); // удаляем все значения
@@ -185,6 +199,8 @@ export default class TripBoard {
 
   // метод если форма открыта, то закрыть, воспитатель
   _handleModeChange() { // 2 наблюдатель
+    this._pointNewPresenter.destroy(); // 5add
+
     Object
       .values(this._eventPresenter)
       .forEach((presenter) => {

@@ -62,7 +62,7 @@ const getPhotos = () => {
 // пункт назанчения
 const destinationItems = [`Amsterdam`, `Chamonix`, `Geneva`, `Minsk`];
 
-const generateId = () => Date.now() + parseInt(Math.random() * 10000, 10);
+export const generateId = () => Date.now() + parseInt(Math.random() * 10000, 10);
 
 // массив со всеми офферрами в зависимости от типа
 export const dataOffers = [
@@ -320,13 +320,13 @@ export const getTripEventItem = () => {
   };
 };
 
-const a = getTripEventItem();
-const b = getTripEventItem();
-const c = getTripEventItem();
-const e = getTripEventItem();
-const g = getTripEventItem();
-const date = new Date();
-const points = [getTripEventItem(), getTripEventItem(), getTripEventItem(),getTripEventItem(),getTripEventItem()];
+// const a = getTripEventItem();
+// const b = getTripEventItem();
+// const c = getTripEventItem();
+// const e = getTripEventItem();
+// const g = getTripEventItem();
+// const date = new Date();
+// const points = [getTripEventItem(), getTripEventItem(), getTripEventItem(),getTripEventItem(),getTripEventItem()];
 // console.log(points)
 // export const FilterType = { // 46
 //   EVERYTHING: `everything`,

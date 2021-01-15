@@ -90,7 +90,6 @@ export default class TripEventItemView extends AbstractView {
   }
 
   getTemplate() {
-    console.log(this._dataItem);
     return createTripEventItem(this._dataItem);
   }
 

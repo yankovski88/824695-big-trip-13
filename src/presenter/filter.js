@@ -33,7 +33,6 @@ export default class FilterPresenter { // 59
     // renderElement(this._filterContainer, this._filterComponent, RenderPosition.BEFOREEND);
 
     if (prevFilterComponent === null) {
-      console.log(this._filterComponent);
       renderElement(this._filterContainer, this._filterComponent, RenderPosition.BEFOREEND); // рендер фильтр
       return;
     }
@@ -45,16 +44,17 @@ export default class FilterPresenter { // 59
     remove(prevFilterComponent); // ЧТО ЕСТЬ ЧТО НЕТУ
   }
 
-  _handleModelEvent() {
-    this.init();
-  }
-
   _handleFilterTypeChange(filterType) {
     if (this._currentFilter === filterType) {
       return;
     }
 
     this._filterModel.setFilter(UpdateType.MAJOR, filterType);
+  }
+
+  // метод который заново перерисовывает фильтр
+  _handleModelEvent() {
+    this.init();
   }
 
   _getFilters() {

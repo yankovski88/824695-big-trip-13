@@ -143,7 +143,7 @@ export default class EventPresenter {
   _handleFavoriteClick() {
     // debugger
     this._changeData( // и после замены сообщаем в changeData
-      UserAction.UPDATE_POINT, // 22
+      UserAction.UPDATE_POINT, // 22 это говорит, что мы  только обновляем, а не удаляем или что-то добавляем.
       UpdateType.MINOR, // 23 точка никуда не девается, а только помечается меняется или нет, так что это минор.
       Object.assign(
         {},

@@ -57,3 +57,10 @@ tripBoardPresenter.init(); // элементы доски // tripItems
 const filterPresenter = new FilterPresenter(tripControlsElement, filterModel); // 60 pointsModel
 filterPresenter.init();
 
+// 1add код который создаем новую точку маршрута
+const addBtn = document.querySelector(`.trip-main__event-add-btn`);
+addBtn.addEventListener(`click`, (evt) => { // нашли кноку создания новой точки маршрута
+  evt.preventDefault();
+  addBtn.setAttribute(`disabled`, true);
+  tripBoardPresenter.createPoint(tripItems[0]); // в борд презентере вызовем метод который показывает форму создания точки
+});

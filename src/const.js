@@ -19,7 +19,7 @@ export const UpdateType = {
   MAJOR: `MAJOR` // это требуют перерисовки всей доски
 };
 
-export const FilterType = { // 46
+export const FilterType = { // 46 типы фильтров
   EVERYTHING: `everything`,
   FUTURE: `future`,
   PAST: `past`,

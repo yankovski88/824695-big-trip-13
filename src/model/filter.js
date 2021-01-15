@@ -10,7 +10,7 @@ export default class FilterModel extends Observer { // 47
 
   setFilter(updateType, filter) {
     this._activeFilter = filter; // вместе с уведомлением будет пресылаться тот активный флиьтр
-    this._notify(updateType, filter);
+    this._notify(updateType, filter); // через _notify вызовится колбек в tripBoard и перерисуется страница
   }
 
   getFilter() {
