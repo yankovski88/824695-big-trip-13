@@ -40,13 +40,16 @@ export default class EventPresenter {
     const prevTripEventEditComponent = this._tripEventEditComponent;
     this._tripEventItemComponent = new TripEventItemView(this._tripItem); // виюха для item
     this._tripEventEditComponent = new TripEventEditFormView(this._tripItem); // вьюха для формы редоктирования
-    this._tripEventEditComponent.setDeleteClickHandler(this._handleDeleteClick); // 6del установили обработчик на удаление
 
+    this._tripEventEditComponent.setDeleteClickHandler(this._handleDeleteClick); // 6del установили обработчик на удаление
+    this._tripEventEditComponent.setSubmitHandler(this._handleFormSubmit);
+    // редоктируемый task
+    this._replaceFormToItem(); // замена формы на точку маршрута
     // код который рендерит форму при клике на стрелку вниз в item
     this._tripEventItemComponent.setClickHandler(() => {
       this._replaceItemToForm();
       // при удалении элемента из дом обработчик можно не удалять. удалять на document и нов элемент обработчиком
-      this._handleFormSubmit(tripItem);
+      // this._handleFormSubmit(tripItem);
     });
     // код который скрывает форму если кликнуть в форме редоктирования кнопку треугольник
     this._tripEventEditComponent.setRollupBtnHandler(() => {
@@ -104,24 +107,35 @@ export default class EventPresenter {
   // функция которая из формы редоктирования делает предложение Item
   _replaceFormToItem() {
     this._tripEventEditComponent.getElement().replaceWith(this._tripEventItemComponent.getElement());
-    document.removeEventListener(`keydown`, this._onEscKeyPress);
-    document.removeEventListener(`submit`, this._handleFormSubmit);
-    document.removeEventListener(`click`, this._onEventRollupBtnClick);
+    // document.removeEventListener(`keydown`, this._onEscKeyPress);
+    // document.removeEventListener(`submit`, this._handleFormSubmit);
+    // document.removeEventListener(`click`, this._onEventRollupBtnClick);
 
     this._mode = Mode.DEFAULT; // 13 наблюдатель. Текущий режим по умолчанию
   }
 
   // обраотчик сохранения формы
-  _handleFormSubmit() {
-    this._tripEventEditComponent.setSubmitHandler((dataItem) => {
+  _handleFormSubmit(update) {
       this._changeData(
         UserAction.UPDATE_POINT, // 25
         UpdateType.MINOR, // 26 идет обновление точки так что минор
-        dataItem); // 10 Это обработчик с tripBoard this._handleEventChange в котором находится
-      // редоктируемый task
-      this._replaceFormToItem(); // замена формы на точку маршрута
-    });
+        update); // 10 Это обработчик с tripBoard this._handleEventChange в котором находится
+        this._replaceFormToItem(); // замена формы на точку маршрута
   }
+
+
+
+  // // обраотчик сохранения формы
+  // _handleFormSubmit() {
+  //   this._tripEventEditComponent.setSubmitHandler((dataItem) => {
+  //     this._changeData(
+  //       UserAction.UPDATE_POINT, // 25
+  //       UpdateType.MINOR, // 26 идет обновление точки так что минор
+  //       dataItem); // 10 Это обработчик с tripBoard this._handleEventChange в котором находится
+  //     // редоктируемый task
+  //     this._replaceFormToItem(); // замена формы на точку маршрута
+  //   });
+  // }
 
   // обраотчик который закрывается без сохранения формы
   _onEscKeyPress(evt) {

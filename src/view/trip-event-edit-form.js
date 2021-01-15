@@ -300,7 +300,7 @@ export default class TripEventEditFormView extends SmartView { // AbstractView
   // обработчик который вызывает сохраннеый колбек на отправку формы
   _submitHandler(evt) {
     evt.preventDefault();
-    this._callback.submit(this._dataItem);
+    this._callback.submit(this._dataItem); // ?????????? _dataItem
   }
 
   // установим публичный обработчик на отправку формы
