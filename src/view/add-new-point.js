@@ -6,6 +6,10 @@ import "../../node_modules/flatpickr/dist/flatpickr.min.css";
 
 // функция по установке времени в форме
 const createFieldTime = (dateStart, dateFinish) => {
+  // if(dateStart === `` && dateFinish === ``){
+  //   const dateStart = new Date();
+  //   const dateFinish = new Date();
+  // }
   // установка формата времени
   const startTime = dayjs(dateStart).format(`DD/MM/YY HH:mm`);
   const finishTime = dayjs(dateFinish).format(`DD/MM/YY HH:mm`);
@@ -20,8 +24,49 @@ const createFieldTime = (dateStart, dateFinish) => {
 };
 
 // функция по отрисовке всей формы
-const createTripEventEditForm = (dataItem) => { // сюда попадают данные и запоняется шаблон
-  const {dateFrom, dateTo, destination, basePrice, type, offers, editFormOffers} = dataItem; // additionalOffers, photos,
+const createTripEventEditForm = () => { // сюда попадают данные и запоняется шаблон dataItem
+  const type = `Flight`;
+  const destination =  {"description": `Lorem ipsum dolor sit amet, consectetur adipiscing…quet varius magna, non porta ligula feugiat eget.`,
+    "name": `Geneva`,
+    "pictures": [
+    {
+      "src": `http://picsum.photos/248/152?r=0.1689645545216163`,
+      "description": `event Geneva`
+    }
+  ]
+}
+  const basePrice = ``;
+
+  const editFormOffers = [
+   {
+     "title": `Add luggage`,
+     "price": 50,
+   },
+   {
+     "title": `Switch to comfort class`,
+     "price": 80,
+   },
+   {
+     "title": `Add meal`,
+     "price": 15,
+   },
+   {
+     "title": `Choose seats`,
+     "price": 5,
+   },
+   {
+     "title": `Travel by train`,
+     "price": 40,
+   },
+ ];
+
+  const offers = [ {
+    "title": ``,
+    "price": ``,
+  },];
+
+  // const {dateFrom, dateTo, destination, basePrice, type, offers, editFormOffers} = dataItem; // additionalOffers, photos,
+
 
   // const isDateValid = ()=>{
   //   return dateFrom < dateTo
@@ -48,10 +93,9 @@ const createTripEventEditForm = (dataItem) => { // сюда попадают д�
     return formOffers.reduce((total, element) => {
 
       // // код который сравнивает два массива и если совподающие объекты, то возвращает true
-      const isActive = offers.some((el) => {
-        return el === element;
-      });
-
+        const isActive = offers.some((el) => {
+          return el === element;
+        });
       if (element.title !== ``) {
         return total + `<div class="event__offer-selector">
                         <input class="event__offer-checkbox  visually-hidden" id="event-offer-luggage-${element.title}" type="checkbox" name="event-offer-luggage"  
@@ -68,7 +112,7 @@ ${isActive ? `checked` : ``}>
     }, ``);
   };
 
-  const createTime = createFieldTime(dateFrom, dateTo);
+  const createTime = createFieldTime(new Date(), new Date());
 
 
   // код рисут список type
@@ -107,6 +151,7 @@ ${isActive ? `checked` : ``}>
                   <div class="event__field-group  event__field-group--destination">
                     <label class="event__label  event__type-output" for="event-destination-1">
                       ${type}
+                      <!--? type : \`Flight\`-->
                     </label>
                     <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destination.name}" list="destination-list-1">
                     <datalist id="destination-list-1">

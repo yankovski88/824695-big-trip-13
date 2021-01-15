@@ -62,5 +62,5 @@ const addBtn = document.querySelector(`.trip-main__event-add-btn`);
 addBtn.addEventListener(`click`, (evt) => { // нашли кноку создания новой точки маршрута
   evt.preventDefault();
   addBtn.setAttribute(`disabled`, true);
-  tripBoardPresenter.createPoint(tripItems[0]); // в борд презентере вызовем метод который показывает форму создания точки
+  tripBoardPresenter.createPoint(); // в борд презентере вызовем метод который показывает форму создания точки tripItems[0]
 });

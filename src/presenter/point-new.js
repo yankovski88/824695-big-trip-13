@@ -20,12 +20,12 @@ export default class PointNewPresenter {
 
   }
 
-  init(tripItem) {
+  init() { // tripItem
     if (this._addNewPointComponent !== null) {
       return;
     }
 
-    this._addNewPointComponent = new AddNewPointView(tripItem); // вьюха для формы редоктирования
+    this._addNewPointComponent = new AddNewPointView(); // вьюха для формы редоктирования tripItem
     this._addNewPointComponent.setSubmitHandler(this._handleFormSubmit); // 6del установили обработчик на удаление
     this._addNewPointComponent.setCancelHandler(this._handleCanselClick); // 6del установили обработчик на удаление
 

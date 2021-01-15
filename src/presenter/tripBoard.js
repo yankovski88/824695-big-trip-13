@@ -58,10 +58,10 @@ export default class TripBoard {
   }
 
   // 2add метод который создает точку маршрута
-  createPoint(tripItem) {
+  createPoint() { // tripItem
     this._currentSortType = SortType.DAY; // параметр сортировки изначально день
     this._filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING); // передаем обновление модели с этими параметрами
-    this._pointNewPresenter.init(tripItem); // должна производится инитицилизация которая отвечает за форму добавления
+    this._pointNewPresenter.init(); // должна производится инитицилизация которая отвечает за форму добавления tripItem
   }
 
 

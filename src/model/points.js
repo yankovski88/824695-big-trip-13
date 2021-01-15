@@ -37,6 +37,8 @@ export default class PointsModel extends Observer {
 
   // добавить точку
   addPoint(updateType, update) {  // 29
+    console.log(updateType, update);
+
     this._points = [
       update,
       ...this._points
