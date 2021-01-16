@@ -129,6 +129,7 @@ ${isActive ? `checked` : ``}>
                     <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${he.encode(basePrice.toString())}">
                   </div>
 <!--{isDateValid() ?  : disabled}-->
+<!--// {console.log(this)}-->
                   <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
 <button class="event__reset-btn" type="reset">Delete</button>
   
@@ -172,6 +173,8 @@ export default class TripEventEditFormView extends SmartView { // AbstractView
     this._datepickerStart = null;
     this._dateFrom = this._dataItem.dateFrom;
     this._dateTo = this._dataItem.dateTo;
+    this._saveBtnElement = this.getElement().querySelector(`.event__save-btn`);
+
 
     this._submitHandler = this._submitHandler.bind(this);
     this._cancelClickHandler = this._cancelClickHandler.bind(this);
@@ -183,7 +186,6 @@ export default class TripEventEditFormView extends SmartView { // AbstractView
     this._rollupBtnClickHandler = this._rollupBtnClickHandler.bind(this);
     this._dueFinishDateChangeHandler = this._dueFinishDateChangeHandler.bind(this); // 2 заведем обработчик на _datepicker
     this._dueStartDateChangeHandler = this._dueStartDateChangeHandler.bind(this); // 2 заведем обработчик на _datepicker
-    // this._isDateValid = this._isDateValid.bind(this); // 2 заведем обработчик на _datepicker
     this._formDeleteClickHandler = this._formDeleteClickHandler.bind(this); // 1del
 
 
@@ -343,16 +345,32 @@ export default class TripEventEditFormView extends SmartView { // AbstractView
     const eventRollupBtn = this.getElement().querySelector(`.event__rollup-btn`);
     eventRollupBtn.addEventListener(`click`, this._rollupBtnClickHandler);
   }
-  // _isDateValid (userDate){
-  //     if(dayjs(userDate).toDate() > this._dateTo){
-  //
-  //       console.log(this._dateTo);
-  //       console.log(dayjs(userDate).toDate());
-  //
-  //       return this._dateFrom < this._dateTo
-  //     }
-  //     // return this._dateFrom < this._dateTo
-  //   };
+
+  _setDatepickerStart() {
+    // код на удаление _datepicker если он был открыт ранее
+    if (this._datepickerStart) { // если был ранее _datepicker
+      // В случае обновления компонента удаляем вспомогательные DOM-элементы,
+      // которые создает flatpickr при инициализации
+      this._datepickerStart.destroy(); // то удаляем его
+      this._datepickerStart = null; // и зануляем его
+    }
+
+
+    if (this._dataItem) { // проверка или нужно вообще покаывать поле datepicker, вдруг пользователь скрыл
+      // flatpickr есть смысл инициализировать только в случае,
+      // если поле выбора даты доступно для заполнения
+      this._datepickerStart = flatpickr( // инициализируем это просто передаем элемент где вызывать datepickr
+        this.getElement().querySelector(`#event-start-time-1`), // вставляем поле куда нужно вставить datepicker
+        {
+          enableTime: true, // добавлена настройка времени
+          dateFormat: `d/m/y H:i`, // формат даты и времени
+          defaultDate: this._dataItem.dateFrom, // конечная дата со временем
+          onChange: this._dueStartDateChangeHandler, // На событие flatpickr передаём наш колбэк. типа addEventListner на datePicker. Пользоваетель в календаре выберет дату и мы ее сюда запишем
+        }
+      );
+    }
+  }
+
 
   // 3 обработчик устанавливаем setDatepicker
   _setDatepickerFinish() {
@@ -373,41 +391,22 @@ export default class TripEventEditFormView extends SmartView { // AbstractView
             dateFormat: `d/m/y H:i`, // формат даты и времени
             defaultDate: this._dataItem.dateTo, // startTime,
             onChange: this._dueFinishDateChangeHandler, // На событие flatpickr передаём наш колбэк. типа addEventListner на datePicker. Пользоваетель в календаре выберет дату и мы ее сюда запишем
-            // onClose: this._isDateValid,
           }
       );
     }
   }
 
 
-  _setDatepickerStart() {
-    // код на удаление _datepicker если он был открыт ранее
-    if (this._datepickerStart) { // если был ранее _datepicker
-      // В случае обновления компонента удаляем вспомогательные DOM-элементы,
-      // которые создает flatpickr при инициализации
-      this._datepickerStart.destroy(); // то удаляем его
-      this._datepickerStart = null; // и зануляем его
-    }
 
-
-    if (this._dataItem) { // проверка или нужно вообще покаывать поле datepicker, вдруг пользователь скрыл
-      // flatpickr есть смысл инициализировать только в случае,
-      // если поле выбора даты доступно для заполнения
-      this._datepickerStart = flatpickr( // инициализируем это просто передаем элемент где вызывать datepickr
-          this.getElement().querySelector(`#event-start-time-1`), // вставляем поле куда нужно вставить datepicker
-          {
-            enableTime: true, // добавлена настройка времени
-            dateFormat: `d/m/y H:i`, // формат даты и времени
-            defaultDate: this._dataItem.dateFrom, // конечная дата со временем
-            onChange: this._dueStartDateChangeHandler, // На событие flatpickr передаём наш колбэк. типа addEventListner на datePicker. Пользоваетель в календаре выберет дату и мы ее сюда запишем
-            // onClose: this._isDateValid,
-          }
-      );
-    }
-  }
 
 
   _dueStartDateChangeHandler(userDate) {
+    if((dayjs(userDate).toDate() > this._dateTo) ){
+      this._saveBtnElement.setAttribute(`disabled`, true)
+    }
+    else if((dayjs(userDate).toDate() < this._dateTo) ){
+      this._saveBtnElement.removeAttribute(`disabled`)
+    }
     this.updateData({
       dateFrom: dayjs(userDate).toDate() // .hour(23).minute(59).second(59).toDate()
     }, true);
@@ -415,6 +414,12 @@ export default class TripEventEditFormView extends SmartView { // AbstractView
 
   // 4
   _dueFinishDateChangeHandler([userDate]) {
+    if(dayjs(userDate).toDate() > this._dateFrom){
+      this._saveBtnElement.removeAttribute(`disabled`)
+    }
+    else if((dayjs(userDate).toDate() < this._dateFrom) ){
+      this._saveBtnElement.setAttribute(`disabled`, true)
+    }
     this.updateData({
       dateTo: dayjs(userDate).toDate() // .hour(23).minute(59).second(59).toDate()
     }, true);

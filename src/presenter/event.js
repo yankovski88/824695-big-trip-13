@@ -116,6 +116,7 @@ export default class EventPresenter {
 
   // обраотчик сохранения формы
   _handleFormSubmit(update) {
+    console.log(update);
     this._changeData(
         UserAction.UPDATE_POINT, // 25
         UpdateType.MINOR, // 26 идет обновление точки так что минор
