@@ -1,4 +1,4 @@
-import TripFilterView from "./view/trip-filter.js";
+// import TripFilterView from "./view/trip-filter.js";
 import {renderElement, RenderPosition} from "./util/render";
 import TripMenuView from "./view/trip-menu.js";
 import {getTripEventItem} from "./mock/mock-trip-event-item.js";
@@ -60,7 +60,6 @@ const filterPresenter = new FilterPresenter(tripControlsElement, filterModel); /
 filterPresenter.init();
 
 
-
 const BLANK_POINT = {
   "type": `Flight`,
   "dateFrom": new Date(),
@@ -104,9 +103,8 @@ const BLANK_POINT = {
   "offers": [{
     "title": ``,
     "price": ``,
-  },]
+  }]
 };
-
 
 
 // 1add код который создаем новую точку маршрута

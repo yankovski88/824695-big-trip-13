@@ -4,6 +4,7 @@ import SmartView from "./smart.js";
 import {destinations, dataOffers, TYPES} from "../mock/mock-trip-event-item.js";
 import flatpickr from "flatpickr";
 import "../../node_modules/flatpickr/dist/flatpickr.min.css";
+import {UpdateType, UserAction} from "../const";
 
 // функция по установке времени в форме
 const createFieldTime = (dateStart, dateFinish) => {
@@ -271,6 +272,9 @@ export default class TripEventEditFormView extends SmartView { // AbstractView
     // this.updateData({
     //   additionalAllOffers[0].check: !0
     // })
+    // console.log(evt);
+    // evt.target.attributes.id.nodeValue
+
   }
 
 
@@ -339,16 +343,16 @@ export default class TripEventEditFormView extends SmartView { // AbstractView
     const eventRollupBtn = this.getElement().querySelector(`.event__rollup-btn`);
     eventRollupBtn.addEventListener(`click`, this._rollupBtnClickHandler);
   }
-// _isDateValid (userDate){
-//     if(dayjs(userDate).toDate() > this._dateTo){
-//
-//       console.log(this._dateTo);
-//       console.log(dayjs(userDate).toDate());
-//
-//       return this._dateFrom < this._dateTo
-//     }
-//     // return this._dateFrom < this._dateTo
-//   };
+  // _isDateValid (userDate){
+  //     if(dayjs(userDate).toDate() > this._dateTo){
+  //
+  //       console.log(this._dateTo);
+  //       console.log(dayjs(userDate).toDate());
+  //
+  //       return this._dateFrom < this._dateTo
+  //     }
+  //     // return this._dateFrom < this._dateTo
+  //   };
 
   // 3 обработчик устанавливаем setDatepicker
   _setDatepickerFinish() {
@@ -436,10 +440,27 @@ export default class TripEventEditFormView extends SmartView { // AbstractView
     this._callback.deleteClick(this._dataItem); // НЕ знаю что выбрать этот или нижний вариант
   }
 
-  setDeleteClickHandler(callback){ // 2del установил обработчик на удаление. Это МЕТОД
+  setDeleteClickHandler(callback) { // 2del установил обработчик на удаление. Это МЕТОД
     this._callback.deleteClick = callback; // добавление колбека в объект, для последующего его вызова по ссылке
 
     const eventResetBtnDel = this.getElement().querySelector(`.event__reset-btn`);
     eventResetBtnDel.addEventListener(`click`, this._formDeleteClickHandler);
   }
+
+  _handleOfferClick() {
+    // debugger
+    this._changeData( // и после замены сообщаем в changeData
+        UserAction.UPDATE_POINT, // 22 это говорит, что мы  только обновляем, а не удаляем или что-то добавляем.
+        UpdateType.MINOR, // 23 точка никуда не девается, а только помечается меняется или нет, так что это минор.
+        Object.assign(
+            {},
+            this._tripItem, // берем текущий объект описывающий задачу
+            {
+              isFavorite: !this._tripItem.isFavorite // и меняем в нем признак избранности. isFavorite
+              // и сообщить этот новый объект в _changeData
+            }
+        )
+    );
+  }
+
 }

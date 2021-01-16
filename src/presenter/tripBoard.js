@@ -115,7 +115,7 @@ export default class TripBoard {
           return timeDurationSecond - timeDurationFirst; // возвращаем отсортированный массив от Max
         }); // 70
     }
-    return this._pointsModel.getPoints() // возвращает массив в исходном состоянии если не сработал switch
+    return this._pointsModel.getPoints(); // возвращает массив в исходном состоянии если не сработал switch
   }
 
   // обработать действие просмотра
@@ -232,36 +232,13 @@ export default class TripBoard {
     // контейнера проприсовали сообщение
   }
 
-  // _sortTripItems(sortType) {
-  //   switch (sortType) {
-  //     case SortType.DAY:
-  //       this._tripItems.sort((a, b) => dayjs(a.dateFrom).diff(dayjs(b.dateFrom)));
-  //       break;
-  //     case SortType.PRICE:
-  //       this._tripItems.sort((a, b) => b.basePrice - a.basePrice);
-  //       break;
-  //     case SortType.TIME:
-  //       this._tripItems.sort((a, b) => {
-  //         const timeDurationFirst = a.dateTo - a.dateFrom; // итерируемся по каждому значению разницы времени
-  //         const timeDurationSecond = b.dateTo - b.dateFrom; // также и для вторго времени
-  //
-  //         return timeDurationSecond - timeDurationFirst; // возвращаем отсортированный массив от Max
-  //       }
-  //       );
-  //       break;
-  //   }
-  //   this._currentSortType = sortType;
-  // }
 
   // метод который сортирует, удаляет старые item и рендерит новые отсортированные item
   _handleSortTypeChange(sortType) { // 13 получаем сигнал из вьюхи что был клик и теперь надо обработать его
-    // this._sortTripItems(sortType); // использовали функции сортировки
     if (this._currentSortType === sortType) { // 46?
-      return
+      return;
     }
     this._currentSortType = sortType; //
-    // this._clearEventList(); // очищаем список
-    // this._renderEventItems(this._pointsModel._points); // рендерим список заново // this._renderEventItems(this._tripItems)
 
     this._clearBoard(); // хочу чтобы доска очистилась и сбросилось число отображенных задач {resetRenderedPointCount: true}
     this._renderBoard();
@@ -273,19 +250,11 @@ export default class TripBoard {
       this._tripEventsSortComponent = null;
     }
     this._tripEventsSortComponent = new TripEventsSortView(this._currentSortType);
-    // this._sortComponent = new SortView(this._currentSortType);
 
     this._tripEventsSortComponent.setSortTypeChangeHandler(this._handleSortTypeChange);
     renderElement(this._tripBoardContainer, this._tripEventsSortComponent, RenderPosition.BEFOREEND);
   }
 
-  // // метод по удалениею всех всех предложений
-  // _clearEventList() {
-  //   Object
-  //     .values(this._eventPresenter)
-  //     .forEach((presenter) => presenter.destroy()); // удаляем все значения
-  //   this._eventPresenter = {}; // перезаписываем объект чтобы убить все ссылки на event презентеры
-  // }
 
   // метод который рендерит список в который отрендарим точки маршрута
   _renderList() {
@@ -297,43 +266,19 @@ export default class TripBoard {
     const eventPresenter = new EventPresenter(this._tripEventsListComponent.getElement(), this._handleViewAction, this._handleModeChange); // 27 this._handleEventChange,
     // 3 наблюдатель
     this._eventPresenter[tripItem.id] = eventPresenter; // в объект записываем id с сылкой на этот event презентер
-// this._eventPresenter[tripItem.id] это 1608250670855: Event {…}
+    // this._eventPresenter[tripItem.id] это 1608250670855: Event {…}
     eventPresenter.init(tripItem); // .init(tripItem) презентер с id в котором были изменения перерисовывается
     // this._eventPresenter это весь список id: event который был добавлен при рендере Event
     // init этот с renderItem
   }
 
-// рендарим все точки маршрута
+  // рендарим все точки маршрута
   _renderEventItems(tripItems) { // 14 метод который получает массив объектов точек
     tripItems.forEach((item) => { // проходим по этому массиву
       this._renderItem(item); // передаем каждый объект в this._renderItem где дальше он все отрисует
     });
 
   }
-
-  // // 40
-  // _renderBoard() {
-  //   const points = this._getPoints();
-  //   const pointCount = points.length;
-  //
-  //   if (pointCount === 0) {
-  //     this._renderEmptyMessage();
-  //     return;
-  //   }
-  //
-  //   this._renderSort();
-  //
-  //   // Теперь, когда _renderBoard рендерит доску не только на старте,
-  //   // но и по ходу работы приложения, нужно заменить
-  //   // константу TASK_COUNT_PER_STEP на свойство _renderedTaskCount,
-  //   // чтобы в случае перерисовки сохранить N-показанных карточек
-  //   this._renderEventItems( points
-  //     // tasks.slice(0, Math.min(taskCount, this._renderedTaskCount))
-  //   );
-  //   // if (taskCount > this._renderedTaskCount) {
-  //   //   this._renderLoadMoreButton();
-  //   // }
-  // }
 
 
 }

@@ -7,7 +7,7 @@ import {UserAction, UpdateType} from "../const.js"; // 24
 
 export default class PointNewPresenter {
   // changeData поддерживаем получение колбека _handleViewAction который приходит с наружи
-  constructor(eventContainer, changeData,) { // поддерживаем колбек который приходит с наружи   // 5 наблюдатель changeMode
+  constructor(eventContainer, changeData) { // поддерживаем колбек который приходит с наружи   // 5 наблюдатель changeMode
     this._eventContainer = eventContainer; // куда рендерить
     this._changeData = changeData; // 3 нов. записываем в свойства класса
 
@@ -39,7 +39,6 @@ export default class PointNewPresenter {
     if (this._addNewPointComponent === null) {
       return;
     }
-
     remove(this._addNewPointComponent);
     this._addNewPointComponent = null;
 
@@ -49,11 +48,11 @@ export default class PointNewPresenter {
   // обраотчик сохранения формы
   _handleFormSubmit(point) {
     this._changeData(
-      UserAction.ADD_POINT,
-      UpdateType.MINOR,
-      // Пока у нас нет сервера, который бы после сохранения
-      // выдывал честный id задачи, нам нужно позаботиться об этом самим
-      Object.assign({id: generateId()}, point)
+        UserAction.ADD_POINT,
+        UpdateType.MINOR,
+        // Пока у нас нет сервера, который бы после сохранения
+        // выдывал честный id задачи, нам нужно позаботиться об этом самим
+        Object.assign({id: generateId()}, point)
     );
     this._addBtn.removeAttribute(`disabled`);
     this.destroy();

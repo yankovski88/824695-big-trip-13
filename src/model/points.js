@@ -36,9 +36,7 @@ export default class PointsModel extends Observer {
   }
 
   // добавить точку
-  addPoint(updateType, update) {  // 29
-    console.log(updateType, update);
-
+  addPoint(updateType, update) { // 29
     this._points = [
       update,
       ...this._points
@@ -48,7 +46,7 @@ export default class PointsModel extends Observer {
   }
 
   // удалить точку
-  deletePoint(updateType, update) {  // 30
+  deletePoint(updateType, update) { // 30
     const index = this._points.findIndex((point) => point.id === update.id);
 
     if (index === -1) {

@@ -116,26 +116,12 @@ export default class EventPresenter {
 
   // обраотчик сохранения формы
   _handleFormSubmit(update) {
-      this._changeData(
+    this._changeData(
         UserAction.UPDATE_POINT, // 25
         UpdateType.MINOR, // 26 идет обновление точки так что минор
         update); // 10 Это обработчик с tripBoard this._handleEventChange в котором находится
-        this._replaceFormToItem(); // замена формы на точку маршрута
+    this._replaceFormToItem(); // замена формы на точку маршрута
   }
-
-
-
-  // // обраотчик сохранения формы
-  // _handleFormSubmit() {
-  //   this._tripEventEditComponent.setSubmitHandler((dataItem) => {
-  //     this._changeData(
-  //       UserAction.UPDATE_POINT, // 25
-  //       UpdateType.MINOR, // 26 идет обновление точки так что минор
-  //       dataItem); // 10 Это обработчик с tripBoard this._handleEventChange в котором находится
-  //     // редоктируемый task
-  //     this._replaceFormToItem(); // замена формы на точку маршрута
-  //   });
-  // }
 
   // обраотчик который закрывается без сохранения формы
   _onEscKeyPress(evt) {
@@ -157,25 +143,25 @@ export default class EventPresenter {
   _handleFavoriteClick() {
     // debugger
     this._changeData( // и после замены сообщаем в changeData
-      UserAction.UPDATE_POINT, // 22 это говорит, что мы  только обновляем, а не удаляем или что-то добавляем.
-      UpdateType.MINOR, // 23 точка никуда не девается, а только помечается меняется или нет, так что это минор.
-      Object.assign(
-        {},
-        this._tripItem, // берем текущий объект описывающий задачу
-        {
-          isFavorite: !this._tripItem.isFavorite // и меняем в нем признак избранности. isFavorite
-          // и сообщить этот новый объект в _changeData
-        }
-      )
+        UserAction.UPDATE_POINT, // 22 это говорит, что мы  только обновляем, а не удаляем или что-то добавляем.
+        UpdateType.MINOR, // 23 точка никуда не девается, а только помечается меняется или нет, так что это минор.
+        Object.assign(
+            {},
+            this._tripItem, // берем текущий объект описывающий задачу
+            {
+              isFavorite: !this._tripItem.isFavorite // и меняем в нем признак избранности. isFavorite
+              // и сообщить этот новый объект в _changeData
+            }
+        )
     );
   }
 
 
   _handleDeleteClick(point) { // 8del
     this._changeData( // этот тот метод который вызовет изменения в модели
-      UserAction.DELETE_POINT, // передаем что хотим удалить
-      UpdateType.MINOR, // что изменения минор
-      point // ну и сам изменяемый элемент
+        UserAction.DELETE_POINT, // передаем что хотим удалить
+        UpdateType.MINOR, // что изменения минор
+        point // ну и сам изменяемый элемент
     );
   }
 }

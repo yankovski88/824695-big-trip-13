@@ -12,7 +12,7 @@ export default class TripInfo {
     this._destinations = [];
     this._startDateInfo = [];
     this._tripInfoComponent = new TripInfoView(this._destinations, this._startDateInfo);
-    this._pointsModel = pointsModel
+    this._pointsModel = pointsModel;
   }
 
   init() { // tripItems
