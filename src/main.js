@@ -9,6 +9,8 @@ import FilterModel from "./model/filter.js"; // 48
 import FilterPresenter from "./presenter/filter.js";
 import {generateId} from "./mock/mock-trip-event-item";
 import {getRandomInteger} from "./util/common"; // 58
+import {MenuItem} from "./const.js"; // 2stat
+
 
 
 // const filters = [ // 48
@@ -33,18 +35,26 @@ pointsModel.setPoints(tripItems); // передаем моковые данны�
 
 const filterModel = new FilterModel(); // 49
 
+const tripEventElement = document.querySelector(`.trip-events`);
+
+
+
 const tripMainElement = document.querySelector(`.trip-main`);
 const tripControlsElement = tripMainElement.querySelector(`.trip-main__trip-controls`);
+
+
+const tripMenuComponent = new TripMenuView(); // 3stat
+// renderElement(tripEventElement, tripMenuComponent, RenderPosition.AFTEREND); // 4stat
 const renderMenu = () => {
   const visuallyHiddenFirstH2Element = tripControlsElement.querySelector(`h2.visually-hidden`);
-  renderElement(visuallyHiddenFirstH2Element, new TripMenuView(), RenderPosition.AFTEREND); // рендер меню
+  renderElement(visuallyHiddenFirstH2Element, tripMenuComponent, RenderPosition.AFTEREND); // 4stat рендер меню
 };
 
 // const renderFilter = () => {
 //   renderElement(tripControlsElement, new TripFilterView(filters, `everything`), RenderPosition.BEFOREEND); // 50 рендер фильтр хедер
 // };
 
-const tripEventElement = document.querySelector(`.trip-events`);
+// const tripEventElement = document.querySelector(`.trip-events`);
 
 renderMenu();
 // renderFilter();
@@ -114,3 +124,25 @@ addBtn.addEventListener(`click`, (evt) => { // нашли кноку созда�
   addBtn.setAttribute(`disabled`, true);
   tripBoardPresenter.createPoint(BLANK_POINT); // в борд презентере вызовем метод который показывает форму создания точки tripItems[0]
 });
+
+// 1stat
+const handleSiteMenuClick = (menuItem) => {
+  switch (menuItem) {
+    case MenuItem.ADD_NEW_POINT: // если пользователь кликнул добавить точку
+      // Скрыть статистику
+      // Показать доску
+      // Показать форму добавления новой задачи
+      // Убрать выделение с ADD NEW TASK после сохранения
+      break;
+    case MenuItem.POINTS:
+      // Показать доску
+      // Скрыть статистику
+      break;
+    case MenuItem.STATISTICS:
+      // Скрыть доску
+      // Показать статистику
+      break;
+  }
+};
+
+tripMenuComponent.setMenuClickHandler(handleSiteMenuClick); // 1.1.stat

@@ -24,3 +24,10 @@ export const FilterType = { // 46 типы фильтров
   FUTURE: `future`,
   PAST: `past`,
 };
+
+// 5stat
+export const MenuItem = {
+  ADD_NEW_POINT: `ADD_NEW_POINT`,
+  POINTS: `POINTS`,
+  STATISTICS: `STATISTICS`
+};
