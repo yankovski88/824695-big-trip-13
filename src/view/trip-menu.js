@@ -42,10 +42,12 @@ export default class TripMenuView extends AbstractView {
   }
 
   setMenuItem(menuItem) {
-    const item = this.getElement().querySelector(`[value=${menuItem}]`);
+
+      const item = this.getElement().querySelector(`[value=${menuItem}]`);
 
     if (item !== null) {
       item.checked = true;
     }
+
   }
 }

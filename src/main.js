@@ -1,6 +1,8 @@
 // import TripFilterView from "./view/trip-filter.js";
 import {renderElement, RenderPosition} from "./util/render";
 import TripMenuView from "./view/trip-menu.js";
+import AddNewPointView from "./view/add-new-point.js";
+
 import {getTripEventItem} from "./mock/mock-trip-event-item.js";
 import TripBoard from "./presenter/tripBoard";
 import TripInfo from "./presenter/tripInfo";
@@ -34,6 +36,7 @@ pointsModel.setPoints(tripItems); // передаем моковые данны�
 // Если захотим вызывать моки тогда нужно испльзовать getPoints
 
 const filterModel = new FilterModel(); // 49
+const addNewPointComponent = new AddNewPointView(); // 49
 
 const tripEventElement = document.querySelector(`.trip-events`);
 
@@ -119,11 +122,18 @@ const BLANK_POINT = {
 
 // 1add код который создаем новую точку маршрута
 const addBtn = document.querySelector(`.trip-main__event-add-btn`);
+addBtn.setAttribute(`value`, `${MenuItem.POINTS}`);
+
 addBtn.addEventListener(`click`, (evt) => { // нашли кноку создания новой точки маршрута
   evt.preventDefault();
   addBtn.setAttribute(`disabled`, true);
   tripBoardPresenter.createPoint(BLANK_POINT); // в борд презентере вызовем метод который показывает форму создания точки tripItems[0]
 });
+
+// const handlePointNewFormClose = () => {
+//   addBtn.querySelector(`[value=${MenuItem.POINTS}]`).disabled = false;
+//   addBtn.setMenuItem(MenuItem.POINTS);
+// };
 
 // 1stat
 const handleSiteMenuClick = (menuItem) => {
