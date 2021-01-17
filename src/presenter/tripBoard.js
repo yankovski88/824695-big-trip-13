@@ -277,9 +277,7 @@ export default class TripBoard {
     tripItems.forEach((item) => { // проходим по этому массиву
       this._renderItem(item); // передаем каждый объект в this._renderItem где дальше он все отрисует
     });
-
   }
-
 
 }
 

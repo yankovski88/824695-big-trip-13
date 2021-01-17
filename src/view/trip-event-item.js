@@ -79,6 +79,8 @@ export default class TripEventItemView extends AbstractView {
   constructor(dataItem) {
     super();
     this._dataItem = dataItem;
+    this._addBtn = document.querySelector(`.trip-main__event-add-btn`);
+
     // Получается если функция this._clickHandler не в конструкторе, то она теряет контекст конструктора и не видит
     // в нем объект с кобеком
     //
@@ -100,8 +102,8 @@ export default class TripEventItemView extends AbstractView {
     // console.log(this); // контекстом стала кнопка если закоментировать bind
     // а если не комментировать bind, то контекстом становится объект TripEventItem и уже из конструктора из объекта
     // {click: callback} уже вызовится наш сохраненый колбек
-
     this._callback.click();
+    this._addBtn.removeAttribute(`disabled`);
   }
 
   // принимает функцию колбек которая должна быть вызвана при клике по кнопке

@@ -122,6 +122,7 @@ const BLANK_POINT = {
 const addBtn = document.querySelector(`.trip-main__event-add-btn`);
 // addBtn.setAttribute(`value`, `${MenuItem.POINTS}`);
 
+
 addBtn.addEventListener(`click`, (evt) => { // нашли кноку создания новой точки маршрута
   evt.preventDefault();
   addBtn.setAttribute(`disabled`, true);
