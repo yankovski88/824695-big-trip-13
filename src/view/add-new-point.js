@@ -452,13 +452,13 @@ export default class AddNewPointView extends SmartView { // AbstractView
       // flatpickr есть смысл инициализировать только в случае,
       // если поле выбора даты доступно для заполнения
       this._datepickerStart = flatpickr( // инициализируем это просто передаем элемент где вызывать datepickr
-        this.getElement().querySelector(`#event-start-time-1`), // вставляем поле куда нужно вставить datepicker
-        {
-          enableTime: true, // добавлена настройка времени
-          dateFormat: `d/m/y H:i`, // формат даты и времени
-          defaultDate: this._dataItem.dateFrom, // конечная дата со временем
-          onChange: this._dueStartDateChangeHandler, // На событие flatpickr передаём наш колбэк. типа addEventListner на datePicker. Пользоваетель в календаре выберет дату и мы ее сюда запишем
-        }
+          this.getElement().querySelector(`#event-start-time-1`), // вставляем поле куда нужно вставить datepicker
+          {
+            enableTime: true, // добавлена настройка времени
+            dateFormat: `d/m/y H:i`, // формат даты и времени
+            defaultDate: this._dataItem.dateFrom, // конечная дата со временем
+            onChange: this._dueStartDateChangeHandler, // На событие flatpickr передаём наш колбэк. типа addEventListner на datePicker. Пользоваетель в календаре выберет дату и мы ее сюда запишем
+          }
       );
     }
   }
@@ -477,13 +477,13 @@ export default class AddNewPointView extends SmartView { // AbstractView
       // flatpickr есть смысл инициализировать только в случае,
       // если поле выбора даты доступно для заполнения
       this._datepickerFinish = flatpickr( // инициализируем это просто передаем элемент где вызывать datepickr
-        this.getElement().querySelector(`#event-end-time-1`), // вставляем поле куда нужно вставить datepicker
-        {
-          enableTime: true, // добавлена настройка времени
-          dateFormat: `d/m/y H:i`, // формат даты и времени
-          defaultDate: this._dataItem.dateTo, // startTime,
-          onChange: this._dueFinishDateChangeHandler, // На событие flatpickr передаём наш колбэк. типа addEventListner на datePicker. Пользоваетель в календаре выберет дату и мы ее сюда запишем
-        }
+          this.getElement().querySelector(`#event-end-time-1`), // вставляем поле куда нужно вставить datepicker
+          {
+            enableTime: true, // добавлена настройка времени
+            dateFormat: `d/m/y H:i`, // формат даты и времени
+            defaultDate: this._dataItem.dateTo, // startTime,
+            onChange: this._dueFinishDateChangeHandler, // На событие flatpickr передаём наш колбэк. типа addEventListner на datePicker. Пользоваетель в календаре выберет дату и мы ее сюда запишем
+          }
       );
     }
   }
@@ -522,7 +522,6 @@ export default class AddNewPointView extends SmartView { // AbstractView
       this._datepicker = null;
     }
   }
-
 
 
 }

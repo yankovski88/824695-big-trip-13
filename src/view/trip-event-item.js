@@ -103,7 +103,7 @@ export default class TripEventItemView extends AbstractView {
     // а если не комментировать bind, то контекстом становится объект TripEventItem и уже из конструктора из объекта
     // {click: callback} уже вызовится наш сохраненый колбек
     this._callback.click();
-    this._addBtn.removeAttribute(`disabled`)
+    this._addBtn.removeAttribute(`disabled`);
   }
 
   // принимает функцию колбек которая должна быть вызвана при клике по кнопке
