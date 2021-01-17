@@ -271,12 +271,26 @@ export default class TripEventEditFormView extends SmartView { // AbstractView
 
   _eventChangeOfferHandler(evt) {
     evt.preventDefault();
+    if(evt.target.attributes.checked){
+      evt.target.removeAttribute(`checked`)
+
+    } else {
+      evt.target.setAttribute(`checked`, true)
+    }
+    // console.log(evt.target);
     // this.updateData({
     //   additionalAllOffers[0].check: !0
     // })
     // console.log(evt);
     // evt.target.attributes.id.nodeValue
-
+  //   // код по замене всех данных объекта destination на тот который выбрал пользователь
+  //   const getActiveOffers = (target) => { // target цель выбора пользователя
+  //
+  //
+  //         this.updateData(this._dataItem.destination = item); // то заменить прошлые данные на новый объект
+  //
+  //   };
+  //   getActiveOffers(evt.target.value);
   }
 
 
@@ -452,20 +466,5 @@ export default class TripEventEditFormView extends SmartView { // AbstractView
     eventResetBtnDel.addEventListener(`click`, this._formDeleteClickHandler);
   }
 
-  _handleOfferClick() {
-    // debugger
-    this._changeData( // и после замены сообщаем в changeData
-        UserAction.UPDATE_POINT, // 22 это говорит, что мы  только обновляем, а не удаляем или что-то добавляем.
-        UpdateType.MINOR, // 23 точка никуда не девается, а только помечается меняется или нет, так что это минор.
-        Object.assign(
-            {},
-            this._tripItem, // берем текущий объект описывающий задачу
-            {
-              isFavorite: !this._tripItem.isFavorite // и меняем в нем признак избранности. isFavorite
-              // и сообщить этот новый объект в _changeData
-            }
-        )
-    );
-  }
 
 }
