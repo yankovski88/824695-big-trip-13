@@ -122,7 +122,9 @@ const BLANK_POINT = {
 const addBtn = document.querySelector(`.trip-main__event-add-btn`);
 // addBtn.setAttribute(`value`, `${MenuItem.POINTS}`);
 
+
 addBtn.addEventListener(`click`, (evt) => { // нашли кноку создания новой точки маршрута
+  console.log(`asdf`);
   evt.preventDefault();
   addBtn.setAttribute(`disabled`, true);
   tripBoardPresenter.createPoint(BLANK_POINT); // в борд презентере вызовем метод который показывает форму создания точки tripItems[0]

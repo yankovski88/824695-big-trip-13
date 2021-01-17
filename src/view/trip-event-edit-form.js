@@ -175,6 +175,7 @@ export default class TripEventEditFormView extends SmartView { // AbstractView
     this._dateTo = this._dataItem.dateTo;
     this._saveBtnElement = this.getElement().querySelector(`.event__save-btn`);
     this._spamText = 20;
+    this._addBtn = document.querySelector(`.trip-main__event-add-btn`);
 
 
     this._submitHandler = this._submitHandler.bind(this);
@@ -370,6 +371,8 @@ export default class TripEventEditFormView extends SmartView { // AbstractView
 
     const eventRollupBtn = this.getElement().querySelector(`.event__rollup-btn`);
     eventRollupBtn.addEventListener(`click`, this._rollupBtnClickHandler);
+    // this._addBtn.removeAttribute(`disabled`);
+
   }
 
   _setDatepickerStart() {

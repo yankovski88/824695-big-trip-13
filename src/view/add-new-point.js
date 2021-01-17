@@ -255,6 +255,8 @@ export default class AddNewPointView extends SmartView { // AbstractView
     this._datepickerStart = null;
     this._dateFrom = this._dataItem.dateFrom;
     this._dateTo = this._dataItem.dateTo;
+    this._saveBtnElement = this.getElement().querySelector(`.event__save-btn`);
+    this._spamText = 20;
 
     this._submitHandler = this._submitHandler.bind(this);
     this._cancelClickHandler = this._cancelClickHandler.bind(this);
@@ -345,11 +347,39 @@ export default class AddNewPointView extends SmartView { // AbstractView
     getChangeDestination(evt.target.value);
   }
 
+  // метод по замене активных оферов
   _eventChangeOfferHandler(evt) {
     evt.preventDefault();
-    // this.updateData({
-    //   additionalAllOffers[0].check: !0
-    // })
+    if (evt.target.attributes.checked) { // если был чекнут,
+      evt.target.removeAttribute(`checked`); // то удаляем чек
+    } else {
+      evt.target.setAttribute(`checked`, true); // если не был чекнут, то чекаем
+    }
+
+    // код по замене всех данных объекта активных offers
+    const getActiveOffers = () => { // target цель выбора пользователя
+      const newOffers = []; // массив со всеми активными объектами оферов
+      const idCheckOffers = []; // массив с чекнутыми офферами
+      const allEmptyOffers = this._dataItem.editFormOffers; // все не чекнутые офферы
+      const groupOffersElement = this.getElement().querySelector(`.event__available-offers`); // нашел группу где все оферы
+      const inputOfOffersElement = groupOffersElement.querySelectorAll(`input`); // выташил из нее все инпуты по оферам
+      inputOfOffersElement.forEach((item)=>{ // обхожу все инпуты
+        if (item.attributes.checked) { // если чекнут
+          idCheckOffers.push(item.attributes.id.textContent.slice(this._spamText)); // то добавляем title офера в массив
+        }
+      });
+
+      // будем сравнивать title из общего массива оферров конкретного этого объекта с его выделеными оферами из idCheckOffers
+      for (let itemEmpty of allEmptyOffers) { // проходим по пустому массиву
+        idCheckOffers.some((item)=>{ // проходим по массиву где названия чеков
+          if (item === itemEmpty.title) { // если название чека совпадает с заголовком пустого офера
+            newOffers.push(itemEmpty); // то добавляем это объект в массив
+          } // получили массив чекнутых обектов для оферов
+        });
+      }
+      this.updateData(this._dataItem.offers = newOffers); // заменяем старые чекнутые оферы на новые
+    };
+    getActiveOffers(); // вызов функции по замене старых чекнутых оферов на новые
   }
 
 
@@ -408,32 +438,6 @@ export default class AddNewPointView extends SmartView { // AbstractView
     eventResetBtn.addEventListener(`click`, this._cancelClickHandler);
   }
 
-  // 3 обработчик устанавливаем setDatepicker
-  _setDatepickerFinish() {
-    if (this._datepickerFinish) { // если был ранее _datepicker
-      // В случае обновления компонента удаляем вспомогательные DOM-элементы,
-      // которые создает flatpickr при инициализации
-      this._datepickerFinish.destroy(); // то удаляем его
-      this._datepickerFinish = null; // и зануляем его
-    }
-
-    if (this._dataItem) { // проверка или нужно вообще покаывать поле datepicker, вдруг пользователь скрыл
-      // flatpickr есть смысл инициализировать только в случае,
-      // если поле выбора даты доступно для заполнения
-      this._datepickerFinish = flatpickr( // инициализируем это просто передаем элемент где вызывать datepickr
-          this.getElement().querySelector(`#event-end-time-1`), // вставляем поле куда нужно вставить datepicker
-          {
-            enableTime: true, // добавлена настройка времени
-            dateFormat: `d/m/y H:i`, // формат даты и времени
-            defaultDate: this._dataItem.dateTo, // startTime,
-            onChange: this._dueFinishDateChangeHandler, // На событие flatpickr передаём наш колбэк. типа addEventListner на datePicker. Пользоваетель в календаре выберет дату и мы ее сюда запишем
-          // onClose: this._isDateValid,
-          }
-      );
-    }
-  }
-
-
   _setDatepickerStart() {
     // код на удаление _datepicker если он был открыт ранее
     if (this._datepickerStart) { // если был ранее _datepicker
@@ -448,20 +452,49 @@ export default class AddNewPointView extends SmartView { // AbstractView
       // flatpickr есть смысл инициализировать только в случае,
       // если поле выбора даты доступно для заполнения
       this._datepickerStart = flatpickr( // инициализируем это просто передаем элемент где вызывать datepickr
-          this.getElement().querySelector(`#event-start-time-1`), // вставляем поле куда нужно вставить datepicker
-          {
-            enableTime: true, // добавлена настройка времени
-            dateFormat: `d/m/y H:i`, // формат даты и времени
-            defaultDate: this._dataItem.dateFrom, // конечная дата со временем
-            onChange: this._dueStartDateChangeHandler, // На событие flatpickr передаём наш колбэк. типа addEventListner на datePicker. Пользоваетель в календаре выберет дату и мы ее сюда запишем
-          // onClose: this._isDateValid,
-          }
+        this.getElement().querySelector(`#event-start-time-1`), // вставляем поле куда нужно вставить datepicker
+        {
+          enableTime: true, // добавлена настройка времени
+          dateFormat: `d/m/y H:i`, // формат даты и времени
+          defaultDate: this._dataItem.dateFrom, // конечная дата со временем
+          onChange: this._dueStartDateChangeHandler, // На событие flatpickr передаём наш колбэк. типа addEventListner на datePicker. Пользоваетель в календаре выберет дату и мы ее сюда запишем
+        }
+      );
+    }
+  }
+
+
+  // 3 обработчик устанавливаем setDatepicker
+  _setDatepickerFinish() {
+    if (this._datepickerFinish) { // если был ранее _datepicker
+      // В случае обновления компонента удаляем вспомогательные DOM-элементы,
+      // которые создает flatpickr при инициализации
+      this._datepickerFinish.destroy(); // то удаляем его
+      this._datepickerFinish = null; // и зануляем его
+    }
+
+    if (this._dataItem) { // проверка или нужно вообще покаывать поле datepicker, вдруг пользователь скрыл
+      // flatpickr есть смысл инициализировать только в случае,
+      // если поле выбора даты доступно для заполнения
+      this._datepickerFinish = flatpickr( // инициализируем это просто передаем элемент где вызывать datepickr
+        this.getElement().querySelector(`#event-end-time-1`), // вставляем поле куда нужно вставить datepicker
+        {
+          enableTime: true, // добавлена настройка времени
+          dateFormat: `d/m/y H:i`, // формат даты и времени
+          defaultDate: this._dataItem.dateTo, // startTime,
+          onChange: this._dueFinishDateChangeHandler, // На событие flatpickr передаём наш колбэк. типа addEventListner на datePicker. Пользоваетель в календаре выберет дату и мы ее сюда запишем
+        }
       );
     }
   }
 
 
   _dueStartDateChangeHandler(userDate) {
+    if ((dayjs(userDate).toDate() > this._dateTo)) {
+      this._saveBtnElement.setAttribute(`disabled`, true);
+    } else if ((dayjs(userDate).toDate() < this._dateTo)) {
+      this._saveBtnElement.removeAttribute(`disabled`);
+    }
     this.updateData({
       dateFrom: dayjs(userDate).toDate() // .hour(23).minute(59).second(59).toDate()
     }, true);
@@ -469,6 +502,11 @@ export default class AddNewPointView extends SmartView { // AbstractView
 
   // 4
   _dueFinishDateChangeHandler([userDate]) {
+    if (dayjs(userDate).toDate() > this._dateFrom) {
+      this._saveBtnElement.removeAttribute(`disabled`);
+    } else if ((dayjs(userDate).toDate() < this._dateFrom)) {
+      this._saveBtnElement.setAttribute(`disabled`, true);
+    }
     this.updateData({
       dateTo: dayjs(userDate).toDate() // .hour(23).minute(59).second(59).toDate()
     }, true);
@@ -484,5 +522,7 @@ export default class AddNewPointView extends SmartView { // AbstractView
       this._datepicker = null;
     }
   }
+
+
 
 }
