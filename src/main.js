@@ -1,7 +1,7 @@
 // import TripFilterView from "./view/trip-filter.js";
 import {renderElement, RenderPosition} from "./util/render";
 import TripMenuView from "./view/trip-menu.js";
-import AddNewPointView from "./view/add-new-point.js";
+// import AddNewPointView from "./view/add-new-point.js";
 
 import {getTripEventItem} from "./mock/mock-trip-event-item.js";
 import TripBoard from "./presenter/tripBoard";
@@ -12,7 +12,6 @@ import FilterPresenter from "./presenter/filter.js";
 import {generateId} from "./mock/mock-trip-event-item";
 import {getRandomInteger} from "./util/common"; // 58
 import {MenuItem} from "./const.js"; // 2stat
-
 
 
 // const filters = [ // 48
@@ -36,10 +35,9 @@ pointsModel.setPoints(tripItems); // передаем моковые данны�
 // Если захотим вызывать моки тогда нужно испльзовать getPoints
 
 const filterModel = new FilterModel(); // 49
-const addNewPointComponent = new AddNewPointView(); // 49
+// const addNewPointComponent = new AddNewPointView(); // 49
 
 const tripEventElement = document.querySelector(`.trip-events`);
-
 
 
 const tripMainElement = document.querySelector(`.trip-main`);

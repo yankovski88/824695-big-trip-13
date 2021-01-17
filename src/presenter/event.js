@@ -3,7 +3,6 @@ import {remove, renderElement, RenderPosition} from "../util/render";
 import TripEventEditFormView from "../view/trip-event-edit-form";
 import TripEventItemView from "../view/trip-event-item";
 import {UserAction, UpdateType} from "../const.js"; // 24
-import {destinations, dataOffers, TYPES} from "../mock/mock-trip-event-item.js";
 
 
 // 4 наблюдатель
@@ -117,38 +116,11 @@ export default class EventPresenter {
 
   // обраотчик сохранения формы
   _handleFormSubmit(update) {
-    const newOffers = [];
-    const idCheckOffers = []; // массив с чекнутыми офферами
-    const allEmptyOffers = this._tripItem.editFormOffers; // все не чекнутые офферы
-    const groupOffersElement = this._tripEventEditComponent.getElement().querySelector(`.event__available-offers`);
-    const inputOfOffersElement = groupOffersElement.querySelectorAll(`input`);
-    inputOfOffersElement.forEach((item)=>{
-      if(item.attributes.checked){
-        idCheckOffers.push(item.attributes.id.textContent.slice(20));
-      }
-    });
-
-    for(let it of allEmptyOffers){
-      idCheckOffers.some((item)=>{
-        if(item === it.title){
-          newOffers.push(it)
-        }
-      });
-    }
-
-
     this._changeData( // 10 Это обработчик с tripBoard this._handleEventChange в котором находится
         UserAction.UPDATE_POINT, // 25
         UpdateType.MINOR, // 26 идет обновление точки так что минор
-      Object.assign(
-        {},
-        update, // берем текущий объект описывающий задачу
-        {
-          offers: newOffers // и меняем в нем признак избранности. isFavorite
-          // и сообщить этот новый объект в _changeData
-        }
-      )
-    ); // update это данные которые будут добавлены во вьюхе this._dataItem
+        update); // update это данные которые будут добавлены во вьюхе this._dataItem
+
     this._replaceFormToItem(); // замена формы на точку маршрута
   }
 

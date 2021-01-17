@@ -128,7 +128,6 @@ const createTripEventEditForm = (dataItem) => { // сюда попадают д�
   };
 
 
-
   // функция по отрисовке фрагмента всех преимуществ
   const getOffersTemplate = (formOffers) => {
 

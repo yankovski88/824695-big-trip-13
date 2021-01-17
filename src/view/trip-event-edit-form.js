@@ -174,6 +174,7 @@ export default class TripEventEditFormView extends SmartView { // AbstractView
     this._dateFrom = this._dataItem.dateFrom;
     this._dateTo = this._dataItem.dateTo;
     this._saveBtnElement = this.getElement().querySelector(`.event__save-btn`);
+    this._spamText = 20;
 
 
     this._submitHandler = this._submitHandler.bind(this);
@@ -269,28 +270,39 @@ export default class TripEventEditFormView extends SmartView { // AbstractView
     getChangeDestination(evt.target.value);
   }
 
+  // метод по замене активных оферов
   _eventChangeOfferHandler(evt) {
     evt.preventDefault();
-    if(evt.target.attributes.checked){
-      evt.target.removeAttribute(`checked`)
-
+    if (evt.target.attributes.checked) { // если был чекнут,
+      evt.target.removeAttribute(`checked`); // то удаляем чек
     } else {
-      evt.target.setAttribute(`checked`, true)
+      evt.target.setAttribute(`checked`, true); // если не был чекнут, то чекаем
     }
-    // console.log(evt.target);
-    // this.updateData({
-    //   additionalAllOffers[0].check: !0
-    // })
-    // console.log(evt);
-    // evt.target.attributes.id.nodeValue
-  //   // код по замене всех данных объекта destination на тот который выбрал пользователь
-  //   const getActiveOffers = (target) => { // target цель выбора пользователя
-  //
-  //
-  //         this.updateData(this._dataItem.destination = item); // то заменить прошлые данные на новый объект
-  //
-  //   };
-  //   getActiveOffers(evt.target.value);
+
+    // код по замене всех данных объекта активных offers
+    const getActiveOffers = () => { // target цель выбора пользователя
+      const newOffers = []; // массив со всеми активными объектами оферов
+      const idCheckOffers = []; // массив с чекнутыми офферами
+      const allEmptyOffers = this._dataItem.editFormOffers; // все не чекнутые офферы
+      const groupOffersElement = this.getElement().querySelector(`.event__available-offers`); // нашел группу где все оферы
+      const inputOfOffersElement = groupOffersElement.querySelectorAll(`input`); // выташил из нее все инпуты по оферам
+      inputOfOffersElement.forEach((item)=>{ // обхожу все инпуты
+        if (item.attributes.checked) { // если чекнут
+          idCheckOffers.push(item.attributes.id.textContent.slice(this._spamText)); // то добавляем title офера в массив
+        }
+      });
+
+      // будем сравнивать title из общего массива оферров конкретного этого объекта с его выделеными оферами из idCheckOffers
+      for (let itemEmpty of allEmptyOffers) { // проходим по пустому массиву
+        idCheckOffers.some((item)=>{ // проходим по массиву где названия чеков
+          if (item === itemEmpty.title) { // если название чека совпадает с заголовком пустого офера
+            newOffers.push(itemEmpty); // то добавляем это объект в массив
+          } // получили массив чекнутых обектов для оферов
+        });
+      }
+      this.updateData(this._dataItem.offers = newOffers); // заменяем старые чекнутые оферы на новые
+    };
+    getActiveOffers(); // вызов функции по замене старых чекнутых оферов на новые
   }
 
 
@@ -374,13 +386,13 @@ export default class TripEventEditFormView extends SmartView { // AbstractView
       // flatpickr есть смысл инициализировать только в случае,
       // если поле выбора даты доступно для заполнения
       this._datepickerStart = flatpickr( // инициализируем это просто передаем элемент где вызывать datepickr
-        this.getElement().querySelector(`#event-start-time-1`), // вставляем поле куда нужно вставить datepicker
-        {
-          enableTime: true, // добавлена настройка времени
-          dateFormat: `d/m/y H:i`, // формат даты и времени
-          defaultDate: this._dataItem.dateFrom, // конечная дата со временем
-          onChange: this._dueStartDateChangeHandler, // На событие flatpickr передаём наш колбэк. типа addEventListner на datePicker. Пользоваетель в календаре выберет дату и мы ее сюда запишем
-        }
+          this.getElement().querySelector(`#event-start-time-1`), // вставляем поле куда нужно вставить datepicker
+          {
+            enableTime: true, // добавлена настройка времени
+            dateFormat: `d/m/y H:i`, // формат даты и времени
+            defaultDate: this._dataItem.dateFrom, // конечная дата со временем
+            onChange: this._dueStartDateChangeHandler, // На событие flatpickr передаём наш колбэк. типа addEventListner на datePicker. Пользоваетель в календаре выберет дату и мы ее сюда запишем
+          }
       );
     }
   }
@@ -411,15 +423,11 @@ export default class TripEventEditFormView extends SmartView { // AbstractView
   }
 
 
-
-
-
   _dueStartDateChangeHandler(userDate) {
-    if((dayjs(userDate).toDate() > this._dateTo) ){
-      this._saveBtnElement.setAttribute(`disabled`, true)
-    }
-    else if((dayjs(userDate).toDate() < this._dateTo) ){
-      this._saveBtnElement.removeAttribute(`disabled`)
+    if ((dayjs(userDate).toDate() > this._dateTo)) {
+      this._saveBtnElement.setAttribute(`disabled`, true);
+    } else if ((dayjs(userDate).toDate() < this._dateTo)) {
+      this._saveBtnElement.removeAttribute(`disabled`);
     }
     this.updateData({
       dateFrom: dayjs(userDate).toDate() // .hour(23).minute(59).second(59).toDate()
@@ -428,11 +436,10 @@ export default class TripEventEditFormView extends SmartView { // AbstractView
 
   // 4
   _dueFinishDateChangeHandler([userDate]) {
-    if(dayjs(userDate).toDate() > this._dateFrom){
-      this._saveBtnElement.removeAttribute(`disabled`)
-    }
-    else if((dayjs(userDate).toDate() < this._dateFrom) ){
-      this._saveBtnElement.setAttribute(`disabled`, true)
+    if (dayjs(userDate).toDate() > this._dateFrom) {
+      this._saveBtnElement.removeAttribute(`disabled`);
+    } else if ((dayjs(userDate).toDate() < this._dateFrom)) {
+      this._saveBtnElement.setAttribute(`disabled`, true);
     }
     this.updateData({
       dateTo: dayjs(userDate).toDate() // .hour(23).minute(59).second(59).toDate()
@@ -466,5 +473,20 @@ export default class TripEventEditFormView extends SmartView { // AbstractView
     eventResetBtnDel.addEventListener(`click`, this._formDeleteClickHandler);
   }
 
+  _handleOfferClick() {
+    // debugger
+    this._changeData( // и после замены сообщаем в changeData
+        UserAction.UPDATE_POINT, // 22 это говорит, что мы  только обновляем, а не удаляем или что-то добавляем.
+        UpdateType.MINOR, // 23 точка никуда не девается, а только помечается меняется или нет, так что это минор.
+        Object.assign(
+            {},
+            this._tripItem, // берем текущий объект описывающий задачу
+            {
+              isFavorite: !this._tripItem.isFavorite // и меняем в нем признак избранности. isFavorite
+              // и сообщить этот новый объект в _changeData
+            }
+        )
+    );
+  }
 
 }
