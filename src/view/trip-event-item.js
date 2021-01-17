@@ -1,4 +1,5 @@
 import dayjs from "dayjs";
+import he from "he";
 import {getDateDiff} from "../util/render.js";
 import AbstractView from "./abstract.js";
 
@@ -42,7 +43,7 @@ const createTripEventItem = (dataItems) => {
                   <img class="event__type-icon" width="42" height="42" src="img/icons/${type.toLowerCase()}.png" alt="Event type icon"
                   value="${type}">
                 </div>
-                <h3 class="event__title">${type} ${destination.name}</h3>
+                <h3 class="event__title">${type} ${he.encode(destination.name)}</h3>
                 <div class="event__schedule">
                   <p class="event__time">
                     <time class="event__start-time" datetime=${startDate}>${startDate}</time>
@@ -54,7 +55,7 @@ const createTripEventItem = (dataItems) => {
                   <p class="event__duration">${getDateDiff(dayjs(dateFrom), dayjs(dateTo))}</p>
                 </div>
                 <p class="event__price">
-                  &euro;&nbsp;<span class="event__price-value">${basePrice}</span> 
+                  &euro;&nbsp;<span class="event__price-value">${he.encode(basePrice.toString())}</span> 
                 </p>
                 <h4 class="visually-hidden">Offers:</h4>
                 <ul class="event__selected-offers">
@@ -75,9 +76,9 @@ const createTripEventItem = (dataItems) => {
 };
 
 export default class TripEventItemView extends AbstractView {
-  constructor(dataItems) {
+  constructor(dataItem) {
     super();
-    this._dataItems = dataItems;
+    this._dataItem = dataItem;
     // Получается если функция this._clickHandler не в конструкторе, то она теряет контекст конструктора и не видит
     // в нем объект с кобеком
     //
@@ -85,14 +86,12 @@ export default class TripEventItemView extends AbstractView {
     // this._callback.click() вот эта функция в контексте this обращается к виндовс, а в нем нет метода click. И чтобы
     // устранить делаем bind в this._clickHandler через bind передали новый контекст this, а передали контекст
     // конструктора, а в нем уже лежит объект с колбеком click
-
     this._clickHandler = this._clickHandler.bind(this);
-
-    this._clickFavoriteHandler = this._clickFavoriteHandler.bind(this);
+    this._clickFavoriteHandler = this._clickFavoriteHandler.bind(this); // бинд обработчика
   }
 
   getTemplate() {
-    return createTripEventItem(this._dataItems);
+    return createTripEventItem(this._dataItem);
   }
 
   // в колбеке пишем код который был в колбеке
@@ -126,13 +125,13 @@ export default class TripEventItemView extends AbstractView {
     // this._clickHandler колбэк который должен сработать и им является приватный метод _clickHandler
   }
 
-  _clickFavoriteHandler() {
+  _clickFavoriteHandler() { // создали ссылку для вызова этого колбека из объекта который из abstarct
     this._callback.clickFavorite();
   }
 
   // метод по установке клика на зведу, будет вызываться в presenter
   setFavoriteClickHandler(callback) {
-    this._callback.clickFavorite = callback;
+    this._callback.clickFavorite = callback; // в объект унаследованого от abstract сохраняем колбек
     const btnFavorite = this.getElement().querySelector(`.event__favorite-btn`);
     btnFavorite.addEventListener(`click`, this._clickFavoriteHandler);
   }

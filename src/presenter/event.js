@@ -2,6 +2,8 @@
 import {remove, renderElement, RenderPosition} from "../util/render";
 import TripEventEditFormView from "../view/trip-event-edit-form";
 import TripEventItemView from "../view/trip-event-item";
+import {UserAction, UpdateType} from "../const.js"; // 24
+
 
 // 4 наблюдатель
 const Mode = {
@@ -9,10 +11,10 @@ const Mode = {
   EDITING: `EDITING`
 };
 
-export default class Event {
-  // changeData поддерживаем получение колбека _handleEventChange который приходит с наружи
+export default class EventPresenter {
+  // changeData поддерживаем получение колбека _handleViewAction который приходит с наружи
   constructor(eventContainer, changeData, changeMode) { // поддерживаем колбек который приходит с наружи   // 5 наблюдатель
-    this._eventContainer = eventContainer;
+    this._eventContainer = eventContainer; // куда рендерить
     this._changeData = changeData; // 3 нов. записываем в свойства класса
     this._changeMode = changeMode; // 6 наблюдатель
 
@@ -24,43 +26,40 @@ export default class Event {
     this._destinations = [];
     this._startDateInfo = [];
 
-    this._onFormSubmit = this._onFormSubmit.bind(this);
+    this._handleFormSubmit = this._handleFormSubmit.bind(this);
     this._onEscKeyPress = this._onEscKeyPress.bind(this);
     this._onEventRollupBtnClick = this._onEventRollupBtnClick.bind(this);
     this._handleFavoriteClick = this._handleFavoriteClick.bind(this);
+    this._handleDeleteClick = this._handleDeleteClick.bind(this); // 7del
   }
-
   init(tripItem) {
     this._tripItem = tripItem;
-
-
     // предыдущие компоненты будут null
     const prevTripEventItemComponent = this._tripEventItemComponent;
     const prevTripEventEditComponent = this._tripEventEditComponent;
-
     this._tripEventItemComponent = new TripEventItemView(this._tripItem); // виюха для item
     this._tripEventEditComponent = new TripEventEditFormView(this._tripItem); // вьюха для формы редоктирования
 
+    this._tripEventEditComponent.setDeleteClickHandler(this._handleDeleteClick); // 6del установили обработчик на удаление
+    this._tripEventEditComponent.setSubmitHandler(this._handleFormSubmit);
+    // редоктируемый task
+    this._replaceFormToItem(); // замена формы на точку маршрута
     // код который рендерит форму при клике на стрелку вниз в item
     this._tripEventItemComponent.setClickHandler(() => {
       this._replaceItemToForm();
-
       // при удалении элемента из дом обработчик можно не удалять. удалять на document и нов элемент обработчиком
-      this._onFormSubmit(tripItem);
+      // this._handleFormSubmit(tripItem);
     });
-
     // код который скрывает форму если кликнуть в форме редоктирования кнопку треугольник
-    this._tripEventEditComponent.setRollupBtnHandler(()=>{
+    this._tripEventEditComponent.setRollupBtnHandler(() => {
       this._tripEventEditComponent.reset(this._tripItem); // код для удаления не сохраненных данных в форме
       this._replaceFormToItem();
     });
-
     // код который скрывает форму при клике на кенсел
     this._tripEventEditComponent.setCancelHandler(() => {
       this._tripEventEditComponent.reset(this._tripItem); // код для удаления не сохраненных данных в форме
       this._replaceFormToItem();
     });
-
     // передали эти обработчики в соответствующие вьюхи
     this._tripEventItemComponent.setFavoriteClickHandler(this._handleFavoriteClick); // нужно сделать клик по favorite
 
@@ -107,20 +106,22 @@ export default class Event {
   // функция которая из формы редоктирования делает предложение Item
   _replaceFormToItem() {
     this._tripEventEditComponent.getElement().replaceWith(this._tripEventItemComponent.getElement());
-    document.removeEventListener(`keydown`, this._onEscKeyPress);
-    document.removeEventListener(`submit`, this._onFormSubmit);
-    document.removeEventListener(`click`, this._onEventRollupBtnClick);
+    // document.removeEventListener(`keydown`, this._onEscKeyPress);
+    // document.removeEventListener(`submit`, this._handleFormSubmit);
+    // document.removeEventListener(`click`, this._onEventRollupBtnClick);
 
     this._mode = Mode.DEFAULT; // 13 наблюдатель. Текущий режим по умолчанию
   }
 
+
   // обраотчик сохранения формы
-  _onFormSubmit() {
-    this._tripEventEditComponent.setSubmitHandler((dataItem) => {
-      this._changeData(dataItem); // 10 Это обработчик с tripBoard this._handleEventChange в котором находится
-      // редоктируемый task
-      this._replaceFormToItem(); // замена формы на точку маршрута
-    });
+  _handleFormSubmit(update) {
+    this._changeData( // 10 Это обработчик с tripBoard this._handleEventChange в котором находится
+        UserAction.UPDATE_POINT, // 25
+        UpdateType.MINOR, // 26 идет обновление точки так что минор
+        update); // update это данные которые будут добавлены во вьюхе this._dataItem
+
+    this._replaceFormToItem(); // замена формы на точку маршрута
   }
 
   // обраотчик который закрывается без сохранения формы
@@ -141,16 +142,27 @@ export default class Event {
   // этот метод вызывает _changeData который пришел из tripBoard _handleEventChange который является тоже методом
   // для изменения данных. Этому методу нужно сообщить измененные данные. И здесь эти данные будем менять!!!
   _handleFavoriteClick() {
-    this._changeData( // и после замены сооббщаем в changeData
+    // debugger
+    this._changeData( // и после замены сообщаем в changeData
+        UserAction.UPDATE_POINT, // 22 это говорит, что мы  только обновляем, а не удаляем или что-то добавляем.
+        UpdateType.MINOR, // 23 точка никуда не девается, а только помечается меняется или нет, так что это минор.
         Object.assign(
             {},
             this._tripItem, // берем текущий объект описывающий задачу
             {
               isFavorite: !this._tripItem.isFavorite // и меняем в нем признак избранности. isFavorite
-            // и сообщить этот новый объект в _changeData
+              // и сообщить этот новый объект в _changeData
             }
         )
     );
   }
 
+
+  _handleDeleteClick(point) { // 8del
+    this._changeData( // этот тот метод который вызовет изменения в модели
+        UserAction.DELETE_POINT, // передаем что хотим удалить
+        UpdateType.MINOR, // что изменения минор
+        point // ну и сам изменяемый элемент
+    );
+  }
 }
