@@ -11,7 +11,8 @@ import FilterModel from "./model/filter.js"; // 48
 import FilterPresenter from "./presenter/filter.js";
 import {generateId} from "./mock/mock-trip-event-item";
 import {getRandomInteger} from "./util/common"; // 58
-import {MenuItem} from "./const.js"; // 2stat
+import {MenuItem, UpdateType, FilterType} from "./const.js"; // 2stat
+import StatisticsView from "./view/statistics.js"; // stat
 
 
 // const filters = [ // 48
@@ -69,6 +70,13 @@ tripBoardPresenter.init(); // элементы доски // tripItems
 
 const filterPresenter = new FilterPresenter(tripControlsElement, filterModel); // 60 pointsModel
 filterPresenter.init();
+
+const statisticsComponent = new StatisticsView();
+
+// Для удобства отладки скроем доску
+// boardPresenter.init();
+// и отобразим сразу статистику
+// renderElement(tripEventElement, new StatisticsView(pointsModel.getPoints()), RenderPosition.BEFOREEND);
 
 
 const BLANK_POINT = {
@@ -129,29 +137,48 @@ addBtn.addEventListener(`click`, (evt) => { // нашли кноку созда�
   tripBoardPresenter.createPoint(BLANK_POINT); // в борд презентере вызовем метод который показывает форму создания точки tripItems[0]
 });
 
+const a = () =>
+{
+  // return `asdfdffddf`
+  console.log(`asdf`)
+}
+// console.log(tripMenuComponent);
+statisticsComponent.setClickStats(a());
+
+
+
 // const handlePointNewFormClose = () => {
 //   addBtn.querySelector(`[value=${MenuItem.POINTS}]`).disabled = false;
 //   addBtn.setMenuItem(MenuItem.POINTS);
 // };
-
-// 1stat
-const handleSiteMenuClick = (menuItem) => {
-  switch (menuItem) {
-    case MenuItem.ADD_NEW_POINT: // если пользователь кликнул добавить точку
-      // Скрыть статистику
-      // Показать доску
-      // Показать форму добавления новой задачи
-      // Убрать выделение с ADD NEW TASK после сохранения
-      break;
-    case MenuItem.POINTS:
-      // Показать доску
-      // Скрыть статистику
-      break;
-    case MenuItem.STATISTICS:
-      // Скрыть доску
-      // Показать статистику
-      break;
-  }
-};
-
-tripMenuComponent.setMenuClickHandler(handleSiteMenuClick); // 1.1.stat
+//
+// // 1stat
+// const handleSiteMenuClick = (menuItem) => {
+//   switch (menuItem) {
+//     case MenuItem.ADD_NEW_POINT: // если пользователь кликнул добавить точку
+//       // Скрыть статистику
+//       // Показать доску
+//       // Показать форму добавления новой задачи
+//       // Убрать выделение с ADD NEW TASK после сохранения
+//       tripBoardPresenter.destroy(); // уничтожаем доску. Пока задестроена и отписана от медели
+//       filterModel.setFilter(UpdateType.MAJOR, FilterType.DAY); // давайка сбрось активный флиьтр на все задачи
+//       tripBoardPresenter.init(); // и снвоа и дет реиницилизация борд призентера. Он все снова отрисует
+//
+//
+//       tripBoardPresenter.createPoint(handlePointNewFormClose);
+//       tripMenuComponent.getElement().querySelector(`[value=${MenuItem.POINTS}]`).disabled = true;
+//       break;
+//     case MenuItem.POINTS:
+//       // Показать доску
+//       // Скрыть статистику
+//       tripBoardPresenter.init(); // для показа точек делаем инициализацию
+//       break;
+//     case MenuItem.STATISTICS:
+//       // Скрыть доску
+//       // Показать статистику
+//       tripBoardPresenter.destroy(); // скрываем борд призентер т.е. дестроим его
+//       break;
+//   }
+// };
+//
+// tripMenuComponent.setMenuClickHandler(handleSiteMenuClick); // 1.1.stat

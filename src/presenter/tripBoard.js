@@ -33,8 +33,8 @@ export default class TripBoard {
 
     this._handleViewAction = this._handleViewAction.bind(this); // 21 оброботчик вызывает обновление модели
     this._handleModelEvent = this._handleModelEvent.bind(this); // 18 это обработка уведомлений от модели.
-    this._pointsModel.addObserver(this._handleModelEvent); // 17  В модель точек с помощью обсерверов передали колбек который будет вызывать модель.
-    this._filterModel.addObserver(this._handleModelEvent); // 65
+    // this._pointsModel.addObserver(this._handleModelEvent); // 17  В модель точек с помощью обсерверов передали колбек который будет вызывать модель.
+    // this._filterModel.addObserver(this._handleModelEvent); // 65
 
     // 4add т.к. мы имопртируем презентер PointNewPresenter, то нужно создать инстанс презентера новой точки маршрута
     this._pointNewPresenter = new PointNewPresenter(this._tripEventsListComponent, this._handleViewAction);
@@ -42,6 +42,8 @@ export default class TripBoard {
 
   // В main.js в управлющем файле инициализируем TripBoard.init(). Он запустит всю логику MVP.  И ТОЛЬКО ПО БОРДУ!
   init() { // 10 tripItems
+    this._pointsModel.addObserver(this._handleModelEvent); // 17  В модель точек с помощью обсерверов передали колбек который будет вызывать модель.
+    this._filterModel.addObserver(this._handleModelEvent); // 65
     this._renderBoard();
     // // this._tripItems = tripItems.slice(); // храним отсоортированные задачи
     // // this._sortTripItems(this._currentSortType); // отсортировал список по умолчанию по дням
@@ -58,12 +60,22 @@ export default class TripBoard {
   }
 
   // 2add метод который создает точку маршрута
-  createPoint(blank) { // tripItem
+  createPoint(blank, callback) { // был толтко blank
     this._currentSortType = SortType.DAY; // параметр сортировки изначально день
     this._filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING); // передаем обновление модели с этими параметрами
-    this._pointNewPresenter.init(blank); // должна производится инитицилизация которая отвечает за форму добавления tripItem
+    this._pointNewPresenter.init(blank, callback); // должна производится инитицилизация которая отвечает за форму добавления tripItem
   }
 
+
+  // destroy() { // stat
+  //   this._clearBoard({resetSortType: true});
+  //
+  //   remove(this._tripEventsListComponent);
+  //   remove(this._tripBoardContainer);
+  //
+  //   this._pointsModel.removeObserver(this._handleModelEvent); // отписываемся от модели
+  //   this._filterModel.removeObserver(this._handleModelEvent);
+  // }
 
   // 40 рендарим доску со всеми списками, точками маршрута, а если их нет, то выводим пустое сообщение
   _renderBoard() {

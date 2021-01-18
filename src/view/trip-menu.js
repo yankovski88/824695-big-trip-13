@@ -1,7 +1,7 @@
 import AbstractView from "./abstract.js";
 import {MenuItem} from "../const.js"; // 6stat
 
-// 7 stat
+// 7 stat перекинули уникальное value чтобы потом на основании его редактировать
 const createTripMenu = () => {
   return `<nav class="trip-controls__trip-tabs  trip-tabs">
     <a class="trip-tabs__btn  trip-tabs__btn--active" href="#" value="${MenuItem.POINTS}">Table</a>
