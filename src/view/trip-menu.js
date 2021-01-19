@@ -1,5 +1,6 @@
-import AbstractView from "./abstract.js";
 import {MenuItem} from "../const.js"; // 6stat
+import AbstractView from "./abstract.js";
+
 
 // 7 stat перекинули уникальное value чтобы потом на основании его редактировать
 const createTripMenu = () => {
@@ -9,14 +10,6 @@ const createTripMenu = () => {
     </nav>`;
 };
 
-
-// export default class TripMenuView extends AbstractView {
-//
-//   // функция которая будет возвращать разметку
-//   getTemplate() {
-//     return createTripMenu();
-//   }
-// }
 
 // 8 stat
 export default class TripMenuView extends AbstractView {
@@ -33,20 +26,30 @@ export default class TripMenuView extends AbstractView {
 
   _menuClickHandler(evt) {
     evt.preventDefault();
-    this._callback.menuClick(evt.target.value);
+    this._callback.menuClick(evt.target.attributes.value.value); // по чем кликнули цель бедем помещать в колбек который будет в main
+    console.log(evt.target.attributes.value.value);
   }
 
+// - Добавим подписку для обработчика перехода
   setMenuClickHandler(callback) {
     this._callback.menuClick = callback;
-    this.getElement().addEventListener(`change`, this._menuClickHandler);
+    this.getElement().addEventListener(`click`, this._menuClickHandler);
+    // const menuLinks = this.getElement().querySelectorAll(`a`) ;
+    // menuLinks.forEach((item)=>{
+    //   console.log(item.attributes.value.value);
+    //   item.addEventListener(`click`, this._menuClickHandler)
+    // });
   }
 
+  // - Научим представление меню учитывать выбранный пункт
+  // метод в который передаем параметр значения меню value
   setMenuItem(menuItem) {
 
     const item = this.getElement().querySelector(`[value=${menuItem}]`);
+    // item это найти в элементе меню атрибут value со значением menuItem
 
-    if (item !== null) {
-      item.checked = true;
+    if (item !== null) { // если item не равно нулю, то атрибут найден
+      item.checked = true; // и этому элементу добавляем свойство checked = true, но в разметке чет оно не появляется
     }
 
   }

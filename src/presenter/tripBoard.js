@@ -42,7 +42,12 @@ export default class TripBoard {
 
   // В main.js в управлющем файле инициализируем TripBoard.init(). Он запустит всю логику MVP.  И ТОЛЬКО ПО БОРДУ!
   init() { // 10 tripItems
-    this._pointsModel.addObserver(this._handleModelEvent); // 17  В модель точек с помощью обсерверов передали колбек который будет вызывать модель.
+    // - Перенесем подписку на модель из конструктора в метод инициализации.
+    //   Это нужно для того, чтобы при destroy отписаться от моделей, а при
+    // повторной инициализации подписаться
+
+    // модели передали в инициализацию пока не знаю зачем
+    this._pointsModel.addObserver(this._handleModelEvent); // 17 stat  В модель точек с помощью обсерверов передали колбек который будет вызывать модель.
     this._filterModel.addObserver(this._handleModelEvent); // 65
     this._renderBoard();
     // // this._tripItems = tripItems.slice(); // храним отсоортированные задачи
@@ -61,21 +66,26 @@ export default class TripBoard {
 
   // 2add метод который создает точку маршрута
   createPoint(blank, callback) { // был толтко blank
-    this._currentSortType = SortType.DAY; // параметр сортировки изначально день
-    this._filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING); // передаем обновление модели с этими параметрами
+    // удаляем от сюда уже передачу сортировки и передачу фильтра значений. Они будут передоваться в main
+
+    // - Унесем в обработчик переключения меню(он в мэйн) логику из createPoint по сбросу
+    // фильтрации, а сортировка будет теперь сама сбрасываться при
+    // destroy/init презентера доски
+
+    // this._currentSortType = SortType.DAY; // параметр сортировки изначально день
+    // this._filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING); // передаем обновление модели с этими параметрами
     this._pointNewPresenter.init(blank, callback); // должна производится инитицилизация которая отвечает за форму добавления tripItem
   }
 
+// метод уничтожения
+  destroy() { // stat
+    this._clearBoard({resetSortType: true});
+    remove(this._tripEventsListComponent); // удаляем куда список куда вставляются точки и статистика
+    // remove(this._tripBoardContainer); // ЭТО НЕ компонент. также удаляем борд т.к. туда тоже все этто вставляется.
 
-  // destroy() { // stat
-  //   this._clearBoard({resetSortType: true});
-  //
-  //   remove(this._tripEventsListComponent);
-  //   remove(this._tripBoardContainer);
-  //
-  //   this._pointsModel.removeObserver(this._handleModelEvent); // отписываемся от модели
-  //   this._filterModel.removeObserver(this._handleModelEvent);
-  // }
+    this._pointsModel.removeObserver(this._handleModelEvent); // отписываемся от модели. т.е. удаляем колбек по перерисовке борда
+    this._filterModel.removeObserver(this._handleModelEvent);
+  }
 
   // 40 рендарим доску со всеми списками, точками маршрута, а если их нет, то выводим пустое сообщение
   _renderBoard() {
@@ -185,6 +195,7 @@ export default class TripBoard {
     this._eventPresenter = {}; // перезаписываем объект чтобы убить все ссылки на event презентеры
 
     // очищаем доску полностью
+
     remove(this._tripEventsSortComponent); // сортировка
     remove(this._eventListEmptyMessageComponent); // заглушка если нет точек
 

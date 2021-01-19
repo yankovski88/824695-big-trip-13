@@ -11,11 +11,23 @@ const addZeroToNumber = (number) => {
 
 // функция по расчету разницы
 const getDateDiff = (start, finish) => {
+  console.log(start);
+  console.log(finish);
+
   const diffTimeInMs = finish.diff(start);
   const timeDuration = dayjs.duration(diffTimeInMs); // от конечной даты вычли начальную пример {years: 0, months: 0, days: 4, hours: 4, minutes: 1, …}
   const days = timeDuration.days(); // взяли цифру дни
   const hours = timeDuration.hours(); // взяли цифру часы
   const minutes = timeDuration.minutes(); // взяли цифру минуты
+  const time = `${(days > 0) ? addZeroToNumber(days) + `D ` : ``}${(hours > 0) ? addZeroToNumber(hours) + `H ` : ``}${(minutes > 0) ? addZeroToNumber(minutes) + `M` : ``}`;
+  return time;
+};
+
+export const getDateInDays = (dateDiff) => {
+  const timeDuration = dayjs.duration(dateDiff);
+  const days = timeDuration.days();
+  const hours = timeDuration.hours();
+  const minutes = timeDuration.minutes();
   const time = `${(days > 0) ? addZeroToNumber(days) + `D ` : ``}${(hours > 0) ? addZeroToNumber(hours) + `H ` : ``}${(minutes > 0) ? addZeroToNumber(minutes) + `M` : ``}`;
   return time;
 };
