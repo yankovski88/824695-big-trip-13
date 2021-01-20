@@ -306,7 +306,7 @@ export default class statisticsView extends SmartView {
   // пока не знаю что код длеает
   _getUniquePoints() {
     const labelsList = this._points.reduce((acc, value) => [...acc, value.type.toUpperCase()], []);
-    this._labels = [...new Set(labelsList)].sort();
+    this._labels = [...new Set(labelsList)].sort(); // взяли все типы точек и сделали их уникальными
   }
 
   // метод который вызывает повторно другие методы после удаления
