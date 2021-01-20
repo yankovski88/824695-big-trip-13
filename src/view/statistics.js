@@ -277,20 +277,6 @@ export default class statisticsView extends SmartView {
 
     this._setCharts();
     this._labels = [];
-
-    // this._data = tasks;
-    // this._data = {
-    //   tasks,
-    //   // По условиям техзадания по умолчанию интервал - неделя от текущей даты
-    //   dateFrom: (() => {
-    //     const daysToFullWeek = 6;
-    //     return dayjs().subtract(daysToFullWeek, `day`).toDate();
-    //   })(),
-    //   dateTo: dayjs().toDate()
-    // };
-    // this._dateChangeHandler = this._dateChangeHandler.bind(this);
-    // this._setCharts();
-    // this._setDatepicker();
   }
 
   // метод который выводит разметку статистики
@@ -301,12 +287,9 @@ export default class statisticsView extends SmartView {
   // метод удаления всех
   removeElement() {
     super.removeElement();
-
-    if (this._moneyChart !== null || this._typeChart !== null || this._timeChart !== null) {
       this._moneyChart = null; // занулили изначальные типы сортировки
       this._typeChart = null;
       this._timeChart = null;
-    }
   }
 
   // пока не знаю что код длеает
