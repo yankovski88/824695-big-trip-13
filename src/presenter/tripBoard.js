@@ -7,7 +7,7 @@ import PointNewPresenter from "./point-new.js"; // 3add импортируем �
 
 import {filter} from "../util/filter.js"; // 62
 import {renderElement, RenderPosition, remove} from "../util/render"; // 41
-import {SortType, UpdateType, UserAction, FilterType} from "../const.js"; // 31
+import {SortType, UpdateType, UserAction} from "../const.js"; // 31 FilterType
 
 
 // класс который занимается отрисовкой всего того, что входит в борд
@@ -77,7 +77,7 @@ export default class TripBoard {
     this._pointNewPresenter.init(blank, callback); // должна производится инитицилизация которая отвечает за форму добавления tripItem
   }
 
-// метод уничтожения
+  // метод уничтожения
   destroy() { // stat
     this._clearBoard({resetSortType: true});
     remove(this._tripEventsListComponent); // удаляем куда список куда вставляются точки и статистика

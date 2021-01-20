@@ -11,9 +11,6 @@ const addZeroToNumber = (number) => {
 
 // функция по расчету разницы
 const getDateDiff = (start, finish) => {
-  console.log(start);
-  console.log(finish);
-
   const diffTimeInMs = finish.diff(start);
   const timeDuration = dayjs.duration(diffTimeInMs); // от конечной даты вычли начальную пример {years: 0, months: 0, days: 4, hours: 4, minutes: 1, …}
   const days = timeDuration.days(); // взяли цифру дни

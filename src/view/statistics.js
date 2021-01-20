@@ -1,4 +1,4 @@
-import SmartView from "./smart.js"
+import SmartView from "./smart.js";
 import Chart from "chart.js";
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import {getDateInDays} from "../util/render.js";
@@ -158,8 +158,6 @@ const renderTypeChart = (typeCtx, labels, points) => {
 
 const renderTimeChart = (timeCtx, labels, points) => {
   const timeAmount = [];
-  const timeAmount2 = [];
-  // console.log(labels);
   labels.forEach((label) => {
     let startTime = 0;
     let finishTime = 0;

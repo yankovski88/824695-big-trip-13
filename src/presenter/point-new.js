@@ -22,7 +22,7 @@ export default class PointNewPresenter {
 
   }
 
-  init(tripItem, ) { // tripItem stat callback
+  init(tripItem) { // tripItem stat callback
     // this._destroyCallback = callback; // stat
 
     if (this._addNewPointComponent !== null) {
@@ -53,8 +53,6 @@ export default class PointNewPresenter {
 
     document.removeEventListener(`keydown`, this._onEscKeyPress);
   }
-
-
 
 
   // обраотчик сохранения формы
