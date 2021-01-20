@@ -10,7 +10,7 @@ const renderMoneyChart = (moneyCtx, labels, points) => {
   labels.forEach((label) => {
     let cost = 0;
     points.forEach((point) => {
-      cost += (point.type.toLowerCase() === label.toLowerCase()) ? point.basePrice : 0;
+      cost += ((point.type.toLowerCase() === label.toLowerCase()) && (point.basePrice !== ``)) ? parseInt(point.basePrice, 10) : 0;
     });
     costsByLabel.push(cost);
   });
