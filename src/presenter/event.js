@@ -33,11 +33,15 @@ export default class EventPresenter {
     this._handleDeleteClick = this._handleDeleteClick.bind(this); // 7del
   }
   init(tripItem) {
+
+
     this._tripItem = tripItem;
     // предыдущие компоненты будут null
     const prevTripEventItemComponent = this._tripEventItemComponent;
     const prevTripEventEditComponent = this._tripEventEditComponent;
+
     this._tripEventItemComponent = new TripEventItemView(this._tripItem); // виюха для item
+
     this._tripEventEditComponent = new TripEventEditFormView(this._tripItem); // вьюха для формы редоктирования
 
     this._tripEventEditComponent.setDeleteClickHandler(this._handleDeleteClick); // 6del установили обработчик на удаление
@@ -45,11 +49,13 @@ export default class EventPresenter {
     // редоктируемый task
     this._replaceFormToItem(); // замена формы на точку маршрута
     // код который рендерит форму при клике на стрелку вниз в item
+
     this._tripEventItemComponent.setClickHandler(() => {
       this._replaceItemToForm();
       // при удалении элемента из дом обработчик можно не удалять. удалять на document и нов элемент обработчиком
       // this._handleFormSubmit(tripItem);
     });
+
     // код который скрывает форму если кликнуть в форме редоктирования кнопку треугольник
     this._tripEventEditComponent.setRollupBtnHandler(() => {
       this._tripEventEditComponent.reset(this._tripItem); // код для удаления не сохраненных данных в форме
@@ -64,6 +70,7 @@ export default class EventPresenter {
     this._tripEventItemComponent.setFavoriteClickHandler(this._handleFavoriteClick); // нужно сделать клик по favorite
 
     if (prevTripEventItemComponent === null || prevTripEventEditComponent === null) { // то компоненты не создавались
+
       renderElement(this._eventContainer, this._tripEventItemComponent, RenderPosition.BEFOREEND);
       return; // Идет прерывание функции init чтобы дальше не выполнялась
     }

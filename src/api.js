@@ -25,6 +25,11 @@ export default class Api {
       .then((points) => points.map(PointsModel.adaptToClient)); // при помощи map адаптировали серварные данные на данные клиента
   }
 
+  getOffers() {
+    return this._load({url: `offers`})
+      .then(Api.toJSON);
+  }
+
   // этот метод берет уже _load c некими настройками
   updatePoint(point) {
     return this._load({

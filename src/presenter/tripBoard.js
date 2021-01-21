@@ -8,16 +8,20 @@ import PointNewPresenter from "./point-new.js"; // 3add импортируем �
 import {filter} from "../util/filter.js"; // 62
 import {renderElement, RenderPosition, remove} from "../util/render"; // 41
 import {SortType, UpdateType, UserAction} from "../const.js"; // 31 FilterType
-
+import LoadingView from "../view/loading.js";
 
 // класс который занимается отрисовкой всего того, что входит в борд
 export default class TripBoard {
-  constructor(tripBoardContainer, pointsModel, filterModel) { // 63
+  constructor(tripBoardContainer, pointsModel, filterModel, api) { // 63
     this._filterModel = filterModel; // 64
     this._pointsModel = pointsModel; // 6 создали свойство класса, чтобы в дальнейшем переиспользовать
     this._tripBoardContainer = tripBoardContainer;
+    this._isLoading = true; // по умолчанию делаем состояние лоудинг, типо вечно крутится спинер
+this._api = api;
+
     this._eventListEmptyMessageComponent = new EventListEmptyMessageView();
     this._tripEventsListComponent = new TripEventsList();
+    this._loadingComponent = new LoadingView(); // спинер это вот этот компонент
     // this._tripEventsSortComponent = new TripEventsSortView();
     this._tripEventsSortComponent = null; // 34
 
@@ -26,6 +30,10 @@ export default class TripBoard {
     // Пример 1610420383719: Event {_eventContainer: ul.trip-events__list, _tripEventItemComponent: TripEventItemView, _tripEventEditComponent: TripEventEditFormView
 
     this._currentSortType = SortType.DAY; // сортировка по умолчанию
+
+    this._main = document.querySelector(`.page-body__page-main`);
+    this._pageBodyContainer = this._main.querySelector(`.page-body__container`);
+
 
     this._handleModeChange = this._handleModeChange.bind(this); // 1 наблюдатель
 
@@ -89,6 +97,11 @@ export default class TripBoard {
 
   // 40 рендарим доску со всеми списками, точками маршрута, а если их нет, то выводим пустое сообщение
   _renderBoard() {
+    if (this._isLoading) {
+      this._renderLoading();
+      return;
+    }
+
     const points = this._getPoints(); // берем все данные из модели по точкам маршрута уже отсортированные и отфильтрованные
     const pointCount = points.length; // считаем их колличество
 
@@ -100,6 +113,7 @@ export default class TripBoard {
     this._renderSort(); // или вызываем сортировку, и делаем ее по умолчанию
     this._renderList(); // рендерм список в который добавим точки маршрута
     this._renderEventItems(points); // вызываем рендер всех точек маршрута
+
 
     // this._renderEventItems(points.slice(0, Math.min(pointCount, this._renderedPointCount)));
     // вызываем рендер всех точек маршрута кроме удаленных
@@ -150,7 +164,11 @@ export default class TripBoard {
 
     switch (actionType) { // 32
       case UserAction.UPDATE_POINT: // на действие пользователя по обновлению точки
-        this._pointsModel.updatePoint(updateType, update); // бедет дергаться метод модели updatePoint
+        // this._pointsModel.updatePoint(updateType, update); // бедет дергаться метод модели updatePoint
+        this._api.updatePoint(update).then((response) => { // сперва обновляем точку на сервере и если там ок
+          this._pointsModel.updatePoint(updateType, response); // то обновляем точку локально
+        });
+
         break;
       case UserAction.ADD_POINT:
         this._pointsModel.addPoint(updateType, update);
@@ -179,6 +197,11 @@ export default class TripBoard {
         // - обновить всю доску (например, при переключении фильтра)
         this._clearBoard({resetSortType: true}); // 37 {resetSortType: true} это сброс выбраной сортировки
         this._renderBoard(); // 38
+        break;
+      case UpdateType.INIT:
+        this._isLoading = false; // лодинг типа станет лож
+        remove(this._loadingComponent); // удаляем компонент лодинг
+        this._renderBoard(); // рендерим доску
         break;
     }
   }
@@ -246,12 +269,16 @@ export default class TripBoard {
   //
   // }
 
+  _renderLoading() {
+    renderElement(this._pageBodyContainer, this._loadingComponent, RenderPosition.BEFOREEND);
+  }
+
   // метод который выводит пустое сообщение если нет Item
   _renderEmptyMessage() {
-    const main = document.querySelector(`.page-body__page-main`);
-    const pageBodyContainer = main.querySelector(`.page-body__container`);
+    // const main = document.querySelector(`.page-body__page-main`);
+    // const pageBodyContainer = main.querySelector(`.page-body__container`);
     // main.removeChild(pageBodyContainer); // не понимаю почему ранее добавил
-    renderElement(pageBodyContainer, this._eventListEmptyMessageComponent, RenderPosition.BEFOREEND); // вместо удаленнного
+    renderElement(this._pageBodyContainer, this._eventListEmptyMessageComponent, RenderPosition.BEFOREEND); // вместо удаленнного
     // контейнера проприсовали сообщение
   }
 
@@ -286,6 +313,7 @@ export default class TripBoard {
 
   // рендарим одну точку маршрута
   _renderItem(tripItem) {
+
     const eventPresenter = new EventPresenter(this._tripEventsListComponent.getElement(), this._handleViewAction, this._handleModeChange); // 27 this._handleEventChange,
     // 3 наблюдатель
     this._eventPresenter[tripItem.id] = eventPresenter; // в объект записываем id с сылкой на этот event презентер
@@ -293,6 +321,7 @@ export default class TripBoard {
     eventPresenter.init(tripItem); // .init(tripItem) презентер с id в котором были изменения перерисовывается
     // this._eventPresenter это весь список id: event который был добавлен при рендере Event
     // init этот с renderItem
+    // console.log(this._eventPresenter);
   }
 
   // рендарим все точки маршрута

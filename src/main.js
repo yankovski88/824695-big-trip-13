@@ -26,7 +26,7 @@ const DATA_COUNT = 5;
 let currentMenuActive = MenuItem.POINTS; // меню по умолчанию
 
 const tripItems = new Array(DATA_COUNT).fill().map(getTripEventItem);
-console.log(tripItems);
+// console.log(tripItems);
 // Array создаем массив
 // DATA_COUNT колличество эллементов в массиве, все они пустые и нужно их заполнить
 // fill() метод заполняет эти элементы массива, теперь внутри там underfine
@@ -60,10 +60,10 @@ const renderMenu = () => {
 // renderFilter();
 
 
-renderMenu();
+// renderMenu();
 
 // 5 передаем экземпляр модели в конструктор
-const tripBoardPresenter = new TripBoard(tripEventElement, pointsModel, filterModel); // 61 создал призентер с контейнером в который вставим все
+const tripBoardPresenter = new TripBoard(tripEventElement, pointsModel, filterModel, api); // 61 создал призентер с контейнером в который вставим все
 // tripEventElement это контейнер в который нужно отрисовать
 const tripInfoPresenter = new TripInfo(tripMainElement, pointsModel); // tripInfoElement
 
@@ -207,7 +207,8 @@ const handleSiteMenuClick = (menuItem) => {
       break;
   }
 };
-tripMenuComponent.setMenuClickHandler(handleSiteMenuClick); // 1.1.stat
+// tripMenuComponent.setMenuClickHandler(handleSiteMenuClick); // 1.1.stat
+
 // Для удобства отладки скроем доску
 // boardPresenter.init();
 // и отобразим сразу статистику
@@ -218,12 +219,28 @@ tripMenuComponent.setMenuClickHandler(handleSiteMenuClick); // 1.1.stat
 // RenderPosition.BEFOREEND позиция куда рендерится
 
 
-api.getPoints().then((points) => { // используя then мы смотрим что же там возвращается из сервера
-  console.log(points);
-  // Есть проблема: cтруктура объекта похожа, но некоторые ключи называются иначе,
-  // а ещё на сервере используется snake_case, а у нас camelCase.
-  // Можно, конечно, переписать часть нашего клиентского приложения, но зачем?
-  // Есть вариант получше - паттерн "Адаптер"
-  pointsModel.setPoints(points);
-});
+// api.getPoints().then((points) => { // используя then мы смотрим что же там возвращается из сервера
+//   console.log(points);
+//   // Есть проблема: cтруктура объекта похожа, но некоторые ключи называются иначе,
+//   // а ещё на сервере используется snake_case, а у нас camelCase.
+//   // Можно, конечно, переписать часть нашего клиентского приложения, но зачем?
+//   // Есть вариант получше - паттерн "Адаптер"
+//   pointsModel.setPoints(points);
+// });
 // pointsModel.setPoints(tripItems);
+
+api.getPoints()
+  .then((points) => { // в случае успешного запроса
+    // debugger
+    pointsModel.setPoints(UpdateType.INIT, points); // передать точки с типом обновления INIT
+    // пока задачи грузятся запрещаем смотреть статистику, это нужно чтобы не отправлялось много запросов при кликах
+    renderMenu();
+    tripMenuComponent.setMenuClickHandler(handleSiteMenuClick); // 1.1.stat
+  })
+  .catch(() => { // если ошибка то
+    pointsModel.setPoints(UpdateType.INIT, []); // передать пустой массив с типом INIT
+    renderMenu();
+    tripMenuComponent.setMenuClickHandler(handleSiteMenuClick); // 1.1.stat
+  });
+
+// api.getOffers()

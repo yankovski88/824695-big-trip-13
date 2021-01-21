@@ -5,12 +5,15 @@ import {destinations, dataOffers, TYPES} from "../mock/mock-trip-event-item.js";
 import flatpickr from "flatpickr";
 import "../../node_modules/flatpickr/dist/flatpickr.min.css";
 import {UpdateType, UserAction} from "../const";
+import {getRandomInteger} from "../util/common";
+import {getTripEventItem} from "../mock/mock-trip-event-item";
 
 // функция по установке времени в форме
 const createFieldTime = (dateStart, dateFinish) => {
   // установка формата времени
   const startTime = dayjs(dateStart).format(`DD/MM/YY HH:mm`);
   const finishTime = dayjs(dateFinish).format(`DD/MM/YY HH:mm`);
+// debugger
 
   return `<div class="event__field-group  event__field-group--time">
     <label class="visually-hidden" for="event-start-time-1">From</label>
@@ -23,14 +26,200 @@ const createFieldTime = (dateStart, dateFinish) => {
 
 // функция по отрисовке всей формы
 const createTripEventEditForm = (dataItem) => { // сюда попадают данные и запоняется шаблон
-  const {dateFrom, dateTo, destination, basePrice, type, offers, editFormOffers} = dataItem; // additionalOffers, photos,
+  const {dateFrom, dateTo, destination, basePrice, type, offers} = dataItem; // editFormOffers
 
+
+  // массив со всеми офферрами в зависимости от типа
+  const dataOffers = [
+    {
+      "type": `Taxi`,
+      "offers": [
+        {
+          "title": `Upgrade to a business class`,
+          "price": 120
+        }, {
+          "title": `Choose the radio station`,
+          "price": 60
+        }
+      ]
+    },
+    {
+      "type": `Bus`,
+      "offers": [
+        {
+          "title": `Add luggage`,
+          "price": 50,
+        },
+        {
+          "title": `Choose seats`,
+          "price": 5,
+        },
+      ]
+    },
+    {
+      "type": `Train`,
+      "offers": [
+        {
+          "title": `Add luggage`,
+          "price": 50,
+        },
+        {
+          "title": `Switch to comfort class`,
+          "price": 80,
+        },
+        {
+          "title": `Add meal`,
+          "price": 15,
+        },
+        {
+          "title": `Choose seats`,
+          "price": 5,
+        },
+        {
+          "title": `Travel by train`,
+          "price": 40,
+        },
+      ]
+    },
+    {
+      "type": `Ship`,
+      "offers": [
+        {
+          "title": `Add luggage`,
+          "price": 50,
+        },
+        {
+          "title": `Switch to comfort class`,
+          "price": 80,
+        },
+        {
+          "title": `Add meal`,
+          "price": 15,
+        },
+        {
+          "title": `Choose seats`,
+          "price": 5,
+        },
+      ]
+    },
+    {
+      "type": `Transport`,
+      "offers": [
+        {
+          "title": `Add luggage`,
+          "price": 50,
+        },
+        {
+          "title": `Switch to comfort class`,
+          "price": 80,
+        },
+        {
+          "title": `Add meal`,
+          "price": 15,
+        },
+        {
+          "title": `Choose seats`,
+          "price": 5,
+        },
+      ]
+    },
+    {
+      "type": `Drive`,
+      "offers": [
+        {
+          "title": `Add luggage`,
+          "price": 50,
+        },
+        {
+          "title": `Add meal`,
+          "price": 15,
+        },
+        {
+          "title": `Choose seats`,
+          "price": 5,
+        },
+      ]
+    },
+    {
+      "type": `Flight`,
+      "offers": [
+        {
+          "title": `Add luggage`,
+          "price": 50,
+        },
+        {
+          "title": `Switch to comfort class`,
+          "price": 80,
+        },
+        {
+          "title": `Add meal`,
+          "price": 15,
+        },
+        {
+          "title": `Choose seats`,
+          "price": 5,
+        },
+      ]
+    },
+    {
+      "type": `Check-in`,
+      "offers": [{
+        "title": `Choose seats`,
+        "price": 5,
+      }]
+    },
+    {
+      "type": `Sightseeing`,
+      "offers": [{
+        "title": ``,
+        "price": ``,
+      }]
+    },
+    {
+      "type": `Restaurant`,
+      "offers": [{
+        "title": ``,
+        "price": ``,
+      }]
+    },
+  ];
+
+
+
+
+  const editFormOffers = [
+    {
+      "title": `Add luggage`,
+      "price": 50,
+    },
+    {
+      "title": `Switch to comfort class`,
+      "price": 80,
+    },
+    {
+      "title": `Add meal`,
+      "price": 15,
+    },
+    {
+      "title": `Choose seats`,
+      "price": 5,
+    },
+    {
+      "title": `Travel by train`,
+      "price": 40,
+    },
+  ];
+
+  // const tripItems = new Array(dataItem.length).fill().map(getTripEventItem);
+
+  console.log(editFormOffers);
   // const isDateValid = ()=>{
   //   return dateFrom < dateTo
   // };
 
   // генерирует разметку фоток
   const createEventPhotoTemplate = () => {
+
     return destination.pictures.reduce((total, element) => { // перебрал все элементы photos и присоединил их в total
       return total + `<img class="event__photo" src="${element.src}" alt="${element.description}">`;
     }, ``);
@@ -223,6 +412,7 @@ export default class TripEventEditFormView extends SmartView { // AbstractView
   // 5
   // публичный метод который заново навешивает обработчики
   restoreHandlers() {
+
     this._setInnerHandlers(); // востанавливаем приватные обработчики
     this.setSubmitHandler(this._callback.submit); // востанавливаем внешние обработчики. вызвали обработчик который был сохранен в объекте.
     this.setCancelHandler(this._callback.cancel);
@@ -235,6 +425,7 @@ export default class TripEventEditFormView extends SmartView { // AbstractView
   // 3
   // обработчик который заново навешивает внутрение обработчики
   _setInnerHandlers() {
+
     this._eventInputPrice = this.getElement().querySelector(`.event__input--price`);
     this._eventInputPrice.addEventListener(`input`, this._changePriceHandler);
     // this.getElement() это класс с itema c формой редоктирования в внутри
@@ -282,9 +473,36 @@ export default class TripEventEditFormView extends SmartView { // AbstractView
 
     // код по замене всех данных объекта активных offers
     const getActiveOffers = () => { // target цель выбора пользователя
+      const editFormOffers = [
+        {
+          "title": `Add luggage`,
+          "price": 50,
+        },
+        {
+          "title": `Switch to comfort class`,
+          "price": 80,
+        },
+        {
+          "title": `Add meal`,
+          "price": 15,
+        },
+        {
+          "title": `Choose seats`,
+          "price": 5,
+        },
+        {
+          "title": `Travel by train`,
+          "price": 40,
+        },
+      ];
+
+
+
       const newOffers = []; // массив со всеми активными объектами оферов
       const idCheckOffers = []; // массив с чекнутыми офферами
-      const allEmptyOffers = this._dataItem.editFormOffers; // все не чекнутые офферы
+
+      const allEmptyOffers = editFormOffers; // this._dataItem.editFormOffers; // все не чекнутые офферы
+
       const groupOffersElement = this.getElement().querySelector(`.event__available-offers`); // нашел группу где все оферы
       const inputOfOffersElement = groupOffersElement.querySelectorAll(`input`); // выташил из нее все инпуты по оферам
       inputOfOffersElement.forEach((item)=>{ // обхожу все инпуты

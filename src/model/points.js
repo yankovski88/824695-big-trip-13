@@ -12,8 +12,10 @@ export default class PointsModel extends Observer {
   }
 
   // метод для записи всех точек маршрута
-  setPoints(points) {
+  setPoints(updateType, points) {
     this._points = points.slice();
+console.log(updateType, points)
+    this._notify(updateType); // теперь как только точки появятся модель всех уведомит
   }
 
   // метод по возврату всех точек маршрута
