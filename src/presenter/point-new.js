@@ -3,6 +3,7 @@ import AddNewPointView from "../view/add-new-point.js";
 import {generateId} from "../mock/mock-trip-event-item.js"; // 24
 import {remove, renderElement, RenderPosition} from "../util/render";
 import {UserAction, UpdateType} from "../const.js"; // 24
+// import {generateId} from "../util/point.js";
 
 
 export default class PointNewPresenter {

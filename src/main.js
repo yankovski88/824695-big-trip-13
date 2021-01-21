@@ -13,19 +13,27 @@ import {generateId} from "./mock/mock-trip-event-item";
 import {getRandomInteger} from "./util/common"; // 58
 import {MenuItem, UpdateType, FilterType} from "./const.js"; // 2stat
 import StatisticsView from "./view/statistics.js";
+import Api from "./api.js";
 // import {SortType} from "./const"; // stat
+
+const AUTHORIZATION = `Basic skuilejbspifSwcl1sa2j`; // строка авторизации
+const END_POINT = `https://13.ecmascript.pages.academy/big-trip/`; // зафиксированный адрес сервера
+const api = new Api(END_POINT, AUTHORIZATION); // создаем экземпляр нашего Api
+
+
 
 const DATA_COUNT = 5;
 let currentMenuActive = MenuItem.POINTS; // меню по умолчанию
 
 const tripItems = new Array(DATA_COUNT).fill().map(getTripEventItem);
+console.log(tripItems);
 // Array создаем массив
 // DATA_COUNT колличество эллементов в массиве, все они пустые и нужно их заполнить
 // fill() метод заполняет эти элементы массива, теперь внутри там underfine
 // map(tripEventItem) заполняет эти массивы методом map();
 
 const pointsModel = new PointsModel(); // 4 создали экземпляр модели
-pointsModel.setPoints(tripItems); // передаем моковые данные точнее делаем их копию и записываем в массив.
+// pointsModel.setPoints(tripItems); // передаем моковые данные точнее делаем их копию и записываем в массив.
 // Если захотим вызывать моки тогда нужно испльзовать getPoints
 
 const filterModel = new FilterModel(); // 49
@@ -210,3 +218,12 @@ tripMenuComponent.setMenuClickHandler(handleSiteMenuClick); // 1.1.stat
 // RenderPosition.BEFOREEND позиция куда рендерится
 
 
+api.getPoints().then((points) => { // используя then мы смотрим что же там возвращается из сервера
+  console.log(points);
+  // Есть проблема: cтруктура объекта похожа, но некоторые ключи называются иначе,
+  // а ещё на сервере используется snake_case, а у нас camelCase.
+  // Можно, конечно, переписать часть нашего клиентского приложения, но зачем?
+  // Есть вариант получше - паттерн "Адаптер"
+  pointsModel.setPoints(points);
+});
+// pointsModel.setPoints(tripItems);
