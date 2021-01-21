@@ -13,6 +13,8 @@ export default class PointNewPresenter {
 
     this._addNewPointComponent = null;
 
+    // this._destroyCallback = null; // stat
+
     this._handleFormSubmit = this._handleFormSubmit.bind(this);
     this._onEscKeyPress = this._onEscKeyPress.bind(this);
     this._handleCanselClick = this._handleCanselClick.bind(this); // 7del
@@ -20,7 +22,9 @@ export default class PointNewPresenter {
 
   }
 
-  init(tripItem) { // tripItem
+  init(tripItem) { // tripItem stat callback
+    // this._destroyCallback = callback; // stat
+
     if (this._addNewPointComponent !== null) {
       return;
     }
@@ -39,11 +43,17 @@ export default class PointNewPresenter {
     if (this._addNewPointComponent === null) {
       return;
     }
+
+    // if (this._destroyCallback !== null) { // stat
+    //   this._destroyCallback();
+    // }
+
     remove(this._addNewPointComponent);
     this._addNewPointComponent = null;
 
     document.removeEventListener(`keydown`, this._onEscKeyPress);
   }
+
 
   // обраотчик сохранения формы
   _handleFormSubmit(point) {
