@@ -319,7 +319,7 @@ this._offersModel = offersModel;
   _renderItem(tripItem) {
     const eventPresenter = new EventPresenter(this._tripEventsListComponent.getElement(), this._handleViewAction, this._handleModeChange, this._getOffers()); // 27 this._handleEventChange,
     const offers = this._getOffers()
-    console.log(offers)
+    // console.log(offers)
     // 3 наблюдатель
     this._eventPresenter[tripItem.id] = eventPresenter; // в объект записываем id с сылкой на этот event презентер
     // this._eventPresenter[tripItem.id] это 1608250670855: Event {…}

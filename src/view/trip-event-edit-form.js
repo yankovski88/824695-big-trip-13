@@ -226,6 +226,7 @@ export default class TripEventEditFormView extends SmartView { // AbstractView
     this._datepickerStart = null;
     this._dateFrom = this._dataItem.dateFrom;
     this._dateTo = this._dataItem.dateTo;
+    this._editFormOffers = this._dataItem.editFormOffers
     this._saveBtnElement = this.getElement().querySelector(`.event__save-btn`);
     this._spamText = 20;
     this._addBtn = document.querySelector(`.trip-main__event-add-btn`);
@@ -394,10 +395,10 @@ export default class TripEventEditFormView extends SmartView { // AbstractView
     evt.preventDefault();
     // код по замене всех данных объекта offers на тот который выбрал пользователь
     const getChangeOffers = (target) => { // target цель выбора пользователя
-      for (let item of dataOffers) { // прохождение по массиву всех объектов. offers массив всех доп предложений
+      for (let item of this._editFormOffers) { // прохождение по массиву всех объектов. offers массив всех доп предложений
         if (target === item.type.toLowerCase()) { // когда найдется выбор пользователя в нашем массиве
           this.updateData(this._dataItem.type = item.type);
-          this.updateData(this._dataItem.editFormOffers = item.offers);
+          this.updateData(this._dataItem.offers = item.offers);
           // this.updateData(this._dataItem.offers = item.offers); // код который перерисует, что выбрал ползьвавтель из offer в event
         }
       }
