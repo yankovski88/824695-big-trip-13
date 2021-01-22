@@ -1,6 +1,7 @@
 // import TripFilterView from "./view/trip-filter.js";
 import {renderElement, RenderPosition, remove} from "./util/render";
 import TripMenuView from "./view/trip-menu.js";
+import TripEventEditFormView from "./view/trip-event-edit-form.js"
 // import AddNewPointView from "./view/add-new-point.js";
 
 import {getTripEventItem} from "./mock/mock-trip-event-item.js";
@@ -8,6 +9,8 @@ import TripBoard from "./presenter/tripBoard";
 import TripInfo from "./presenter/tripInfo";
 import PointsModel from "./model/points.js"; // 3 импорт модель
 import FilterModel from "./model/filter.js"; // 48
+import OffersModel from "./model/offers.js"; // 48
+
 import FilterPresenter from "./presenter/filter.js";
 import {generateId} from "./mock/mock-trip-event-item";
 import {getRandomInteger} from "./util/common"; // 58
@@ -33,11 +36,14 @@ const tripItems = new Array(DATA_COUNT).fill().map(getTripEventItem);
 // map(tripEventItem) заполняет эти массивы методом map();
 
 const pointsModel = new PointsModel(); // 4 создали экземпляр модели
+const offersModel = new OffersModel();
+
 // pointsModel.setPoints(tripItems); // передаем моковые данные точнее делаем их копию и записываем в массив.
 // Если захотим вызывать моки тогда нужно испльзовать getPoints
 
 const filterModel = new FilterModel(); // 49
 // const addNewPointComponent = new AddNewPointView(); // 49
+
 
 const tripEventElement = document.querySelector(`.trip-events`);
 
@@ -63,7 +69,7 @@ const renderMenu = () => {
 // renderMenu();
 
 // 5 передаем экземпляр модели в конструктор
-const tripBoardPresenter = new TripBoard(tripEventElement, pointsModel, filterModel, api); // 61 создал призентер с контейнером в который вставим все
+const tripBoardPresenter = new TripBoard(tripEventElement, pointsModel, filterModel, api, offersModel); // 61 создал призентер с контейнером в который вставим все
 // tripEventElement это контейнер в который нужно отрисовать
 const tripInfoPresenter = new TripInfo(tripMainElement, pointsModel); // tripInfoElement
 
@@ -229,13 +235,14 @@ const handleSiteMenuClick = (menuItem) => {
 // });
 // pointsModel.setPoints(tripItems);
 
-api.getPoints()
+
+  api.getPoints()
   .then((points) => { // в случае успешного запроса
-    // debugger
     pointsModel.setPoints(UpdateType.INIT, points); // передать точки с типом обновления INIT
     // пока задачи грузятся запрещаем смотреть статистику, это нужно чтобы не отправлялось много запросов при кликах
     renderMenu();
     tripMenuComponent.setMenuClickHandler(handleSiteMenuClick); // 1.1.stat
+    // filterPresenter.init();
   })
   .catch(() => { // если ошибка то
     pointsModel.setPoints(UpdateType.INIT, []); // передать пустой массив с типом INIT
@@ -243,4 +250,20 @@ api.getPoints()
     tripMenuComponent.setMenuClickHandler(handleSiteMenuClick); // 1.1.stat
   });
 
+api.getOffers().then((offersArray)=>{
+  offersModel.setOffers(offersArray)}
+);
+
+// const AUTHORIZATION = `Basic skuilejbspifSwcl1sa2j`; // строка авторизации
+// const END_POINT = `https://13.ecmascript.pages.academy/big-trip/`; // зафиксированный адрес сервера
+// const api = new Api(END_POINT, AUTHORIZATION); // создаем экземпляр нашего Api
 // api.getOffers()
+//   .then((emptyOffers) => { // в случае успешного запроса
+//     // const tripEventEditFormComponent =
+//     new TripEventEditFormView(dataItem, emptyOffers);
+//
+//     // console.log(emptyOffers);
+//   })
+//   .catch(() => { // если ошибка то
+//   });
+

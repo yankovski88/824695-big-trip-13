@@ -7,6 +7,9 @@ import "../../node_modules/flatpickr/dist/flatpickr.min.css";
 import {UpdateType, UserAction} from "../const";
 import {getRandomInteger} from "../util/common";
 import {getTripEventItem} from "../mock/mock-trip-event-item";
+import Api from "../api.js";
+import OffersModel from "../model/offers.js"
+
 
 // функция по установке времени в форме
 const createFieldTime = (dateStart, dateFinish) => {
@@ -24,195 +27,51 @@ const createFieldTime = (dateStart, dateFinish) => {
     </div>`;
 };
 
+// const offersModel = new OffersModel();
+
 // функция по отрисовке всей формы
 const createTripEventEditForm = (dataItem) => { // сюда попадают данные и запоняется шаблон
-  const {dateFrom, dateTo, destination, basePrice, type, offers} = dataItem; // editFormOffers
+  const {dateFrom, dateTo, destination, basePrice, type, offers, editFormOffers} = dataItem; // editFormOffers
+  // const {emptyOffers2} = emptyOffers;
 
 
-  // массив со всеми офферрами в зависимости от типа
-  const dataOffers = [
-    {
-      "type": `Taxi`,
-      "offers": [
-        {
-          "title": `Upgrade to a business class`,
-          "price": 120
-        }, {
-          "title": `Choose the radio station`,
-          "price": 60
-        }
-      ]
-    },
-    {
-      "type": `Bus`,
-      "offers": [
-        {
-          "title": `Add luggage`,
-          "price": 50,
-        },
-        {
-          "title": `Choose seats`,
-          "price": 5,
-        },
-      ]
-    },
-    {
-      "type": `Train`,
-      "offers": [
-        {
-          "title": `Add luggage`,
-          "price": 50,
-        },
-        {
-          "title": `Switch to comfort class`,
-          "price": 80,
-        },
-        {
-          "title": `Add meal`,
-          "price": 15,
-        },
-        {
-          "title": `Choose seats`,
-          "price": 5,
-        },
-        {
-          "title": `Travel by train`,
-          "price": 40,
-        },
-      ]
-    },
-    {
-      "type": `Ship`,
-      "offers": [
-        {
-          "title": `Add luggage`,
-          "price": 50,
-        },
-        {
-          "title": `Switch to comfort class`,
-          "price": 80,
-        },
-        {
-          "title": `Add meal`,
-          "price": 15,
-        },
-        {
-          "title": `Choose seats`,
-          "price": 5,
-        },
-      ]
-    },
-    {
-      "type": `Transport`,
-      "offers": [
-        {
-          "title": `Add luggage`,
-          "price": 50,
-        },
-        {
-          "title": `Switch to comfort class`,
-          "price": 80,
-        },
-        {
-          "title": `Add meal`,
-          "price": 15,
-        },
-        {
-          "title": `Choose seats`,
-          "price": 5,
-        },
-      ]
-    },
-    {
-      "type": `Drive`,
-      "offers": [
-        {
-          "title": `Add luggage`,
-          "price": 50,
-        },
-        {
-          "title": `Add meal`,
-          "price": 15,
-        },
-        {
-          "title": `Choose seats`,
-          "price": 5,
-        },
-      ]
-    },
-    {
-      "type": `Flight`,
-      "offers": [
-        {
-          "title": `Add luggage`,
-          "price": 50,
-        },
-        {
-          "title": `Switch to comfort class`,
-          "price": 80,
-        },
-        {
-          "title": `Add meal`,
-          "price": 15,
-        },
-        {
-          "title": `Choose seats`,
-          "price": 5,
-        },
-      ]
-    },
-    {
-      "type": `Check-in`,
-      "offers": [{
-        "title": `Choose seats`,
-        "price": 5,
-      }]
-    },
-    {
-      "type": `Sightseeing`,
-      "offers": [{
-        "title": ``,
-        "price": ``,
-      }]
-    },
-    {
-      "type": `Restaurant`,
-      "offers": [{
-        "title": ``,
-        "price": ``,
-      }]
-    },
-  ];
+// код на получение всех оферсов по типу
+  const getAllOffers = (type, offers) => {
+    let typeOffers;
+    for (let item of offers) {
+      if (type === item.type) {
+        typeOffers = item.offers;
+      }
+    }
+    return typeOffers;
+  };
 
 
-
-
-  const editFormOffers = [
-    {
-      "title": `Add luggage`,
-      "price": 50,
-    },
-    {
-      "title": `Switch to comfort class`,
-      "price": 80,
-    },
-    {
-      "title": `Add meal`,
-      "price": 15,
-    },
-    {
-      "title": `Choose seats`,
-      "price": 5,
-    },
-    {
-      "title": `Travel by train`,
-      "price": 40,
-    },
-  ];
+  // const editFormOffers = [
+  //   {
+  //     "title": `Add luggage`,
+  //     "price": 50,
+  //   },
+  //   {
+  //     "title": `Switch to comfort class`,
+  //     "price": 80,
+  //   },
+  //   {
+  //     "title": `Add meal`,
+  //     "price": 15,
+  //   },
+  //   {
+  //     "title": `Choose seats`,
+  //     "price": 5,
+  //   },
+  //   {
+  //     "title": `Travel by train`,
+  //     "price": 40,
+  //   },
+  // ];
 
   // const tripItems = new Array(dataItem.length).fill().map(getTripEventItem);
 
-  console.log(editFormOffers);
   // const isDateValid = ()=>{
   //   return dateFrom < dateTo
   // };
@@ -235,12 +94,12 @@ const createTripEventEditForm = (dataItem) => { // сюда попадают д�
 
   // функция по отрисовке фрагмента всех преимуществ
   const getOffersTemplate = (formOffers) => {
-
     return formOffers.reduce((total, element) => {
-
       // // код который сравнивает два массива и если совподающие объекты, то возвращает true
       const isActive = offers.some((el) => {
-        return el === element;
+        console.log(el.title);
+
+        return el.title === element.title;
       });
 
       if (element.title !== ``) {
@@ -318,7 +177,6 @@ ${isActive ? `checked` : ``}>
                     <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${he.encode(basePrice.toString())}" onkeypress="return (event.charCode >= 48 && event.charCode <= 57)"   onkeyup="this.value = this.value.replace(/^0+(?=\\d)/,'');">
                   </div>
 <!--{isDateValid() ?  : disabled}-->
-<!--// {console.log(this)}-->
                   <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
 <button class="event__reset-btn" type="reset">Delete</button>
   
@@ -331,7 +189,7 @@ ${isActive ? `checked` : ``}>
 
                     <div class="event__available-offers">
                     
-     ${getOffersTemplate(editFormOffers)}
+     ${getOffersTemplate(getAllOffers(type, editFormOffers))}
                     </div>
                   </section>
 
@@ -354,10 +212,10 @@ ${isActive ? `checked` : ``}>
 
 
 export default class TripEventEditFormView extends SmartView { // AbstractView
-  constructor(dataItem) {
+  constructor(dataItem, offers) {
     super();
     this._destinations = destinations;
-    this._dataItem = TripEventEditFormView.parseDataItemToData(dataItem); // 0 превращаем объект dataItem в объект data т.к. он более полный, было this._dataItem = dataItem;
+    this._dataItem = TripEventEditFormView.parseDataItemToData(dataItem, offers); // 0 превращаем объект dataItem в объект data т.к. он более полный, было this._dataItem = dataItem;
     this._datepickerFinish = null; // 1 здесь будем хранить экземпляр _datepicker т.е. открытый показанный _datepicker. Это нужно для того чтобы потом можно после закрытия формы удалить.
     this._datepickerStart = null;
     this._dateFrom = this._dataItem.dateFrom;
@@ -365,7 +223,6 @@ export default class TripEventEditFormView extends SmartView { // AbstractView
     this._saveBtnElement = this.getElement().querySelector(`.event__save-btn`);
     this._spamText = 20;
     this._addBtn = document.querySelector(`.trip-main__event-add-btn`);
-
 
     this._submitHandler = this._submitHandler.bind(this);
     this._cancelClickHandler = this._cancelClickHandler.bind(this);
@@ -387,10 +244,11 @@ export default class TripEventEditFormView extends SmartView { // AbstractView
   }
   // 0.1
   // парсим типа, создаем копию данных с дополниетельным данными
-  static parseDataItemToData(dataItem) {
+  static parseDataItemToData(dataItem, offers) {
     return Object.assign(
         {},
-        dataItem
+        dataItem,
+      {editFormOffers: offers},
         // {isDueDate: task.dueDate !== null,}
     );
   }
@@ -406,6 +264,7 @@ export default class TripEventEditFormView extends SmartView { // AbstractView
 
 
   getTemplate() {
+    console.log(this._dataItem)
     return createTripEventEditForm(this._dataItem);
   }
 
@@ -472,29 +331,29 @@ export default class TripEventEditFormView extends SmartView { // AbstractView
     }
 
     // код по замене всех данных объекта активных offers
-    const getActiveOffers = () => { // target цель выбора пользователя
-      const editFormOffers = [
-        {
-          "title": `Add luggage`,
-          "price": 50,
-        },
-        {
-          "title": `Switch to comfort class`,
-          "price": 80,
-        },
-        {
-          "title": `Add meal`,
-          "price": 15,
-        },
-        {
-          "title": `Choose seats`,
-          "price": 5,
-        },
-        {
-          "title": `Travel by train`,
-          "price": 40,
-        },
-      ];
+    const getActiveOffers = (editFormOffers) => { // target цель выбора пользователя
+      // const editFormOffers = [
+      //   {
+      //     "title": `Add luggage`,
+      //     "price": 50,
+      //   },
+      //   {
+      //     "title": `Switch to comfort class`,
+      //     "price": 80,
+      //   },
+      //   {
+      //     "title": `Add meal`,
+      //     "price": 15,
+      //   },
+      //   {
+      //     "title": `Choose seats`,
+      //     "price": 5,
+      //   },
+      //   {
+      //     "title": `Travel by train`,
+      //     "price": 40,
+      //   },
+      // ];
 
 
 
@@ -521,7 +380,7 @@ export default class TripEventEditFormView extends SmartView { // AbstractView
       }
       this.updateData(this._dataItem.offers = newOffers); // заменяем старые чекнутые оферы на новые
     };
-    getActiveOffers(); // вызов функции по замене старых чекнутых оферов на новые
+    getActiveOffers(editFormOffers); // вызов функции по замене старых чекнутых оферов на новые
   }
 
 

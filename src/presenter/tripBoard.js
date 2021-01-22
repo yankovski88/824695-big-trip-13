@@ -12,12 +12,13 @@ import LoadingView from "../view/loading.js";
 
 // класс который занимается отрисовкой всего того, что входит в борд
 export default class TripBoard {
-  constructor(tripBoardContainer, pointsModel, filterModel, api) { // 63
+  constructor(tripBoardContainer, pointsModel, filterModel, api, offersModel) { // 63
     this._filterModel = filterModel; // 64
     this._pointsModel = pointsModel; // 6 создали свойство класса, чтобы в дальнейшем переиспользовать
     this._tripBoardContainer = tripBoardContainer;
     this._isLoading = true; // по умолчанию делаем состояние лоудинг, типо вечно крутится спинер
 this._api = api;
+this._offersModel = offersModel;
 
     this._eventListEmptyMessageComponent = new EventListEmptyMessageView();
     this._tripEventsListComponent = new TripEventsList();
@@ -45,7 +46,7 @@ this._api = api;
     // this._filterModel.addObserver(this._handleModelEvent); // 65
 
     // 4add т.к. мы имопртируем презентер PointNewPresenter, то нужно создать инстанс презентера новой точки маршрута
-    this._pointNewPresenter = new PointNewPresenter(this._tripEventsListComponent, this._handleViewAction);
+    this._pointNewPresenter = new PointNewPresenter(this._tripEventsListComponent, this._handleViewAction, this._getOffers());
   }
 
   // В main.js в управлющем файле инициализируем TripBoard.init(). Он запустит всю логику MVP.  И ТОЛЬКО ПО БОРДУ!
@@ -101,10 +102,9 @@ this._api = api;
       this._renderLoading();
       return;
     }
-
+    const offers = Object.assign({}, this._getOffers());
     const points = this._getPoints(); // берем все данные из модели по точкам маршрута уже отсортированные и отфильтрованные
     const pointCount = points.length; // считаем их колличество
-
     if (pointCount === 0) { // если оно равно 0
       this._renderEmptyMessage(); // то вывести этот метод, а он выводит пустое сообщение
       return;
@@ -154,6 +154,10 @@ this._api = api;
     return this._pointsModel.getPoints(); // возвращает массив в исходном состоянии если не сработал switch
   }
 
+  _getOffers(){
+    return this._offersModel.getOffers();
+  }
+
   // обработать действие просмотра
   _handleViewAction(actionType, updateType, update) { // 20 на основании того что хочет пользователь обновить модель
     // Здесь обрабатываем, что моедель изменилась и сходя из event(changeData)
@@ -186,7 +190,7 @@ this._api = api;
     switch (updateType) { // 33
       case UpdateType.PATCH:
         // - обновить часть списка (например, когда поменялось описание)
-        this._eventPresenter[data.id].init(data); // реинициализируем маленькую частичку типо галочки
+        this._eventPresenter[data.id].init(data, this._getOffers()); // реинициализируем маленькую частичку типо галочки
         break;
       case UpdateType.MINOR:
         // - обновить список (например, когда задача ушла в архив)
@@ -314,18 +318,18 @@ this._api = api;
   // рендарим одну точку маршрута
   _renderItem(tripItem) {
 
-    const eventPresenter = new EventPresenter(this._tripEventsListComponent.getElement(), this._handleViewAction, this._handleModeChange); // 27 this._handleEventChange,
+    const eventPresenter = new EventPresenter(this._tripEventsListComponent.getElement(), this._handleViewAction, this._handleModeChange, this._getOffers()); // 27 this._handleEventChange,
+    const offers = this._getOffers()
     // 3 наблюдатель
     this._eventPresenter[tripItem.id] = eventPresenter; // в объект записываем id с сылкой на этот event презентер
     // this._eventPresenter[tripItem.id] это 1608250670855: Event {…}
-    eventPresenter.init(tripItem); // .init(tripItem) презентер с id в котором были изменения перерисовывается
+    eventPresenter.init(tripItem, offers); // .init(tripItem) презентер с id в котором были изменения перерисовывается
     // this._eventPresenter это весь список id: event который был добавлен при рендере Event
     // init этот с renderItem
-    // console.log(this._eventPresenter);
   }
 
   // рендарим все точки маршрута
-  _renderEventItems(tripItems) { // 14 метод который получает массив объектов точек
+  _renderEventItems(tripItems, ) { // 14 метод который получает массив объектов точек
     tripItems.forEach((item) => { // проходим по этому массиву
       this._renderItem(item); // передаем каждый объект в this._renderItem где дальше он все отрисует
     });

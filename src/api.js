@@ -1,4 +1,6 @@
 import PointsModel from "./model/points.js";
+import OffersModel from "./model/offers.js";
+
 
 const Method = { // методы для сервера
   GET: `GET`, // загрузить себе на комп
@@ -27,7 +29,7 @@ export default class Api {
 
   getOffers() {
     return this._load({url: `offers`})
-      .then(Api.toJSON);
+      .then(Api.toJSON)
   }
 
   // этот метод берет уже _load c некими настройками

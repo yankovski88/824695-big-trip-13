@@ -32,17 +32,19 @@ export default class EventPresenter {
     this._handleFavoriteClick = this._handleFavoriteClick.bind(this);
     this._handleDeleteClick = this._handleDeleteClick.bind(this); // 7del
   }
-  init(tripItem) {
+  init(tripItem, offers) {
 
 
     this._tripItem = tripItem;
+    this._offers = offers;
+    console.log(this._offers)
     // предыдущие компоненты будут null
     const prevTripEventItemComponent = this._tripEventItemComponent;
     const prevTripEventEditComponent = this._tripEventEditComponent;
 
     this._tripEventItemComponent = new TripEventItemView(this._tripItem); // виюха для item
 
-    this._tripEventEditComponent = new TripEventEditFormView(this._tripItem); // вьюха для формы редоктирования
+    this._tripEventEditComponent = new TripEventEditFormView(this._tripItem, this._offers); // вьюха для формы редоктирования
 
     this._tripEventEditComponent.setDeleteClickHandler(this._handleDeleteClick); // 6del установили обработчик на удаление
     this._tripEventEditComponent.setSubmitHandler(this._handleFormSubmit);
