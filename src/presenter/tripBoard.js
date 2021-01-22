@@ -317,9 +317,9 @@ this._offersModel = offersModel;
 
   // рендарим одну точку маршрута
   _renderItem(tripItem) {
-
     const eventPresenter = new EventPresenter(this._tripEventsListComponent.getElement(), this._handleViewAction, this._handleModeChange, this._getOffers()); // 27 this._handleEventChange,
     const offers = this._getOffers()
+    console.log(offers)
     // 3 наблюдатель
     this._eventPresenter[tripItem.id] = eventPresenter; // в объект записываем id с сылкой на этот event презентер
     // this._eventPresenter[tripItem.id] это 1608250670855: Event {…}
@@ -329,7 +329,7 @@ this._offersModel = offersModel;
   }
 
   // рендарим все точки маршрута
-  _renderEventItems(tripItems, ) { // 14 метод который получает массив объектов точек
+  _renderEventItems(tripItems) { // 14 метод который получает массив объектов точек
     tripItems.forEach((item) => { // проходим по этому массиву
       this._renderItem(item); // передаем каждый объект в this._renderItem где дальше он все отрисует
     });

@@ -236,23 +236,44 @@ const handleSiteMenuClick = (menuItem) => {
 // pointsModel.setPoints(tripItems);
 
 
-  api.getPoints()
-  .then((points) => { // в случае успешного запроса
-    pointsModel.setPoints(UpdateType.INIT, points); // передать точки с типом обновления INIT
-    // пока задачи грузятся запрещаем смотреть статистику, это нужно чтобы не отправлялось много запросов при кликах
-    renderMenu();
-    tripMenuComponent.setMenuClickHandler(handleSiteMenuClick); // 1.1.stat
-    // filterPresenter.init();
-  })
-  .catch(() => { // если ошибка то
-    pointsModel.setPoints(UpdateType.INIT, []); // передать пустой массив с типом INIT
-    renderMenu();
-    tripMenuComponent.setMenuClickHandler(handleSiteMenuClick); // 1.1.stat
-  });
+  // api.getPoints()
+  // .then((points) => { // в случае успешного запроса
+  //
+  //   pointsModel.setPoints(UpdateType.INIT, points); // передать точки с типом обновления INIT
+  //   // пока задачи грузятся запрещаем смотреть статистику, это нужно чтобы не отправлялось много запросов при кликах
+  //   renderMenu();
+  //   tripMenuComponent.setMenuClickHandler(handleSiteMenuClick); // 1.1.stat
+  //   // filterPresenter.init();
+  // })
+  // .catch(() => { // если ошибка то
+  //   pointsModel.setPoints(UpdateType.INIT, []); // передать пустой массив с типом INIT
+  //   renderMenu();
+  //   tripMenuComponent.setMenuClickHandler(handleSiteMenuClick); // 1.1.stat
+  // });
+  //
+// api.getOffers().then((offersArray)=>{
+//   offersModel.setOffers(offersArray)}
+// );
 
-api.getOffers().then((offersArray)=>{
-  offersModel.setOffers(offersArray)}
-);
+Promise.all([
+  api.getOffers(),
+  api.getPoints(),
+])
+  .then(([formOffers, points]) => { // в случае успешного запроса
+    offersModel.setOffers(formOffers)
+  pointsModel.setPoints(UpdateType.INIT, points); // передать точки с типом обновления INIT
+  // пока задачи грузятся запрещаем смотреть статистику, это нужно чтобы не отправлялось много запросов при кликах
+  renderMenu();
+  tripMenuComponent.setMenuClickHandler(handleSiteMenuClick); // 1.1.stat
+  // filterPresenter.init();
+}).catch(() => { // если ошибка то
+  pointsModel.setPoints(UpdateType.INIT, []); // передать пустой массив с типом INIT
+  renderMenu();
+  tripMenuComponent.setMenuClickHandler(handleSiteMenuClick); // 1.1.stat
+});
+
+
+
 
 // const AUTHORIZATION = `Basic skuilejbspifSwcl1sa2j`; // строка авторизации
 // const END_POINT = `https://13.ecmascript.pages.academy/big-trip/`; // зафиксированный адрес сервера

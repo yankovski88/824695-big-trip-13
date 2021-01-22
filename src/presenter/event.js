@@ -37,7 +37,7 @@ export default class EventPresenter {
 
     this._tripItem = tripItem;
     this._offers = offers;
-    console.log(this._offers)
+    // console.log(this._offers)
     // предыдущие компоненты будут null
     const prevTripEventItemComponent = this._tripEventItemComponent;
     const prevTripEventEditComponent = this._tripEventEditComponent;

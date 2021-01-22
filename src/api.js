@@ -23,7 +23,7 @@ export default class Api {
   getPoints() {
     return this._load({url: `points`}) // this._load приватный метод который бдует брать на себя настройку фича
       // {url: `points`} специальный url
-      .then(Api.toJSON) // далее делает вызов статичного метода Api.toJSON
+      .then(Api.toJSON) // далее делает вызов статичного метода Api.toJSON, чтобы получили формат json для работы
       .then((points) => points.map(PointsModel.adaptToClient)); // при помощи map адаптировали серварные данные на данные клиента
   }
 

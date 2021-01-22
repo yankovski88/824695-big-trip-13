@@ -16,9 +16,8 @@ export default class OffersModel extends Observer {
     offers.forEach((item)=>{
       this._offers.push(item)
     });
-
+console.log(this._offers);
     // this._offers = offers.slice();
-    console.log(offers)
   }
 
   // метод по возврату всех точек маршрута
