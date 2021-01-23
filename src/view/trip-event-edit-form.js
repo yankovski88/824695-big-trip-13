@@ -312,17 +312,22 @@ export default class TripEventEditFormView extends SmartView { // AbstractView
   // 3.1.
   _changePriceHandler(evt) { // оброботчик в котором будем менять данные по цене
     evt.preventDefault();
+    console.log(evt.target.value)
     this.updateData({ // передаем только одну строчку которую хотим обновить т.к. assign создано выше
-      basePrice: evt.target.value // 12 // this._dataItem.price
+      basePrice: parseInt(evt.target.value, 10) // 12 // this._dataItem.price
     }, true); // при нажатии enter закрывается форма
   }
+
+//   this.updateData({
+//                     dateTo: dayjs(userDate).toDate() // .hour(23).minute(59).second(59).toDate()
+// }, true);
+
 
   _changeDestinationHandler(evt) {
     evt.preventDefault();
 
     // код по замене всех данных объекта destination на тот который выбрал пользователь
     const getChangeDestination = (target) => { // target цель выбора пользователя
-      debugger
       for (let item of this._pointDestinations) { // прохождение по массиву всех объектов. destinations передали импортом
         if (target === item.name) { // когда найдется выбор пользователя в нашем массиве
           this.updateData(this._dataItem.destination = item); // то заменить прошлые данные на новый объект
