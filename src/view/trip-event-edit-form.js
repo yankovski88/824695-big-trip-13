@@ -27,7 +27,6 @@ const createFieldTime = (dateStart, dateFinish) => {
     </div>`;
 };
 
-// const offersModel = new OffersModel();
 
 // функция по отрисовке всей формы
 const createTripEventEditForm = (dataItem, routePointTypes, pointDestinations) => { // destinations сюда попадают данные и запоняется шаблон
@@ -35,8 +34,6 @@ const createTripEventEditForm = (dataItem, routePointTypes, pointDestinations) =
   const editFormOffers = routePointTypes;
   const allPointDestinations = pointDestinations;
 
-//   const allDestinations = destinations;
-// console.log(pointDestinations2);
 
 // код на получение всех оферсов по типу
   const getAllOffers = (type, offers) => {
@@ -99,7 +96,6 @@ const createTripEventEditForm = (dataItem, routePointTypes, pointDestinations) =
 
   // функция по отрисовке фрагмента всех преимуществ
   const getOffersTemplate = (formOffers) => {
-    console.log(formOffers);
     // debugger // здесь был косяк и подвисал
     return formOffers.reduce((total, element) => {
       // // код который сравнивает два массива и если совподающие объекты, то возвращает true
@@ -160,9 +156,7 @@ ${isActive ? `checked` : ``}>
                   </div>
 
                   <div class="event__field-group  event__field-group--destination">
-                    <label class="event__label  event__type-output" for="event-destination-1">
-                      ${type}
-                    </label>
+                    <label class="event__label  event__type-output" for="event-destination-1">${type}</label>
                     <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" 
                     value="${he.encode(destination.name)}" list="destination-list-1" >
                     <datalist id="destination-list-1">
@@ -273,7 +267,6 @@ export default class TripEventEditFormView extends SmartView { // AbstractView
 
 
   getTemplate() {
-    console.log(this._pointDestinations);
     return createTripEventEditForm(this._dataItem, this._offers, this._pointDestinations);
   }
 
@@ -312,15 +305,10 @@ export default class TripEventEditFormView extends SmartView { // AbstractView
   // 3.1.
   _changePriceHandler(evt) { // оброботчик в котором будем менять данные по цене
     evt.preventDefault();
-    console.log(evt.target.value)
     this.updateData({ // передаем только одну строчку которую хотим обновить т.к. assign создано выше
       basePrice: parseInt(evt.target.value, 10) // 12 // this._dataItem.price
     }, true); // при нажатии enter закрывается форма
   }
-
-//   this.updateData({
-//                     dateTo: dayjs(userDate).toDate() // .hour(23).minute(59).second(59).toDate()
-// }, true);
 
 
   _changeDestinationHandler(evt) {
@@ -339,8 +327,6 @@ export default class TripEventEditFormView extends SmartView { // AbstractView
 
   // метод по замене активных оферов
   _eventChangeOfferHandler(evt) {
-    console.log(`_eventChangeOfferHandler`)
-
     evt.preventDefault();
     if (evt.target.attributes.checked) { // если был чекнут,
       evt.target.removeAttribute(`checked`); // то удаляем чек
@@ -349,36 +335,7 @@ export default class TripEventEditFormView extends SmartView { // AbstractView
     }
 
     // код по замене всех данных объекта активных offers
-    const getActiveOffers = (editFormOffers) => { // target цель выбора пользователя
-      console.log(`getActiveOffers`)
-
-      console.log(editFormOffers);
-
-      // const editFormOffers = [
-      //   {
-      //     "title": `Add luggage`,
-      //     "price": 50,
-      //   },
-      //   {
-      //     "title": `Switch to comfort class`,
-      //     "price": 80,
-      //   },
-      //   {
-      //     "title": `Add meal`,
-      //     "price": 15,
-      //   },
-      //   {
-      //     "title": `Choose seats`,
-      //     "price": 5,
-      //   },
-      //   {
-      //     "title": `Travel by train`,
-      //     "price": 40,
-      //   },
-      // ];
-
-
-
+    const getActiveOffers = (editFormOffers) => { //  target цель выбора пользователя
       const newOffers = []; // массив со всеми активными объектами оферов
       const idCheckOffers = []; // массив с чекнутыми офферами
       const allEmptyOffers = editFormOffers; // this._dataItem.editFormOffers; // все не чекнутые офферы
@@ -390,8 +347,22 @@ export default class TripEventEditFormView extends SmartView { // AbstractView
           idCheckOffers.push(item.attributes.id.textContent.slice(this._spamText)); // то добавляем title офера в массив
         }
       });
+
+
+      // находим тип точки и по нему находим все егопустые оферы
+      const typeEmptyOffers = [];
+      const eventType = this.getElement().querySelector(`.event__type-output`).textContent;
       // будем сравнивать title из общего массива оферров конкретного этого объекта с его выделеными оферами из idCheckOffers
       for (let itemEmpty of allEmptyOffers) { // проходим по пустому массиву
+
+        if(eventType === itemEmpty.type){
+          typeEmptyOffers.push(itemEmpty)
+        }
+          }
+
+
+      // будем сравнивать title из общего массива оферров конкретного этого объекта с его выделеными оферами из idCheckOffers
+      for (let itemEmpty of typeEmptyOffers) { // проходим по пустому массиву
         idCheckOffers.some((item)=>{ // проходим по массиву где названия чеков
           for(let itemEmptyOffer of itemEmpty.offers){
             if (item === itemEmptyOffer.title) { // если название чека совпадает с заголовком пустого офера
@@ -399,11 +370,23 @@ export default class TripEventEditFormView extends SmartView { // AbstractView
             } // получили массив чекнутых обектов для оферов
           }
 
+
+
+
+      // // будем сравнивать title из общего массива оферров конкретного этого объекта с его выделеными оферами из idCheckOffers
+      // for (let itemEmpty of allEmptyOffers) { // проходим по пустому массиву
+      //   idCheckOffers.some((item)=>{ // проходим по массиву где названия чеков
+      //     for(let itemEmptyOffer of itemEmpty.offers){
+      //       if (item === itemEmptyOffer.title) { // если название чека совпадает с заголовком пустого офера
+      //         newOffers.push(itemEmptyOffer); // то добавляем это объект в массив
+      //       } // получили массив чекнутых обектов для оферов
+      //     }
+
         });
       }
       this.updateData(this._dataItem.offers = newOffers); // + заменяем старые чекнутые оферы на новые
     };
-    getActiveOffers(this._offers); // вызов функции по замене старых чекнутых оферов на новые
+    getActiveOffers(this._offers); //  вызов функции по замене старых чекнутых оферов на новые
   }
 
 
@@ -413,8 +396,6 @@ export default class TripEventEditFormView extends SmartView { // AbstractView
     const getChangeOffers = (target) => { // target цель выбора пользователя
       // debugger
       for (let item of this._offers) { // прохождение по массиву всех объектов. offers массив всех доп предложений
-        console.log(target);
-        console.log(item);
         if (target === item.type.toLowerCase()) { // когда найдется выбор пользователя в нашем массиве
           this.updateData(this._dataItem.type = item.type);
           // this.updateData(this._offers = item.offers);
