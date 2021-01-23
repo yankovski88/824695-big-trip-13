@@ -8,10 +8,11 @@ import {UserAction, UpdateType} from "../const.js"; // 24
 
 export default class PointNewPresenter {
   // changeData поддерживаем получение колбека _handleViewAction который приходит с наружи
-  constructor(eventContainer, changeData) { // поддерживаем колбек который приходит с наружи   // 5 наблюдатель changeMode
+  constructor(eventContainer, changeData, offers, destinations) { // поддерживаем колбек который приходит с наружи   // 5 наблюдатель changeMode
     this._eventContainer = eventContainer; // куда рендерить
     this._changeData = changeData; // 3 нов. записываем в свойства класса
-
+this._offers = offers;
+this._destinations = destinations;
     this._addNewPointComponent = null;
 
     // this._destroyCallback = null; // stat
@@ -30,7 +31,7 @@ export default class PointNewPresenter {
       return;
     }
 
-    this._addNewPointComponent = new AddNewPointView(tripItem); // вьюха для формы редоктирования tripItem
+    this._addNewPointComponent = new AddNewPointView(tripItem, this._offers, this._destinations); // вьюха для формы редоктирования tripItem
     this._addNewPointComponent.setSubmitHandler(this._handleFormSubmit); // 6del установили обработчик на удаление
     this._addNewPointComponent.setCancelHandler(this._handleCanselClick); // 6del установили обработчик на удаление
 

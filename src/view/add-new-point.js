@@ -1,7 +1,9 @@
 import dayjs from "dayjs";
 import he from "he"; // импортировал библиотеку по экранированию тегов от хакеров
 import SmartView from "./smart.js";
-import {destinations, dataOffers, TYPES} from "../mock/mock-trip-event-item.js";
+import {destinations, dataOffers} from "../mock/mock-trip-event-item.js";
+import {TYPES} from "../const";
+
 import flatpickr from "flatpickr";
 import "../../node_modules/flatpickr/dist/flatpickr.min.css";
 import {generateId} from "../mock/mock-trip-event-item";
@@ -11,40 +13,60 @@ const BLANK_POINT = {
   "type": `Flight`,
   "dateFrom": new Date(),
   "dateTo": new Date(),
-  "id": generateId(),
+  // "id": generateId(),
   "isFavorite": getRandomInteger(0, 0),
   "destination": {
-    "description": `Lorem ipsum dolor sit amet, consectetur adipiscing…quet varius magna, non porta ligula feugiat eget.`,
     "name": `Geneva`,
+    "description": "Geneva, in a middle of Europe, for those who value comfort and coziness, with an embankment of a mighty river as a centre of attraction, famous for its crowded street markets with the best street food in Asia.",
     "pictures": [
       {
-        "src": `http://picsum.photos/248/152?r=0.1689645545216163`,
-        "description": `event Geneva`
+        "src": "http://picsum.photos/300/200?r=0.2711095928296725",
+        "description": "Geneva biggest supermarket"
+      },
+      {
+        "src": "http://picsum.photos/300/200?r=0.37260096662238484",
+        "description": "Geneva zoo"
+      },
+      {
+        "src": "http://picsum.photos/300/200?r=0.24136485619435555",
+        "description": "Geneva parliament building"
+      },
+      {
+        "src": "http://picsum.photos/300/200?r=0.020111608522429103",
+        "description": "Geneva city centre"
+      },
+      {
+        "src": "http://picsum.photos/300/200?r=0.7188000886995232",
+        "description": "Geneva parliament building"
       }
     ]
   },
   "basePrice": ``,
   "editFormOffers": [
     {
-      "title": `Add luggage`,
-      "price": 50,
+      "title": "Choose meal",
+      "price": 120
     },
     {
-      "title": `Switch to comfort class`,
-      "price": 80,
+      "title": "Choose seats",
+      "price": 90
     },
     {
-      "title": `Add meal`,
-      "price": 15,
+      "title": "Upgrade to comfort class",
+      "price": 120
     },
     {
-      "title": `Choose seats`,
-      "price": 5,
+      "title": "Upgrade to business class",
+      "price": 120
     },
     {
-      "title": `Travel by train`,
-      "price": 40,
+      "title": "Add luggage",
+      "price": 170
     },
+    {
+      "title": "Business lounge",
+      "price": 160
+    }
   ],
 
   "offers": [{
@@ -73,48 +95,26 @@ const createFieldTime = (dateStart, dateFinish) => {
 };
 
 // функция по отрисовке всей формы
-const createTripEventEditForm = (dataItem) => { // сюда попадают данные и запоняется шаблон dataItem
-//   const type = `Flight`;
-//   const destination =  {"description": `Lorem ipsum dolor sit amet, consectetur adipiscing…quet varius magna, non porta ligula feugiat eget.`,
-//     "name": `Geneva`,
-//     "pictures": [
-//     {
-//       "src": `http://picsum.photos/248/152?r=0.1689645545216163`,
-//       "description": `event Geneva`
-//     }
-//   ]
-// }
-//   const basePrice = ``;
-//
-//   const editFormOffers = [
-//    {
-//      "title": `Add luggage`,
-//      "price": 50,
-//    },
-//    {
-//      "title": `Switch to comfort class`,
-//      "price": 80,
-//    },
-//    {
-//      "title": `Add meal`,
-//      "price": 15,
-//    },
-//    {
-//      "title": `Choose seats`,
-//      "price": 5,
-//    },
-//    {
-//      "title": `Travel by train`,
-//      "price": 40,
-//    },
-//  ];
-//
-//   const offers = [ {
-//     "title": ``,
-//     "price": ``,
-//   },];
-
+const createTripEventEditForm = (dataItem, routePointTypes, pointDestinations) => { // сюда попадают данные и запоняется шаблон dataItem
   const {dateFrom, dateTo, destination, basePrice, type, offers, editFormOffers} = dataItem; // additionalOffers, photos,
+  const emptyFormOffers = routePointTypes;
+  const allPointDestinations = pointDestinations;
+console.log(emptyFormOffers);
+  console.log(allPointDestinations);
+
+
+  // код на получение всех оферсов по типу
+  const getAllOffers = (type, offers) => {
+    let typeOffers;
+    for (let item of offers) {
+      if (type === item.type) {
+        typeOffers = item.offers;
+      }
+    }
+    return typeOffers;
+  };
+
+  const pointOffers = getAllOffers(type, editFormOffers);
 
 
   // const isDateValid = ()=>{
@@ -131,7 +131,7 @@ const createTripEventEditForm = (dataItem) => { // сюда попадают д�
 
   // функция по отрисовке фрагмента всех преимуществ
   const getOffersTemplate = (formOffers) => {
-
+console.log(formOffers);
     return formOffers.reduce((total, element) => {
 
       // // код который сравнивает два массива и если совподающие объекты, то возвращает true
@@ -153,6 +153,31 @@ ${isActive ? `checked` : ``}>
       }
     }, ``);
   };
+
+//   // функция по отрисовке фрагмента всех преимуществ
+//   const getOffersTemplate = (formOffers) => {
+//     // debugger // здесь был косяк и подвисал
+//     return formOffers.reduce((total, element) => {
+//       // // код который сравнивает два массива и если совподающие объекты, то возвращает true
+//       const isActive = offers.some((el) => {
+//         return el.title === element.title;
+//       });
+//
+//       if (element.title !== ``) {
+//         return total + `<div class="event__offer-selector">
+//                         <input class="event__offer-checkbox  visually-hidden" id="event-offer-luggage-${element.title}" type="checkbox" name="event-offer-luggage"
+// ${isActive ? `checked` : ``}>
+//                             <label class="event__offer-label" for="event-offer-luggage-${element.title}">
+//                           <span class="event__offer-title">${element.title}</span>
+//                           &plus;&euro;&nbsp;
+//                           <span class="event__offer-price">${element.price}</span>
+//                         </label>
+//                       </div>`;
+//       } else {
+//         return total + ``;
+//       }
+//     }, ``);
+//   };
 
   const createTime = createFieldTime(dateFrom, dateTo);
 
@@ -248,10 +273,13 @@ ${isActive ? `checked` : ``}>
 
 
 export default class AddNewPointView extends SmartView { // AbstractView
-  constructor(dataItem = BLANK_POINT) {
+  constructor(dataItem = BLANK_POINT, offers, pointDestinations) {
     super();
     this._destinations = destinations;
     this._dataItem = AddNewPointView.parseDataItemToData(dataItem); // 0 превращаем объект dataItem в объект data т.к. он более полный, было this._dataItem = dataItem;
+    this._offers = offers;
+    this._pointDestinations = pointDestinations;
+
     this._datepickerFinish = null; // 1 здесь будем хранить экземпляр _datepicker т.е. открытый показанный _datepicker. Это нужно для того чтобы потом можно после закрытия формы удалить.
     this._datepickerStart = null;
     this._dateFrom = this._dataItem.dateFrom;
@@ -296,7 +324,7 @@ export default class AddNewPointView extends SmartView { // AbstractView
 
 
   getTemplate() {
-    return createTripEventEditForm(this._dataItem);
+    return createTripEventEditForm(this._dataItem, this._offers, this._pointDestinations);
   }
 
   // 5
@@ -389,7 +417,7 @@ export default class AddNewPointView extends SmartView { // AbstractView
 
     // код по замене всех данных объекта offers на тот который выбрал пользователь
     const getChangeOffers = (target) => { // target цель выбора пользователя
-
+      // emptyFormOffers
       for (let item of dataOffers) { // прохождение по массиву всех объектов. offers массив всех доп предложений
 
         if (target === item.type.toLowerCase()) { // когда найдется выбор пользователя в нашем массиве
@@ -402,6 +430,21 @@ export default class AddNewPointView extends SmartView { // AbstractView
     };
     getChangeOffers(evt.target.value);
   }
+
+
+  _eventChangeTypeHandler(evt) {
+    evt.preventDefault();
+    // код по замене всех данных объекта offers на тот который выбрал пользователь
+    const getChangeOffers = (target) => { // target цель выбора пользователя
+      for (let item of this._offers) { // прохождение по массиву всех объектов. offers массив всех доп предложений
+        if (target === item.type.toLowerCase()) { // когда найдется выбор пользователя в нашем массиве
+          this.updateData(this._dataItem.type = item.type);
+        }
+      }
+    };
+    getChangeOffers(evt.target.value);
+  }
+
 
   // 8
   // код обнуляет данные до стартовых которые пришли в tripBoard

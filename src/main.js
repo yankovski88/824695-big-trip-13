@@ -81,44 +81,109 @@ const filterPresenter = new FilterPresenter(tripControlsElement, filterModel); /
 filterPresenter.init();
 
 
+// const BLANK_POINT = {
+//   "type": `Flight`,
+//   "dateFrom": new Date(),
+//   "dateTo": new Date(),
+//   "id": generateId(),
+//   "isFavorite": getRandomInteger(0, 0),
+//   "destination": {
+//     "description": `Lorem ipsum dolor sit amet, consectetur adipiscing…quet varius magna, non porta ligula feugiat eget.`,
+//     "name": `Geneva`,
+//     "pictures": [
+//       {
+//         "src": `http://picsum.photos/248/152?r=0.1689645545216163`,
+//         "description": `event Geneva`
+//       }
+//     ]
+//   },
+//   "basePrice": ``,
+//   "editFormOffers": [
+//     {
+//       "title": `Add luggage`,
+//       "price": 50,
+//     },
+//     {
+//       "title": `Switch to comfort class`,
+//       "price": 80,
+//     },
+//     {
+//       "title": `Add meal`,
+//       "price": 15,
+//     },
+//     {
+//       "title": `Choose seats`,
+//       "price": 5,
+//     },
+//     {
+//       "title": `Travel by train`,
+//       "price": 40,
+//     },
+//   ],
+//
+//   "offers": [{
+//     "title": ``,
+//     "price": ``,
+//   }]
+// };
 const BLANK_POINT = {
   "type": `Flight`,
   "dateFrom": new Date(),
   "dateTo": new Date(),
-  "id": generateId(),
+  // "id": generateId(),
   "isFavorite": getRandomInteger(0, 0),
   "destination": {
-    "description": `Lorem ipsum dolor sit amet, consectetur adipiscing…quet varius magna, non porta ligula feugiat eget.`,
     "name": `Geneva`,
+    "description": "Geneva, in a middle of Europe, for those who value comfort and coziness, with an embankment of a mighty river as a centre of attraction, famous for its crowded street markets with the best street food in Asia.",
     "pictures": [
       {
-        "src": `http://picsum.photos/248/152?r=0.1689645545216163`,
-        "description": `event Geneva`
+        "src": "http://picsum.photos/300/200?r=0.2711095928296725",
+        "description": "Geneva biggest supermarket"
+      },
+      {
+        "src": "http://picsum.photos/300/200?r=0.37260096662238484",
+        "description": "Geneva zoo"
+      },
+      {
+        "src": "http://picsum.photos/300/200?r=0.24136485619435555",
+        "description": "Geneva parliament building"
+      },
+      {
+        "src": "http://picsum.photos/300/200?r=0.020111608522429103",
+        "description": "Geneva city centre"
+      },
+      {
+        "src": "http://picsum.photos/300/200?r=0.7188000886995232",
+        "description": "Geneva parliament building"
       }
     ]
   },
   "basePrice": ``,
   "editFormOffers": [
     {
-      "title": `Add luggage`,
-      "price": 50,
+      "title": "Choose meal",
+      "price": 120
     },
     {
-      "title": `Switch to comfort class`,
-      "price": 80,
+      "title": "Choose seats",
+      "price": 90
     },
     {
-      "title": `Add meal`,
-      "price": 15,
+      "title": "Upgrade to comfort class",
+      "price": 120
     },
     {
-      "title": `Choose seats`,
-      "price": 5,
+      "title": "Upgrade to business class",
+      "price": 120
     },
     {
-      "title": `Travel by train`,
-      "price": 40,
+      "title": "Add luggage",
+      "price": 170
     },
+    {
+      "title": "Business lounge",
+      "price": 160
+    }
   ],
 
   "offers": [{
@@ -126,7 +191,6 @@ const BLANK_POINT = {
     "price": ``,
   }]
 };
-
 
 // 1add код который создаем новую точку маршрута
 const addBtn = document.querySelector(`.trip-main__event-add-btn`);

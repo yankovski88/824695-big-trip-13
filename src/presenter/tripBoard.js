@@ -16,7 +16,6 @@ export default class TripBoard {
     this._filterModel = filterModel; // 64
     this._pointsModel = pointsModel; // 6 создали свойство класса, чтобы в дальнейшем переиспользовать
     this._destinationsModel = destinationsModel;
-    console.log(this._destinationsModel);
     this._tripBoardContainer = tripBoardContainer;
     this._isLoading = true; // по умолчанию делаем состояние лоудинг, типо вечно крутится спинер
 this._api = api;
@@ -48,7 +47,7 @@ this._offersModel = offersModel;
     // this._filterModel.addObserver(this._handleModelEvent); // 65
 
     // 4add т.к. мы имопртируем презентер PointNewPresenter, то нужно создать инстанс презентера новой точки маршрута
-    this._pointNewPresenter = new PointNewPresenter(this._tripEventsListComponent, this._handleViewAction, this._getOffers());
+    this._pointNewPresenter = new PointNewPresenter(this._tripEventsListComponent, this._handleViewAction, this._getOffers(), this._getDestinations());
   }
 
   // В main.js в управлющем файле инициализируем TripBoard.init(). Он запустит всю логику MVP.  И ТОЛЬКО ПО БОРДУ!
@@ -324,12 +323,10 @@ this._offersModel = offersModel;
 
   // рендарим одну точку маршрута
   _renderItem(tripItem) {
-    console.log(this._getDestinations())
     const eventPresenter = new EventPresenter(this._tripEventsListComponent.getElement(), this._handleViewAction, this._handleModeChange, this._getOffers(), this._getDestinations()); //  27 this._handleEventChange,
     const offers = this._getOffers();
 
     const destinations = this._getDestinations();
-    // console.log(offers)
     // 3 наблюдатель
     this._eventPresenter[tripItem.id] = eventPresenter; // в объект записываем id с сылкой на этот event презентер
     // this._eventPresenter[tripItem.id] это 1608250670855: Event {…}

@@ -38,7 +38,6 @@ export default class EventPresenter {
     this._tripItem = tripItem;
     this._offers = offers;
     this._pointDestinations = pointDestinations;
-    console.log(this._pointDestinations)
     // предыдущие компоненты будут null
     const prevTripEventItemComponent = this._tripEventItemComponent;
     const prevTripEventEditComponent = this._tripEventEditComponent;
@@ -61,8 +60,6 @@ export default class EventPresenter {
 
     // код который скрывает форму если кликнуть в форме редоктирования кнопку треугольник
     this._tripEventEditComponent.setRollupBtnHandler(() => {
-      console.log(`click on treugolnik in Edite`);
-// debugger
       this._tripEventEditComponent.reset(this._tripItem); // код для удаления не сохраненных данных в форме
       this._replaceFormToItem();
     });
