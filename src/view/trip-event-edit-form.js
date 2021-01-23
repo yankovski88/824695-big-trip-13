@@ -1,10 +1,10 @@
 import dayjs from "dayjs";
 import he from "he"; // импортировал библиотеку по экранированию тегов от хакеров
 import SmartView from "./smart.js";
-import {destinations, dataOffers, TYPES} from "../mock/mock-trip-event-item.js";
+import {destinations, dataOffers} from "../mock/mock-trip-event-item.js";
 import flatpickr from "flatpickr";
 import "../../node_modules/flatpickr/dist/flatpickr.min.css";
-import {UpdateType, UserAction} from "../const";
+import {UpdateType, UserAction, TYPES} from "../const";
 import {getRandomInteger} from "../util/common";
 import {getTripEventItem} from "../mock/mock-trip-event-item";
 import Api from "../api.js";
@@ -30,15 +30,14 @@ const createFieldTime = (dateStart, dateFinish) => {
 // const offersModel = new OffersModel();
 
 // функция по отрисовке всей формы
-const createTripEventEditForm = (dataItem) => { // сюда попадают данные и запоняется шаблон
-  console.log(dataItem)
-
-  const {dateFrom, dateTo, destination, basePrice, type, offers, editFormOffers} = dataItem; // editFormOffers
-  // const {emptyOffers2} = emptyOffers;
-
+const createTripEventEditForm = (dataItem, routePointTypes) => { // сюда попадают данные и запоняется шаблон
+  const {dateFrom, dateTo, destination, basePrice, type, offers} = dataItem; // editFormOffers
+  const editFormOffers = routePointTypes;
+console.log(editFormOffers);
 
 // код на получение всех оферсов по типу
   const getAllOffers = (type, offers) => {
+
     let typeOffers;
     for (let item of offers) {
       if (type === item.type) {
@@ -47,10 +46,8 @@ const createTripEventEditForm = (dataItem) => { // сюда попадают д�
     }
     return typeOffers;
   };
-console.log(type)
-  console.log(editFormOffers)
-  const formOffers = getAllOffers(type, editFormOffers);
-  console.log(formOffers)
+
+  const pointOffers = getAllOffers(type, editFormOffers);
 
   // const editFormOffers = [
   //   {
@@ -99,6 +96,7 @@ console.log(type)
 
   // функция по отрисовке фрагмента всех преимуществ
   const getOffersTemplate = (formOffers) => {
+    console.log(formOffers);
     // debugger // здесь был косяк и подвисал
     return formOffers.reduce((total, element) => {
       // // код который сравнивает два массива и если совподающие объекты, то возвращает true
@@ -193,7 +191,7 @@ ${isActive ? `checked` : ``}>
 
                     <div class="event__available-offers">
                     
-     ${getOffersTemplate(formOffers)}
+     ${getOffersTemplate(pointOffers)}
                     </div>
                   </section>
 
@@ -221,12 +219,13 @@ export default class TripEventEditFormView extends SmartView { // AbstractView
 
     super();
     this._destinations = destinations;
-    this._dataItem = TripEventEditFormView.parseDataItemToData(dataItem, offers); // 0 превращаем объект dataItem в объект data т.к. он более полный, было this._dataItem = dataItem;
+    this._dataItem = TripEventEditFormView.parseDataItemToData(dataItem); // 0 превращаем объект dataItem в объект data т.к. он более полный, было this._dataItem = dataItem;
+    this._offers = offers;
     this._datepickerFinish = null; // 1 здесь будем хранить экземпляр _datepicker т.е. открытый показанный _datepicker. Это нужно для того чтобы потом можно после закрытия формы удалить.
     this._datepickerStart = null;
     this._dateFrom = this._dataItem.dateFrom;
     this._dateTo = this._dataItem.dateTo;
-    this._editFormOffers = this._dataItem.editFormOffers
+    // this._editFormOffers = this._dataItem.editFormOffers
     this._saveBtnElement = this.getElement().querySelector(`.event__save-btn`);
     this._spamText = 20;
     this._addBtn = document.querySelector(`.trip-main__event-add-btn`);
@@ -251,11 +250,11 @@ export default class TripEventEditFormView extends SmartView { // AbstractView
   }
   // 0.1
   // парсим типа, создаем копию данных с дополниетельным данными
-  static parseDataItemToData(dataItem, offers) {
+  static parseDataItemToData(dataItem) { // offers
     return Object.assign(
         {},
         dataItem,
-      {editFormOffers: offers},
+      // {editFormOffers: offers},
         // {isDueDate: task.dueDate !== null,}
     );
   }
@@ -270,8 +269,7 @@ export default class TripEventEditFormView extends SmartView { // AbstractView
 
 
   getTemplate() {
-    console.log(this._dataItem)
-    return createTripEventEditForm(this._dataItem);
+    return createTripEventEditForm(this._dataItem, this._offers);
   }
 
   // 5
@@ -395,10 +393,14 @@ export default class TripEventEditFormView extends SmartView { // AbstractView
     evt.preventDefault();
     // код по замене всех данных объекта offers на тот который выбрал пользователь
     const getChangeOffers = (target) => { // target цель выбора пользователя
-      for (let item of this._editFormOffers) { // прохождение по массиву всех объектов. offers массив всех доп предложений
+      // debugger
+      for (let item of this._offers) { // прохождение по массиву всех объектов. offers массив всех доп предложений
+        console.log(target);
+        console.log(item);
         if (target === item.type.toLowerCase()) { // когда найдется выбор пользователя в нашем массиве
           this.updateData(this._dataItem.type = item.type);
-          this.updateData(this._dataItem.offers = item.offers);
+          // this.updateData(this._offers = item.offers);
+
           // this.updateData(this._dataItem.offers = item.offers); // код который перерисует, что выбрал ползьвавтель из offer в event
         }
       }
@@ -410,7 +412,7 @@ export default class TripEventEditFormView extends SmartView { // AbstractView
   // код обнуляет данные до стартовых которые пришли в tripBoard
   reset(tripItem) {
     this.updateData(
-        tripItem
+        tripItem,
     );
   }
 

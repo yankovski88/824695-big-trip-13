@@ -60,6 +60,8 @@ export default class EventPresenter {
 
     // код который скрывает форму если кликнуть в форме редоктирования кнопку треугольник
     this._tripEventEditComponent.setRollupBtnHandler(() => {
+      console.log(`click on treugolnik in Edite`);
+// debugger
       this._tripEventEditComponent.reset(this._tripItem); // код для удаления не сохраненных данных в форме
       this._replaceFormToItem();
     });
