@@ -31,6 +31,10 @@ export default class Api {
     return this._load({url: `offers`})
       .then(Api.toJSON)
   }
+  getDestinations() {
+    return this._load({url: `destinations`})
+      .then(Api.toJSON)
+  }
 
   // этот метод берет уже _load c некими настройками
   updatePoint(point) {

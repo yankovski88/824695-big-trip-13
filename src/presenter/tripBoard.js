@@ -12,9 +12,11 @@ import LoadingView from "../view/loading.js";
 
 // класс который занимается отрисовкой всего того, что входит в борд
 export default class TripBoard {
-  constructor(tripBoardContainer, pointsModel, filterModel, api, offersModel) { // 63
+  constructor(tripBoardContainer, pointsModel, filterModel, api, offersModel, destinationsModel) { //  63
     this._filterModel = filterModel; // 64
     this._pointsModel = pointsModel; // 6 создали свойство класса, чтобы в дальнейшем переиспользовать
+    this._destinationsModel = destinationsModel;
+    console.log(this._destinationsModel);
     this._tripBoardContainer = tripBoardContainer;
     this._isLoading = true; // по умолчанию делаем состояние лоудинг, типо вечно крутится спинер
 this._api = api;
@@ -158,6 +160,10 @@ this._offersModel = offersModel;
     return this._offersModel.getOffers();
   }
 
+  _getDestinations(){
+    return this._destinationsModel.getDestinations();
+  }
+
   // обработать действие просмотра
   _handleViewAction(actionType, updateType, update) { // 20 на основании того что хочет пользователь обновить модель
     // Здесь обрабатываем, что моедель изменилась и сходя из event(changeData)
@@ -190,7 +196,8 @@ this._offersModel = offersModel;
     switch (updateType) { // 33
       case UpdateType.PATCH:
         // - обновить часть списка (например, когда поменялось описание)
-        this._eventPresenter[data.id].init(data, this._getOffers()); // реинициализируем маленькую частичку типо галочки
+
+        this._eventPresenter[data.id].init(data, this._getOffers(), this._getDestinations()); //  реинициализируем маленькую частичку типо галочки
         break;
       case UpdateType.MINOR:
         // - обновить список (например, когда задача ушла в архив)
@@ -317,13 +324,16 @@ this._offersModel = offersModel;
 
   // рендарим одну точку маршрута
   _renderItem(tripItem) {
-    const eventPresenter = new EventPresenter(this._tripEventsListComponent.getElement(), this._handleViewAction, this._handleModeChange, this._getOffers()); // 27 this._handleEventChange,
-    const offers = this._getOffers()
+    console.log(this._getDestinations())
+    const eventPresenter = new EventPresenter(this._tripEventsListComponent.getElement(), this._handleViewAction, this._handleModeChange, this._getOffers(), this._getDestinations()); //  27 this._handleEventChange,
+    const offers = this._getOffers();
+
+    const destinations = this._getDestinations();
     // console.log(offers)
     // 3 наблюдатель
     this._eventPresenter[tripItem.id] = eventPresenter; // в объект записываем id с сылкой на этот event презентер
     // this._eventPresenter[tripItem.id] это 1608250670855: Event {…}
-    eventPresenter.init(tripItem, offers); // .init(tripItem) презентер с id в котором были изменения перерисовывается
+    eventPresenter.init(tripItem, offers, destinations); // .init(tripItem) презентер с id в котором были изменения перерисовывается
     // this._eventPresenter это весь список id: event который был добавлен при рендере Event
     // init этот с renderItem
   }

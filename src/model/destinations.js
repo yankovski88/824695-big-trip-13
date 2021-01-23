@@ -5,24 +5,28 @@ import dayjs from "dayjs";
 
 
 // 1 создал модель
-export default class OffersModel extends Observer {
+export default class DestinationsModel extends Observer {
   constructor() {
     super();
-    this._offers = []; // храним все точки маршрута
+    this._destinations = []; // храним все точки маршрута
   }
 
   // метод для записи всех точек маршрута
-  setOffers(offers) {
-    offers.forEach((item)=>{
-      this._offers.push(item)
+  setDestinations(destinations) {
+    destinations.forEach((item)=>{
+      this._destinations.push(item)
     });
-    // this._offers = offers.slice();
+    // this._destinations = destinations.slice();
+    console.log(this._destinations);
   }
 
   // метод по возврату всех точек маршрута
-  getOffers() {
-    return this._offers;
+  getDestinations() {
+    // console.log(this._destinations);
+    return this._destinations;
   }
+
 }
+
 
 

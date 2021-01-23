@@ -1,7 +1,7 @@
 import dayjs from "dayjs";
 import he from "he"; // импортировал библиотеку по экранированию тегов от хакеров
 import SmartView from "./smart.js";
-import {destinations, dataOffers} from "../mock/mock-trip-event-item.js";
+// import {destinations, dataOffers} from "../mock/mock-trip-event-item.js";
 import flatpickr from "flatpickr";
 import "../../node_modules/flatpickr/dist/flatpickr.min.css";
 import {UpdateType, UserAction, TYPES} from "../const";
@@ -30,10 +30,13 @@ const createFieldTime = (dateStart, dateFinish) => {
 // const offersModel = new OffersModel();
 
 // функция по отрисовке всей формы
-const createTripEventEditForm = (dataItem, routePointTypes) => { // сюда попадают данные и запоняется шаблон
+const createTripEventEditForm = (dataItem, routePointTypes, pointDestinations) => { // destinations сюда попадают данные и запоняется шаблон
   const {dateFrom, dateTo, destination, basePrice, type, offers} = dataItem; // editFormOffers
   const editFormOffers = routePointTypes;
-console.log(editFormOffers);
+  const allPointDestinations = pointDestinations;
+
+//   const allDestinations = destinations;
+// console.log(pointDestinations2);
 
 // код на получение всех оферсов по типу
   const getAllOffers = (type, offers) => {
@@ -215,12 +218,13 @@ ${isActive ? `checked` : ``}>
 
 export default class TripEventEditFormView extends SmartView { // AbstractView
 
-  constructor(dataItem, offers) {
+  constructor(dataItem, offers, pointDestinations) {
 
     super();
-    this._destinations = destinations;
+    // this._destinations = destinations;
     this._dataItem = TripEventEditFormView.parseDataItemToData(dataItem); // 0 превращаем объект dataItem в объект data т.к. он более полный, было this._dataItem = dataItem;
     this._offers = offers;
+    this._pointDestinations = pointDestinations;
     this._datepickerFinish = null; // 1 здесь будем хранить экземпляр _datepicker т.е. открытый показанный _datepicker. Это нужно для того чтобы потом можно после закрытия формы удалить.
     this._datepickerStart = null;
     this._dateFrom = this._dataItem.dateFrom;
@@ -269,7 +273,8 @@ export default class TripEventEditFormView extends SmartView { // AbstractView
 
 
   getTemplate() {
-    return createTripEventEditForm(this._dataItem, this._offers);
+    console.log(this._pointDestinations);
+    return createTripEventEditForm(this._dataItem, this._offers, this._pointDestinations);
   }
 
   // 5
@@ -317,7 +322,8 @@ export default class TripEventEditFormView extends SmartView { // AbstractView
 
     // код по замене всех данных объекта destination на тот который выбрал пользователь
     const getChangeDestination = (target) => { // target цель выбора пользователя
-      for (let item of destinations) { // прохождение по массиву всех объектов. destinations передали импортом
+      debugger
+      for (let item of this._pointDestinations) { // прохождение по массиву всех объектов. destinations передали импортом
         if (target === item.name) { // когда найдется выбор пользователя в нашем массиве
           this.updateData(this._dataItem.destination = item); // то заменить прошлые данные на новый объект
         }
@@ -384,7 +390,6 @@ export default class TripEventEditFormView extends SmartView { // AbstractView
         idCheckOffers.some((item)=>{ // проходим по массиву где названия чеков
           for(let itemEmptyOffer of itemEmpty.offers){
             if (item === itemEmptyOffer.title) { // если название чека совпадает с заголовком пустого офера
-              console.log(itemEmpty);
               newOffers.push(itemEmptyOffer); // то добавляем это объект в массив
             } // получили массив чекнутых обектов для оферов
           }

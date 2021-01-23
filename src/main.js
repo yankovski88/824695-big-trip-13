@@ -10,6 +10,8 @@ import TripInfo from "./presenter/tripInfo";
 import PointsModel from "./model/points.js"; // 3 импорт модель
 import FilterModel from "./model/filter.js"; // 48
 import OffersModel from "./model/offers.js"; // 48
+import DestinationsModel from "./model/destinations.js"; // 48
+
 
 import FilterPresenter from "./presenter/filter.js";
 import {generateId} from "./mock/mock-trip-event-item";
@@ -24,7 +26,6 @@ const END_POINT = `https://13.ecmascript.pages.academy/big-trip/`; // зафик
 const api = new Api(END_POINT, AUTHORIZATION); // создаем экземпляр нашего Api
 
 
-
 const DATA_COUNT = 5;
 let currentMenuActive = MenuItem.POINTS; // меню по умолчанию
 
@@ -37,7 +38,7 @@ const tripItems = new Array(DATA_COUNT).fill().map(getTripEventItem);
 
 const pointsModel = new PointsModel(); // 4 создали экземпляр модели
 const offersModel = new OffersModel();
-
+const destinationsModel = new DestinationsModel();
 // pointsModel.setPoints(tripItems); // передаем моковые данные точнее делаем их копию и записываем в массив.
 // Если захотим вызывать моки тогда нужно испльзовать getPoints
 
@@ -69,7 +70,7 @@ const renderMenu = () => {
 // renderMenu();
 
 // 5 передаем экземпляр модели в конструктор
-const tripBoardPresenter = new TripBoard(tripEventElement, pointsModel, filterModel, api, offersModel); // 61 создал призентер с контейнером в который вставим все
+const tripBoardPresenter = new TripBoard(tripEventElement, pointsModel, filterModel, api, offersModel, destinationsModel); //  61 создал призентер с контейнером в который вставим все
 // tripEventElement это контейнер в который нужно отрисовать
 const tripInfoPresenter = new TripInfo(tripMainElement, pointsModel); // tripInfoElement
 
@@ -145,7 +146,7 @@ addBtn.addEventListener(`click`, (evt) => { // нашли кноку созда�
   currentMenuActive = MenuItem.ADD_NEW_POINT;
 
   const menuLinks = tripMenuComponent.getElement().querySelectorAll(`a`);
-  menuLinks.forEach((item)=>{
+  menuLinks.forEach((item) => {
     item.classList.remove(`trip-tabs__btn--active`);
     item.removeAttribute(`disabled`);
     if (item.getAttribute(`value`) === `POINTS`) {
@@ -236,21 +237,21 @@ const handleSiteMenuClick = (menuItem) => {
 // pointsModel.setPoints(tripItems);
 
 
-  // api.getPoints()
-  // .then((points) => { // в случае успешного запроса
-  //
-  //   pointsModel.setPoints(UpdateType.INIT, points); // передать точки с типом обновления INIT
-  //   // пока задачи грузятся запрещаем смотреть статистику, это нужно чтобы не отправлялось много запросов при кликах
-  //   renderMenu();
-  //   tripMenuComponent.setMenuClickHandler(handleSiteMenuClick); // 1.1.stat
-  //   // filterPresenter.init();
-  // })
-  // .catch(() => { // если ошибка то
-  //   pointsModel.setPoints(UpdateType.INIT, []); // передать пустой массив с типом INIT
-  //   renderMenu();
-  //   tripMenuComponent.setMenuClickHandler(handleSiteMenuClick); // 1.1.stat
-  // });
-  //
+// api.getPoints()
+// .then((points) => { // в случае успешного запроса
+//
+//   pointsModel.setPoints(UpdateType.INIT, points); // передать точки с типом обновления INIT
+//   // пока задачи грузятся запрещаем смотреть статистику, это нужно чтобы не отправлялось много запросов при кликах
+//   renderMenu();
+//   tripMenuComponent.setMenuClickHandler(handleSiteMenuClick); // 1.1.stat
+//   // filterPresenter.init();
+// })
+// .catch(() => { // если ошибка то
+//   pointsModel.setPoints(UpdateType.INIT, []); // передать пустой массив с типом INIT
+//   renderMenu();
+//   tripMenuComponent.setMenuClickHandler(handleSiteMenuClick); // 1.1.stat
+// });
+//
 // api.getOffers().then((offersArray)=>{
 //   offersModel.setOffers(offersArray)}
 // );
@@ -258,21 +259,23 @@ const handleSiteMenuClick = (menuItem) => {
 Promise.all([
   api.getOffers(),
   api.getPoints(),
+  api.getDestinations(),
 ])
-  .then(([formOffers, points]) => { // в случае успешного запроса
+  .then(([formOffers, points, pointDestinations]) => { // destinations в случае успешного запроса
+
     offersModel.setOffers(formOffers)
-  pointsModel.setPoints(UpdateType.INIT, points); // передать точки с типом обновления INIT
-  // пока задачи грузятся запрещаем смотреть статистику, это нужно чтобы не отправлялось много запросов при кликах
-  renderMenu();
-  tripMenuComponent.setMenuClickHandler(handleSiteMenuClick); // 1.1.stat
-  // filterPresenter.init();
-}).catch(() => { // если ошибка то
+
+    pointsModel.setPoints(UpdateType.INIT, points); // передать точки с типом обновления INIT
+    destinationsModel.setDestinations(pointDestinations);
+    // пока задачи грузятся запрещаем смотреть статистику, это нужно чтобы не отправлялось много запросов при кликах
+    renderMenu();
+    tripMenuComponent.setMenuClickHandler(handleSiteMenuClick); // 1.1.stat
+    // filterPresenter.init();
+  }).catch(() => { // если ошибка то
   pointsModel.setPoints(UpdateType.INIT, []); // передать пустой массив с типом INIT
   renderMenu();
   tripMenuComponent.setMenuClickHandler(handleSiteMenuClick); // 1.1.stat
 });
-
-
 
 
 // const AUTHORIZATION = `Basic skuilejbspifSwcl1sa2j`; // строка авторизации
