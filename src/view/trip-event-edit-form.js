@@ -221,8 +221,8 @@ export default class TripEventEditFormView extends SmartView { // AbstractView
     this._pointDestinations = pointDestinations;
     this._datepickerFinish = null; // 1 здесь будем хранить экземпляр _datepicker т.е. открытый показанный _datepicker. Это нужно для того чтобы потом можно после закрытия формы удалить.
     this._datepickerStart = null;
-    this._dateFrom = this._dataItem.dateFrom;
-    this._dateTo = this._dataItem.dateTo;
+    // this._dateFrom = this._dataItem.dateFrom;
+    // this._dateTo = this._dataItem.dateTo;
     // this._editFormOffers = this._dataItem.editFormOffers
     this._saveBtnElement = this.getElement().querySelector(`.event__save-btn`);
     this._spamText = 20;
@@ -510,9 +510,9 @@ export default class TripEventEditFormView extends SmartView { // AbstractView
 
 
   _dueStartDateChangeHandler(userDate) {
-    if ((dayjs(userDate).toDate() > this._dateTo)) {
+    if ((dayjs(userDate).toDate() > this._dataItem.dateTo)) {
       this._saveBtnElement.setAttribute(`disabled`, true);
-    } else if ((dayjs(userDate).toDate() < this._dateTo)) {
+    } else if ((dayjs(userDate).toDate() < this._dataItem.dateTo)) {
       this._saveBtnElement.removeAttribute(`disabled`);
     }
     this.updateData({
@@ -522,9 +522,9 @@ export default class TripEventEditFormView extends SmartView { // AbstractView
 
   // 4
   _dueFinishDateChangeHandler([userDate]) {
-    if (dayjs(userDate).toDate() > this._dateFrom) {
+    if (dayjs(userDate).toDate() > this._dataItem.dateFrom) {
       this._saveBtnElement.removeAttribute(`disabled`);
-    } else if ((dayjs(userDate).toDate() < this._dateFrom)) {
+    } else if ((dayjs(userDate).toDate() < this._dataItem.dateFrom)) {
       this._saveBtnElement.setAttribute(`disabled`, true);
     }
     this.updateData({

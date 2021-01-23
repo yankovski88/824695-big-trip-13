@@ -216,10 +216,7 @@ ${isActive ? `checked` : ``}>
                   </div>
 
                   <div class="event__field-group  event__field-group--destination">
-                    <label class="event__label  event__type-output" for="event-destination-1">
-                      ${type}
-                      <!--? type : \`Flight\`-->
-                    </label>
+                    <label class="event__label  event__type-output" for="event-destination-1">${type}</label>
                     <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${he.encode(destination.name)}" list="destination-list-1">
                     <datalist id="destination-list-1">
                       <option value="Amsterdam"></option>
@@ -367,7 +364,7 @@ export default class AddNewPointView extends SmartView { // AbstractView
 
     // код по замене всех данных объекта destination на тот который выбрал пользователь
     const getChangeDestination = (target) => { // target цель выбора пользователя
-      for (let item of destinations) { // прохождение по массиву всех объектов. destinations передали импортом
+      for (let item of this._pointDestinations) { // прохождение по массиву всех объектов. destinations передали импортом
         if (target === item.name) { // когда найдется выбор пользователя в нашем массиве
           this.updateData(this._dataItem.destination = item); // то заменить прошлые данные на новый объект
         }
@@ -376,8 +373,43 @@ export default class AddNewPointView extends SmartView { // AbstractView
     getChangeDestination(evt.target.value);
   }
 
+  // _eventChangeOfferHandler(evt) {
+  //   evt.preventDefault();
+  //   if (evt.target.attributes.checked) { // если был чекнут,
+  //     evt.target.removeAttribute(`checked`); // то удаляем чек
+  //   } else {
+  //     evt.target.setAttribute(`checked`, true); // если не был чекнут, то чекаем
+  //   }
+  //
+  //   // код по замене всех данных объекта активных offers
+  //   const getActiveOffers = () => { // target цель выбора пользователя
+  //     const newOffers = []; // массив со всеми активными объектами оферов
+  //     const idCheckOffers = []; // массив с чекнутыми офферами
+  //     const allEmptyOffers = this._dataItem.editFormOffers; // все не чекнутые офферы
+  //     const groupOffersElement = this.getElement().querySelector(`.event__available-offers`); // нашел группу где все оферы
+  //     const inputOfOffersElement = groupOffersElement.querySelectorAll(`input`); // выташил из нее все инпуты по оферам
+  //     inputOfOffersElement.forEach((item)=>{ // обхожу все инпуты
+  //       if (item.attributes.checked) { // если чекнут
+  //         idCheckOffers.push(item.attributes.id.textContent.slice(this._spamText)); // то добавляем title офера в массив
+  //       }
+  //     });
+  //
+  //     // будем сравнивать title из общего массива оферров конкретного этого объекта с его выделеными оферами из idCheckOffers
+  //     for (let itemEmpty of allEmptyOffers) { // проходим по пустому массиву
+  //       idCheckOffers.some((item)=>{ // проходим по массиву где названия чеков
+  //         if (item === itemEmpty.title) { // если название чека совпадает с заголовком пустого офера
+  //           newOffers.push(itemEmpty); // то добавляем это объект в массив
+  //         } // получили массив чекнутых обектов для оферов
+  //       });
+  //     }
+  //     this.updateData(this._dataItem.offers = newOffers); // заменяем старые чекнутые оферы на новые
+  //   };
+  //   getActiveOffers(); // вызов функции по замене старых чекнутых оферов на новые
+  // }
+
   // метод по замене активных оферов
   _eventChangeOfferHandler(evt) {
+    console.log(this._dataItem)
     evt.preventDefault();
     if (evt.target.attributes.checked) { // если был чекнут,
       evt.target.removeAttribute(`checked`); // то удаляем чек
@@ -386,10 +418,11 @@ export default class AddNewPointView extends SmartView { // AbstractView
     }
 
     // код по замене всех данных объекта активных offers
-    const getActiveOffers = () => { // target цель выбора пользователя
+    const getActiveOffers = (editFormOffers) => { //  target цель выбора пользователя
       const newOffers = []; // массив со всеми активными объектами оферов
       const idCheckOffers = []; // массив с чекнутыми офферами
-      const allEmptyOffers = this._dataItem.editFormOffers; // все не чекнутые офферы
+      const allEmptyOffers = editFormOffers; // this._dataItem.editFormOffers; // все не чекнутые офферы
+console.log(allEmptyOffers);
       const groupOffersElement = this.getElement().querySelector(`.event__available-offers`); // нашел группу где все оферы
       const inputOfOffersElement = groupOffersElement.querySelectorAll(`input`); // выташил из нее все инпуты по оферам
       inputOfOffersElement.forEach((item)=>{ // обхожу все инпуты
@@ -398,32 +431,67 @@ export default class AddNewPointView extends SmartView { // AbstractView
         }
       });
 
+      // находим тип точки и по нему находим все егопустые оферы
+      const typeEmptyOffers = [];
+      const eventType = this.getElement().querySelector(`.event__type-output`).textContent.toLowerCase();
       // будем сравнивать title из общего массива оферров конкретного этого объекта с его выделеными оферами из idCheckOffers
       for (let itemEmpty of allEmptyOffers) { // проходим по пустому массиву
+        // debugger
+        if(eventType === itemEmpty.type){
+          typeEmptyOffers.push(itemEmpty)
+        }
+      }
+
+      console.log(idCheckOffers);
+      console.log(typeEmptyOffers);
+      // console.log(itemEmpty.type);
+      // debugger
+      // будем сравнивать title из общего массива оферров конкретного этого объекта с его выделеными оферами из idCheckOffers
+      for (let itemEmpty of typeEmptyOffers) { // проходим по пустому массиву
         idCheckOffers.some((item)=>{ // проходим по массиву где названия чеков
-          if (item === itemEmpty.title) { // если название чека совпадает с заголовком пустого офера
-            newOffers.push(itemEmpty); // то добавляем это объект в массив
-          } // получили массив чекнутых обектов для оферов
+          for(let itemEmptyOffer of itemEmpty.offers){
+            // console.log(item);
+            if (item === itemEmptyOffer.title) { // если название чека совпадает с заголовком пустого офера
+              // console.log(itemEmptyOffer.title);
+              newOffers.push(itemEmptyOffer); // то добавляем это объект в массив
+            } // получили массив чекнутых обектов для оферов
+          }
+
+
+console.log(newOffers);
+
+          // // будем сравнивать title из общего массива оферров конкретного этого объекта с его выделеными оферами из idCheckOffers
+          // for (let itemEmpty of allEmptyOffers) { // проходим по пустому массиву
+          //   idCheckOffers.some((item)=>{ // проходим по массиву где названия чеков
+          //     for(let itemEmptyOffer of itemEmpty.offers){
+          //       if (item === itemEmptyOffer.title) { // если название чека совпадает с заголовком пустого офера
+          //         newOffers.push(itemEmptyOffer); // то добавляем это объект в массив
+          //       } // получили массив чекнутых обектов для оферов
+          //     }
+
         });
       }
-      this.updateData(this._dataItem.offers = newOffers); // заменяем старые чекнутые оферы на новые
+
+      console.log(this._dataItem.offers)
+      console.log(this._dataItem)
+      this.updateData(this._dataItem.offers = newOffers); // + заменяем старые чекнутые оферы на новые
+      // console.log(this._dataItem)
     };
-    getActiveOffers(); // вызов функции по замене старых чекнутых оферов на новые
+    getActiveOffers(this._offers); //  вызов функции по замене старых чекнутых оферов на новые
+    console.log(this._dataItem)
   }
 
 
   _eventChangeTypeHandler(evt) {
     evt.preventDefault();
-
     // код по замене всех данных объекта offers на тот который выбрал пользователь
     const getChangeOffers = (target) => { // target цель выбора пользователя
-      // emptyFormOffers
-      for (let item of dataOffers) { // прохождение по массиву всех объектов. offers массив всех доп предложений
-
+      // debugger
+      for (let item of this._offers) { // прохождение по массиву всех объектов. offers массив всех доп предложений
         if (target === item.type.toLowerCase()) { // когда найдется выбор пользователя в нашем массиве
-
           this.updateData(this._dataItem.type = item.type);
           this.updateData(this._dataItem.editFormOffers = item.offers);
+
           // this.updateData(this._dataItem.offers = item.offers); // код который перерисует, что выбрал ползьвавтель из offer в event
         }
       }
@@ -431,19 +499,6 @@ export default class AddNewPointView extends SmartView { // AbstractView
     getChangeOffers(evt.target.value);
   }
 
-
-  _eventChangeTypeHandler(evt) {
-    evt.preventDefault();
-    // код по замене всех данных объекта offers на тот который выбрал пользователь
-    const getChangeOffers = (target) => { // target цель выбора пользователя
-      for (let item of this._offers) { // прохождение по массиву всех объектов. offers массив всех доп предложений
-        if (target === item.type.toLowerCase()) { // когда найдется выбор пользователя в нашем массиве
-          this.updateData(this._dataItem.type = item.type);
-        }
-      }
-    };
-    getChangeOffers(evt.target.value);
-  }
 
 
   // 8
@@ -508,6 +563,32 @@ export default class AddNewPointView extends SmartView { // AbstractView
   }
 
 
+  _setDatepickerStart() {
+    // код на удаление _datepicker если он был открыт ранее
+    if (this._datepickerStart) { // если был ранее _datepicker
+      // В случае обновления компонента удаляем вспомогательные DOM-элементы,
+      // которые создает flatpickr при инициализации
+      this._datepickerStart.destroy(); // то удаляем его
+      this._datepickerStart = null; // и зануляем его
+    }
+
+
+    if (this._dataItem) { // проверка или нужно вообще покаывать поле datepicker, вдруг пользователь скрыл
+      // flatpickr есть смысл инициализировать только в случае,
+      // если поле выбора даты доступно для заполнения
+      this._datepickerStart = flatpickr( // инициализируем это просто передаем элемент где вызывать datepickr
+        this.getElement().querySelector(`#event-start-time-1`), // вставляем поле куда нужно вставить datepicker
+        {
+          enableTime: true, // добавлена настройка времени
+          dateFormat: `d/m/y H:i`, // формат даты и времени
+          defaultDate: this._dataItem.dateFrom, // конечная дата со временем
+          onChange: this._dueStartDateChangeHandler, // На событие flatpickr передаём наш колбэк. типа addEventListner на datePicker. Пользоваетель в календаре выберет дату и мы ее сюда запишем
+        }
+      );
+    }
+  }
+
+
   // 3 обработчик устанавливаем setDatepicker
   _setDatepickerFinish() {
     if (this._datepickerFinish) { // если был ранее _datepicker
@@ -521,20 +602,20 @@ export default class AddNewPointView extends SmartView { // AbstractView
       // flatpickr есть смысл инициализировать только в случае,
       // если поле выбора даты доступно для заполнения
       this._datepickerFinish = flatpickr( // инициализируем это просто передаем элемент где вызывать datepickr
-          this.getElement().querySelector(`#event-end-time-1`), // вставляем поле куда нужно вставить datepicker
-          {
-            enableTime: true, // добавлена настройка времени
-            dateFormat: `d/m/y H:i`, // формат даты и времени
-            defaultDate: this._dataItem.dateTo, // startTime,
-            onChange: this._dueFinishDateChangeHandler, // На событие flatpickr передаём наш колбэк. типа addEventListner на datePicker. Пользоваетель в календаре выберет дату и мы ее сюда запишем
-          }
+        this.getElement().querySelector(`#event-end-time-1`), // вставляем поле куда нужно вставить datepicker
+        {
+          enableTime: true, // добавлена настройка времени
+          dateFormat: `d/m/y H:i`, // формат даты и времени
+          defaultDate: this._dataItem.dateTo, // startTime,
+          onChange: this._dueFinishDateChangeHandler, // На событие flatpickr передаём наш колбэк. типа addEventListner на datePicker. Пользоваетель в календаре выберет дату и мы ее сюда запишем
+        }
       );
     }
   }
 
 
   _dueStartDateChangeHandler(userDate) {
-    if ((dayjs(userDate).toDate() > this._dateTo)) {
+    if ((dayjs(userDate).toDate() > this._dataItem.dateTo)) {
       this._saveBtnElement.setAttribute(`disabled`, true);
     } else if ((dayjs(userDate).toDate() < this._dateTo)) {
       this._saveBtnElement.removeAttribute(`disabled`);
@@ -542,11 +623,13 @@ export default class AddNewPointView extends SmartView { // AbstractView
     this.updateData({
       dateFrom: dayjs(userDate).toDate() // .hour(23).minute(59).second(59).toDate()
     }, true);
+    console.log(dayjs(userDate).toDate());
+    console.log(this._dataItem);
   }
 
   // 4
   _dueFinishDateChangeHandler([userDate]) {
-    if (dayjs(userDate).toDate() > this._dateFrom) {
+    if (dayjs(userDate).toDate() > this._dataItem.dateFrom) {
       this._saveBtnElement.removeAttribute(`disabled`);
     } else if ((dayjs(userDate).toDate() < this._dateFrom)) {
       this._saveBtnElement.setAttribute(`disabled`, true);
@@ -554,7 +637,10 @@ export default class AddNewPointView extends SmartView { // AbstractView
     this.updateData({
       dateTo: dayjs(userDate).toDate() // .hour(23).minute(59).second(59).toDate()
     }, true);
+    console.log(dayjs(userDate).toDate());
+    console.log(this._dataItem);
   }
+
 
   // Перегружаем метод родителя removeElement,
   // чтобы при удалении удалялся более ненужный календарь
