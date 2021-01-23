@@ -328,6 +328,8 @@ export default class TripEventEditFormView extends SmartView { // AbstractView
 
   // метод по замене активных оферов
   _eventChangeOfferHandler(evt) {
+    console.log(`_eventChangeOfferHandler`)
+
     evt.preventDefault();
     if (evt.target.attributes.checked) { // если был чекнут,
       evt.target.removeAttribute(`checked`); // то удаляем чек
@@ -337,6 +339,10 @@ export default class TripEventEditFormView extends SmartView { // AbstractView
 
     // код по замене всех данных объекта активных offers
     const getActiveOffers = (editFormOffers) => { // target цель выбора пользователя
+      console.log(`getActiveOffers`)
+
+      console.log(editFormOffers);
+
       // const editFormOffers = [
       //   {
       //     "title": `Add luggage`,
@@ -364,7 +370,6 @@ export default class TripEventEditFormView extends SmartView { // AbstractView
 
       const newOffers = []; // массив со всеми активными объектами оферов
       const idCheckOffers = []; // массив с чекнутыми офферами
-
       const allEmptyOffers = editFormOffers; // this._dataItem.editFormOffers; // все не чекнутые офферы
 
       const groupOffersElement = this.getElement().querySelector(`.event__available-offers`); // нашел группу где все оферы
@@ -374,18 +379,21 @@ export default class TripEventEditFormView extends SmartView { // AbstractView
           idCheckOffers.push(item.attributes.id.textContent.slice(this._spamText)); // то добавляем title офера в массив
         }
       });
-
       // будем сравнивать title из общего массива оферров конкретного этого объекта с его выделеными оферами из idCheckOffers
       for (let itemEmpty of allEmptyOffers) { // проходим по пустому массиву
         idCheckOffers.some((item)=>{ // проходим по массиву где названия чеков
-          if (item === itemEmpty.title) { // если название чека совпадает с заголовком пустого офера
-            newOffers.push(itemEmpty); // то добавляем это объект в массив
-          } // получили массив чекнутых обектов для оферов
+          for(let itemEmptyOffer of itemEmpty.offers){
+            if (item === itemEmptyOffer.title) { // если название чека совпадает с заголовком пустого офера
+              console.log(itemEmpty);
+              newOffers.push(itemEmptyOffer); // то добавляем это объект в массив
+            } // получили массив чекнутых обектов для оферов
+          }
+
         });
       }
-      this.updateData(this._dataItem.offers = newOffers); // заменяем старые чекнутые оферы на новые
+      this.updateData(this._dataItem.offers = newOffers); // + заменяем старые чекнутые оферы на новые
     };
-    getActiveOffers(editFormOffers); // вызов функции по замене старых чекнутых оферов на новые
+    getActiveOffers(this._offers); // вызов функции по замене старых чекнутых оферов на новые
   }
 
 
