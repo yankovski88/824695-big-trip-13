@@ -174,6 +174,7 @@ export default class TripBoard {
     switch (actionType) { // 32
       case UserAction.UPDATE_POINT: // на действие пользователя по обновлению точки
         // this._pointsModel.updatePoint(updateType, update); // бедет дергаться метод модели updatePoint
+        // делаем связь с сервером
         this._api.updatePoint(update).then((response) => { // сперва обновляем точку на сервере и если там ок
           this._pointsModel.updatePoint(updateType, response); // то обновляем точку локально
         });

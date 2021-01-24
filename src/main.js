@@ -325,9 +325,7 @@ Promise.all([
   api.getDestinations(),
 ])
   .then(([formOffers, points, pointDestinations]) => { // destinations в случае успешного запроса
-
     offersModel.setOffers(formOffers);
-
     pointsModel.setPoints(UpdateType.INIT, points); // передать точки с типом обновления INIT
     destinationsModel.setDestinations(pointDestinations);
     // пока задачи грузятся запрещаем смотреть статистику, это нужно чтобы не отправлялось много запросов при кликах
@@ -339,6 +337,9 @@ Promise.all([
     renderMenu();
     tripMenuComponent.setMenuClickHandler(handleSiteMenuClick); // 1.1.stat
   });
+
+// api.getPoints().then(()=>{pointsModel.setPoints(UpdateType.INIT, points)}).catch()
+
 
 
 // const AUTHORIZATION = `Basic skuilejbspifSwcl1sa2j`; // строка авторизации

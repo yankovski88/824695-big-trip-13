@@ -68,11 +68,6 @@ export default class PointsModel extends Observer {
 
   // метод Адаптер который адоптирует данные от сервера на читаемые данные для клиента
   static adaptToClient(point) { // получаем объект с неугодными нам полями изменили названия полей, удалили старые серверные и вернули отредоктированный объект
-    // const date = (time)=>{
-    //   const daysGap = new Date(time).valueOf();
-    //   const date = dayjs().add(daysGap, `day`).add(daysGap, `hour`).add(daysGap, `minute`).toDate();
-    //   return date;
-    // };
 
     const adaptedPoint = Object.assign(
         {},
@@ -85,44 +80,6 @@ export default class PointsModel extends Observer {
           isFavorite: point.is_favorite,
         }
     );
-
-    // const dateStart = dayjs().add(daysGap, `day`).add(daysGap, `hour`).add(-maxDaysGap, `minute`).toDate();
-    //
-    // "type": randomType,
-    //   "basePrice": prices[getRandomInteger(0, prices.length - 1)],
-    //   "dateFrom": generateDateStart(),
-    //   "dateTo": generateDate(),
-    //   "destination": getDestination(),
-    //   "id": generateId(),
-    //   "isFavorite": getRandomInteger(0, 1),
-    //   "offers": getActiveOffers(randomType, dataOffers),
-    //   "editFormOffers": getAllOffers(randomType, dataOffers)
-
-    // {
-    //   "base_price": 1100,
-    //   "date_from": "2019-07-10T22:55:56.845Z",
-    //   "date_to": "2019-07-11T11:22:13.375Z",
-    //   "destination": $Destination$,
-    //   "id": "0",
-    //   "is_favorite": false,
-    //   "offers": [
-    //   {
-    //     "title": "Choose meal",
-    //     "price": 180
-    //   }, {
-    //     "title": "Upgrade to comfort class",
-    //     "price": 50
-    //   }
-    // ],
-    //   "type": "bus" +
-    // }
-
-    //   basePrice: dayjs().point.base_price.toDate(),
-    //     dateFrom: dayjs().point.date_from.toDate(),
-    //   dateTo: dayjs().point.date_to.toDate(),
-    //   isFavorite: point.is_favorite,
-    //   // dueDate: point.due_date !== null ? new Date(point.due_date) : point.due_date, // На клиенте дата хранится как экземпляр Date
-    // }
 
     // Ненужные ключи мы удаляем
     delete adaptedPoint.base_price;
@@ -152,7 +109,6 @@ export default class PointsModel extends Observer {
     delete adaptedPoint.dateTo;
     delete adaptedPoint.basePrice;
     delete adaptedPoint.isFavorite;
-
 
     return adaptedPoint;
   }
