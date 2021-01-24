@@ -104,17 +104,17 @@ const createTripEventEditForm = (dataItem, routePointTypes, pointDestinations) =
 
 
   // код на получение всех оферсов по типу
-  const getAllOffers = (type, offers) => {
-    let typeOffers;
-    for (let item of offers) {
-      if (type === item.type) {
-        typeOffers = item.offers;
-      }
-    }
-    return typeOffers;
-  };
-
-  const pointOffers = getAllOffers(type, editFormOffers);
+  // const getAllOffers = (type, offers) => {
+  //   let typeOffers;
+  //   for (let item of offers) {
+  //     if (type === item.type) {
+  //       typeOffers = item.offers;
+  //     }
+  //   }
+  //   return typeOffers;
+  // };
+  //
+  // const pointOffers = getAllOffers(type, editFormOffers);
 
 
   // const isDateValid = ()=>{
@@ -130,15 +130,34 @@ const createTripEventEditForm = (dataItem, routePointTypes, pointDestinations) =
 
 
   // функция по отрисовке фрагмента всех преимуществ
-  const getOffersTemplate = (formOffers) => {
-    console.log(formOffers);
+  const getOffersTemplate = () => { // formOffers
+    // debugger
+    console.log(`я в едит форме`);
+    // console.log(formOffers);
+
+    // код на получение всех оферсов по типу
+    const getAllOffers = (type, allOffers) => {
+
+      let typeOffers;
+      for (let item of allOffers) {
+        if (type.toLowerCase() === item.type) {
+          typeOffers = item.offers;
+        }
+      }
+      return typeOffers;
+    };
+    console.log(editFormOffers)
+    const formOffers = getAllOffers(type, emptyFormOffers); // editFormOffers
+    // debugger
+// const formOffers = pointOffers;
     return formOffers.reduce((total, element) => {
 
       // // код который сравнивает два массива и если совподающие объекты, то возвращает true
       const isActive = offers.some((el) => {
         return el.title === element.title;
       });
-      if (element.title !== ``) {
+      console.log(element)
+      if (element !== ``) {
         return total + `<div class="event__offer-selector">
                         <input class="event__offer-checkbox  visually-hidden" id="event-offer-luggage-${element.title}" type="checkbox" name="event-offer-luggage"  
 ${isActive ? `checked` : ``}>
@@ -246,8 +265,8 @@ ${isActive ? `checked` : ``}>
                     <h3 class="event__section-title  event__section-title--offers">Offers</h3>
 
                     <div class="event__available-offers">
-                    
-     ${getOffersTemplate(editFormOffers)}
+                    <!--editFormOffers-->
+     ${getOffersTemplate()}
                     </div>
                   </section>
 
