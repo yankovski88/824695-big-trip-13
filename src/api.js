@@ -4,7 +4,9 @@ import OffersModel from "./model/offers.js";
 
 const Method = { // методы для сервера
   GET: `GET`, // загрузить себе на комп
-  PUT: `PUT` // изменить на компе
+  PUT: `PUT`, // изменить на компе
+  POST: `POST`,
+  DELETE: `DELETE`,
 };
 
 const SuccessHTTPStatusRange = { // список успешных ответов от сервера
@@ -35,6 +37,26 @@ export default class Api {
     return this._load({url: `destinations`})
       .then(Api.toJSON);
   }
+
+  addPoint(point) {
+    return this._load({
+      url: `points`,
+      method: Method.POST,
+      body: JSON.stringify(PointsModel.adaptToServer(point)),
+      headers: new Headers({"Content-Type": `application/json`})
+    })
+      .then(Api.toJSON)
+      .then(PointsModel.adaptToClient);
+  }
+
+  deletePoint(point) {
+    return this._load({
+      url: `points/${point.id}`,
+      method: Method.DELETE
+    });
+  }
+
+
 
   // этот метод берет уже _load c некими настройками
   updatePoint(point) {
