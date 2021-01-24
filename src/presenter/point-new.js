@@ -11,8 +11,8 @@ export default class PointNewPresenter {
   constructor(eventContainer, changeData, offers, destinations) { // поддерживаем колбек который приходит с наружи   // 5 наблюдатель changeMode
     this._eventContainer = eventContainer; // куда рендерить
     this._changeData = changeData; // 3 нов. записываем в свойства класса
-this._offers = offers;
-this._destinations = destinations;
+    this._offers = offers;
+    this._destinations = destinations;
     this._addNewPointComponent = null;
 
     // this._destroyCallback = null; // stat

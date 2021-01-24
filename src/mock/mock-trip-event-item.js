@@ -315,4 +315,3 @@ export const getTripEventItem = () => {
     "editFormOffers": getAllOffers(randomType, dataOffers)
   };
 };
-console.log(getTripEventItem());

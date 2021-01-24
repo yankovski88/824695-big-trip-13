@@ -99,9 +99,6 @@ const createTripEventEditForm = (dataItem, routePointTypes, pointDestinations) =
   const {dateFrom, dateTo, destination, basePrice, type, offers, editFormOffers} = dataItem; // additionalOffers, photos,
   const emptyFormOffers = routePointTypes;
   const allPointDestinations = pointDestinations;
-  // console.log(emptyFormOffers);
-  // console.log(allPointDestinations);
-
 
   // код на получение всех оферсов по типу
   // const getAllOffers = (type, offers) => {
@@ -120,7 +117,7 @@ const createTripEventEditForm = (dataItem, routePointTypes, pointDestinations) =
   // const isDateValid = ()=>{
   //   return dateFrom < dateTo
   // };
-  // console.log(BLANK_POINT);
+
   // генерирует разметку фоток
   const createEventPhotoTemplate = () => {
     return destination.pictures.reduce((total, element) => { // перебрал все элементы photos и присоединил их в total
@@ -131,9 +128,7 @@ const createTripEventEditForm = (dataItem, routePointTypes, pointDestinations) =
 
   // функция по отрисовке фрагмента всех преимуществ
   const getOffersTemplate = () => { // formOffers
-    // debugger
-    console.log(`я в едит форме`);
-    // console.log(formOffers);
+
 
     // код на получение всех оферсов по типу
     const getAllOffers = (type, allOffers) => {
@@ -146,17 +141,15 @@ const createTripEventEditForm = (dataItem, routePointTypes, pointDestinations) =
       }
       return typeOffers;
     };
-    console.log(editFormOffers)
     const formOffers = getAllOffers(type, emptyFormOffers); // editFormOffers
     // debugger
-// const formOffers = pointOffers;
+    // const formOffers = pointOffers;
     return formOffers.reduce((total, element) => {
 
       // // код который сравнивает два массива и если совподающие объекты, то возвращает true
       const isActive = offers.some((el) => {
         return el.title === element.title;
       });
-      console.log(element)
       if (element !== ``) {
         return total + `<div class="event__offer-selector">
                         <input class="event__offer-checkbox  visually-hidden" id="event-offer-luggage-${element.title}" type="checkbox" name="event-offer-luggage"  
@@ -173,30 +166,30 @@ ${isActive ? `checked` : ``}>
     }, ``);
   };
 
-//   // функция по отрисовке фрагмента всех преимуществ
-//   const getOffersTemplate = (formOffers) => {
-//     // debugger // здесь был косяк и подвисал
-//     return formOffers.reduce((total, element) => {
-//       // // код который сравнивает два массива и если совподающие объекты, то возвращает true
-//       const isActive = offers.some((el) => {
-//         return el.title === element.title;
-//       });
-//
-//       if (element.title !== ``) {
-//         return total + `<div class="event__offer-selector">
-//                         <input class="event__offer-checkbox  visually-hidden" id="event-offer-luggage-${element.title}" type="checkbox" name="event-offer-luggage"
-// ${isActive ? `checked` : ``}>
-//                             <label class="event__offer-label" for="event-offer-luggage-${element.title}">
-//                           <span class="event__offer-title">${element.title}</span>
-//                           &plus;&euro;&nbsp;
-//                           <span class="event__offer-price">${element.price}</span>
-//                         </label>
-//                       </div>`;
-//       } else {
-//         return total + ``;
-//       }
-//     }, ``);
-//   };
+  //   // функция по отрисовке фрагмента всех преимуществ
+  //   const getOffersTemplate = (formOffers) => {
+  //     // debugger // здесь был косяк и подвисал
+  //     return formOffers.reduce((total, element) => {
+  //       // // код который сравнивает два массива и если совподающие объекты, то возвращает true
+  //       const isActive = offers.some((el) => {
+  //         return el.title === element.title;
+  //       });
+  //
+  //       if (element.title !== ``) {
+  //         return total + `<div class="event__offer-selector">
+  //                         <input class="event__offer-checkbox  visually-hidden" id="event-offer-luggage-${element.title}" type="checkbox" name="event-offer-luggage"
+  // ${isActive ? `checked` : ``}>
+  //                             <label class="event__offer-label" for="event-offer-luggage-${element.title}">
+  //                           <span class="event__offer-title">${element.title}</span>
+  //                           &plus;&euro;&nbsp;
+  //                           <span class="event__offer-price">${element.price}</span>
+  //                         </label>
+  //                       </div>`;
+  //       } else {
+  //         return total + ``;
+  //       }
+  //     }, ``);
+  //   };
 
   const createTime = createFieldTime(dateFrom, dateTo);
 
@@ -323,9 +316,9 @@ export default class AddNewPointView extends SmartView { // AbstractView
   // парсим типа, создаем копию данных с дополниетельным данными
   static parseDataItemToData(dataItem) {
     return Object.assign(
-      {},
-      dataItem
-      // {isDueDate: task.dueDate !== null,}
+        {},
+        dataItem
+        // {isDueDate: task.dueDate !== null,}
     );
   }
 
@@ -429,8 +422,6 @@ export default class AddNewPointView extends SmartView { // AbstractView
 
   // метод по замене активных оферов
   _eventChangeOfferHandler(evt) {
-    console.log(`сработал _eventChangeOfferHandler`)
-    // console.log(this._dataItem)
     evt.preventDefault();
     if (evt.target.attributes.checked) { // если был чекнут,
       evt.target.removeAttribute(`checked`); // то удаляем чек
@@ -453,9 +444,9 @@ export default class AddNewPointView extends SmartView { // AbstractView
       // будем сравнивать title из общего массива оферров конкретного этого объекта с его выделеными оферами из idCheckOffers
       for (let itemEmpty of this._dataItem.editFormOffers) { // проходим по пустому массиву
         idCheckOffers.some((item) => { // проходим по массиву где названия чеков
-            if (item === itemEmpty.title) { // если название чека совпадает с заголовком пустого офера
-              newOffers.push(itemEmpty); // то добавляем это объект в массив
-            } // получили массив чекнутых обектов для оферов
+          if (item === itemEmpty.title) { // если название чека совпадает с заголовком пустого офера
+            newOffers.push(itemEmpty); // то добавляем это объект в массив
+          } // получили массив чекнутых обектов для оферов
         });
       }
       this.updateData(this._dataItem.offers = newOffers); // + заменяем старые чекнутые оферы на новые
@@ -480,19 +471,15 @@ export default class AddNewPointView extends SmartView { // AbstractView
     };
 
     getChangeOffers(evt.target.value);
-    console.log(this._dataItem);
     this._checkDate();
   }
 
   // метод который после обновления проверяет дату и вводит disabled
   _checkDate() {
-    // debugger
-    console.log(`_checkDate`);
     if (this._dataItem.dateTo < this._dataItem.dateFrom) {
       const saveBtnElement1 = this.getElement().querySelector(`.event__save-btn`);
       saveBtnElement1.setAttribute(`disabled`, true);
-    }
-    else if (this._dataItem.dateTo > this._dataItem.dateFrom) {
+    } else if (this._dataItem.dateTo > this._dataItem.dateFrom) {
       const saveBtnElement2 = this.getElement().querySelector(`.event__save-btn`);
       saveBtnElement2.removeAttribute(`disabled`);
     }
@@ -503,7 +490,7 @@ export default class AddNewPointView extends SmartView { // AbstractView
   // код обнуляет данные до стартовых которые пришли в tripBoard
   reset(tripItem) {
     this.updateData(
-      tripItem
+        tripItem
     );
   }
 
@@ -549,13 +536,13 @@ export default class AddNewPointView extends SmartView { // AbstractView
       // flatpickr есть смысл инициализировать только в случае,
       // если поле выбора даты доступно для заполнения
       this._datepickerStart = flatpickr( // инициализируем это просто передаем элемент где вызывать datepickr
-        this.getElement().querySelector(`#event-start-time-1`), // вставляем поле куда нужно вставить datepicker
-        {
-          enableTime: true, // добавлена настройка времени
-          dateFormat: `d/m/y H:i`, // формат даты и времени
-          defaultDate: this._dataItem.dateFrom, // конечная дата со временем
-          onChange: this._dueStartDateChangeHandler, // На событие flatpickr передаём наш колбэк. типа addEventListner на datePicker. Пользоваетель в календаре выберет дату и мы ее сюда запишем
-        }
+          this.getElement().querySelector(`#event-start-time-1`), // вставляем поле куда нужно вставить datepicker
+          {
+            enableTime: true, // добавлена настройка времени
+            dateFormat: `d/m/y H:i`, // формат даты и времени
+            defaultDate: this._dataItem.dateFrom, // конечная дата со временем
+            onChange: this._dueStartDateChangeHandler, // На событие flatpickr передаём наш колбэк. типа addEventListner на datePicker. Пользоваетель в календаре выберет дату и мы ее сюда запишем
+          }
       );
     }
   }
@@ -575,13 +562,13 @@ export default class AddNewPointView extends SmartView { // AbstractView
       // flatpickr есть смысл инициализировать только в случае,
       // если поле выбора даты доступно для заполнения
       this._datepickerStart = flatpickr( // инициализируем это просто передаем элемент где вызывать datepickr
-        this.getElement().querySelector(`#event-start-time-1`), // вставляем поле куда нужно вставить datepicker
-        {
-          enableTime: true, // добавлена настройка времени
-          dateFormat: `d/m/y H:i`, // формат даты и времени
-          defaultDate: this._dataItem.dateFrom, // конечная дата со временем
-          onChange: this._dueStartDateChangeHandler, // На событие flatpickr передаём наш колбэк. типа addEventListner на datePicker. Пользоваетель в календаре выберет дату и мы ее сюда запишем
-        }
+          this.getElement().querySelector(`#event-start-time-1`), // вставляем поле куда нужно вставить datepicker
+          {
+            enableTime: true, // добавлена настройка времени
+            dateFormat: `d/m/y H:i`, // формат даты и времени
+            defaultDate: this._dataItem.dateFrom, // конечная дата со временем
+            onChange: this._dueStartDateChangeHandler, // На событие flatpickr передаём наш колбэк. типа addEventListner на datePicker. Пользоваетель в календаре выберет дату и мы ее сюда запишем
+          }
       );
     }
   }
@@ -600,13 +587,13 @@ export default class AddNewPointView extends SmartView { // AbstractView
       // flatpickr есть смысл инициализировать только в случае,
       // если поле выбора даты доступно для заполнения
       this._datepickerFinish = flatpickr( // инициализируем это просто передаем элемент где вызывать datepickr
-        this.getElement().querySelector(`#event-end-time-1`), // вставляем поле куда нужно вставить datepicker
-        {
-          enableTime: true, // добавлена настройка времени
-          dateFormat: `d/m/y H:i`, // формат даты и времени
-          defaultDate: this._dataItem.dateTo, // startTime,
-          onChange: this._dueFinishDateChangeHandler, // На событие flatpickr передаём наш колбэк. типа addEventListner на datePicker. Пользоваетель в календаре выберет дату и мы ее сюда запишем
-        }
+          this.getElement().querySelector(`#event-end-time-1`), // вставляем поле куда нужно вставить datepicker
+          {
+            enableTime: true, // добавлена настройка времени
+            dateFormat: `d/m/y H:i`, // формат даты и времени
+            defaultDate: this._dataItem.dateTo, // startTime,
+            onChange: this._dueFinishDateChangeHandler, // На событие flatpickr передаём наш колбэк. типа addEventListner на datePicker. Пользоваетель в календаре выберет дату и мы ее сюда запишем
+          }
       );
     }
   }
@@ -621,9 +608,7 @@ export default class AddNewPointView extends SmartView { // AbstractView
     this.updateData({
       dateFrom: dayjs(userDate).toDate() // .hour(23).minute(59).second(59).toDate()
     }, true);
-    this._checkDate()
-    console.log(dayjs(userDate).toDate());
-    console.log(this._dataItem);
+    this._checkDate();
   }
 
   // 4
@@ -636,9 +621,7 @@ export default class AddNewPointView extends SmartView { // AbstractView
     this.updateData({
       dateTo: dayjs(userDate).toDate() // .hour(23).minute(59).second(59).toDate()
     }, true);
-    this._checkDate()
-    console.log(dayjs(userDate).toDate());
-    console.log(this._dataItem);
+    this._checkDate();
   }
 
 

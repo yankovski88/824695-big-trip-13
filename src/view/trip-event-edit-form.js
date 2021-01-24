@@ -84,22 +84,18 @@ const createTripEventEditForm = (dataItem, routePointTypes, pointDestinations) =
 
   // функция по отрисовке фрагмента всех преимуществ
   const getOffersTemplate = () => { // formOffers
-    // debugger
-    console.log(`я в едит форме`);
-    // console.log(formOffers);
 
     // код на получение всех оферсов по типу
-    const getAllOffers = (type, editFormOffers) => {
+    const getAllOffers = (typePoint, editFormOffers) => {
 
       let typeOffers;
       for (let item of editFormOffers) {
-        if (type.toLowerCase() === item.type) {
+        if (typePoint.toLowerCase() === item.type) {
           typeOffers = item.offers;
         }
       }
       return typeOffers;
     };
-console.log(editFormOffers)
     const formOffers = getAllOffers(type, editFormOffers);
     // debugger
 // const formOffers = pointOffers;
@@ -109,7 +105,6 @@ console.log(editFormOffers)
       const isActive = offers.some((el) => {
         return el.title === element.title;
       });
-      console.log(element)
       if (element !== ``) {
         return total + `<div class="event__offer-selector">
                         <input class="event__offer-checkbox  visually-hidden" id="event-offer-luggage-${element.title}" type="checkbox" name="event-offer-luggage"  
@@ -471,8 +466,7 @@ export default class TripEventEditFormView extends SmartView { // AbstractView
 
   // метод который после обновления проверяет дату и вводит disabled
   _checkDate() {
-    // debugger
-    console.log(`_checkDate`);
+
     if (this._dataItem.dateTo < this._dataItem.dateFrom) {
       const saveBtnElement1 = this.getElement().querySelector(`.event__save-btn`);
       saveBtnElement1.setAttribute(`disabled`, true);

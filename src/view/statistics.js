@@ -287,9 +287,9 @@ export default class statisticsView extends SmartView {
   // метод удаления всех
   removeElement() {
     super.removeElement();
-      this._moneyChart = null; // занулили изначальные типы сортировки
-      this._typeChart = null;
-      this._timeChart = null;
+    this._moneyChart = null; // занулили изначальные типы сортировки
+    this._typeChart = null;
+    this._timeChart = null;
   }
 
   // пока не знаю что код длеает

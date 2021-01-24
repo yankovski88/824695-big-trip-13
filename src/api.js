@@ -29,11 +29,11 @@ export default class Api {
 
   getOffers() {
     return this._load({url: `offers`})
-      .then(Api.toJSON)
+      .then(Api.toJSON);
   }
   getDestinations() {
     return this._load({url: `destinations`})
-      .then(Api.toJSON)
+      .then(Api.toJSON);
   }
 
   // этот метод берет уже _load c некими настройками
@@ -49,20 +49,20 @@ export default class Api {
   }
 
   _load({
-          url,
-          method = Method.GET,
-          body = null,
-          headers = new Headers() // пустой экземпляр глобального объекта Headers
-        }) {
+    url,
+    method = Method.GET,
+    body = null,
+    headers = new Headers() // пустой экземпляр глобального объекта Headers
+  }) {
     headers.append(`Authorization`, this._authorization); // в этот по умолчанию пустой обект headers добавляем строку авторизации
-// строка авторизации будет передоваться как один из заголовков
+    // строка авторизации будет передоваться как один из заголовков
     // append это встроенный метод заголовков
     // `Authorization` ключ авторизация
     // this._authorization это значение
 
     return fetch( // затем мы вывзываем fetch
-      `${this._endPoint}/${url}`, // это используем в качестве адреса для fetch. ${url} это конкретно переданный url. this._endPoint это начало ссылки
-      {method, body, headers}
+        `${this._endPoint}/${url}`, // это используем в качестве адреса для fetch. ${url} это конкретно переданный url. this._endPoint это начало ссылки
+        {method, body, headers}
     )
       .then(Api.checkStatus) // вызываем then со статичным методом Api.checkStatus и вернет response далее в методе getPoints он попадет в then
       .catch(Api.catchError); // если ошибка, то вызовится catch с методом Api.catchError
@@ -82,7 +82,7 @@ export default class Api {
     return response;
   }
 
-  static toJSON(response) {  // это обертка над response.json() чтобы не писать ее каждый раз
+  static toJSON(response) { // это обертка над response.json() чтобы не писать ее каждый раз
     return response.json();
   }
 

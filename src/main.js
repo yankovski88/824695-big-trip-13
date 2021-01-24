@@ -1,7 +1,7 @@
 // import TripFilterView from "./view/trip-filter.js";
 import {renderElement, RenderPosition, remove} from "./util/render";
 import TripMenuView from "./view/trip-menu.js";
-import TripEventEditFormView from "./view/trip-event-edit-form.js"
+// import TripEventEditFormView from "./view/trip-event-edit-form.js";
 // import AddNewPointView from "./view/add-new-point.js";
 
 import {getTripEventItem} from "./mock/mock-trip-event-item.js";
@@ -14,8 +14,8 @@ import DestinationsModel from "./model/destinations.js"; // 48
 
 
 import FilterPresenter from "./presenter/filter.js";
-import {generateId} from "./mock/mock-trip-event-item";
-import {getRandomInteger} from "./util/common"; // 58
+// import {generateId} from "./mock/mock-trip-event-item";
+// import {getRandomInteger} from "./util/common"; // 58
 import {MenuItem, UpdateType, FilterType} from "./const.js"; // 2stat
 import StatisticsView from "./view/statistics.js";
 import Api from "./api.js";
@@ -29,8 +29,7 @@ const api = new Api(END_POINT, AUTHORIZATION); // создаем экземпл�
 const DATA_COUNT = 5;
 let currentMenuActive = MenuItem.POINTS; // меню по умолчанию
 
-const tripItems = new Array(DATA_COUNT).fill().map(getTripEventItem);
-// console.log(tripItems);
+// const tripItems = new Array(DATA_COUNT).fill().map(getTripEventItem);
 // Array создаем массив
 // DATA_COUNT колличество эллементов в массиве, все они пустые и нужно их заполнить
 // fill() метод заполняет эти элементы массива, теперь внутри там underfine
@@ -134,60 +133,60 @@ const BLANK_POINT = {
   "isFavorite": false,
   "destination": {
     "name": `Geneva`,
-    "description": "Geneva, in a middle of Europe, for those who value comfort and coziness, with an embankment of a mighty river as a centre of attraction, famous for its crowded street markets with the best street food in Asia.",
+    "description": `Geneva, in a middle of Europe, for those who value comfort and coziness, with an embankment of a mighty river as a centre of attraction, famous for its crowded street markets with the best street food in Asia.`,
     "pictures": [
       {
-        "src": "http://picsum.photos/300/200?r=0.2711095928296725",
-        "description": "Geneva biggest supermarket"
+        "src": `http://picsum.photos/300/200?r=0.2711095928296725`,
+        "description": `Geneva biggest supermarket`
       },
       {
-        "src": "http://picsum.photos/300/200?r=0.37260096662238484",
-        "description": "Geneva zoo"
+        "src": `http://picsum.photos/300/200?r=0.37260096662238484`,
+        "description": `Geneva zoo`
       },
       {
-        "src": "http://picsum.photos/300/200?r=0.24136485619435555",
-        "description": "Geneva parliament building"
+        "src": `http://picsum.photos/300/200?r=0.24136485619435555`,
+        "description": `Geneva parliament building`
       },
       {
-        "src": "http://picsum.photos/300/200?r=0.020111608522429103",
-        "description": "Geneva city centre"
+        "src": `http://picsum.photos/300/200?r=0.020111608522429103`,
+        "description": `Geneva city centre`
       },
       {
-        "src": "http://picsum.photos/300/200?r=0.7188000886995232",
-        "description": "Geneva parliament building"
+        "src": `http://picsum.photos/300/200?r=0.7188000886995232`,
+        "description": `Geneva parliament building`
       }
     ]
   },
   "basePrice": ``,
   "editFormOffers": [
     {
-      "title": "Choose meal",
+      "title": `Choose meal`,
       "price": 120
     },
     {
-      "title": "Choose seats",
+      "title": `Choose seats`,
       "price": 90
     },
     {
-      "title": "Upgrade to comfort class",
+      "title": `Upgrade to comfort class`,
       "price": 120
     },
     {
-      "title": "Upgrade to business class",
+      "title": `Upgrade to business class`,
       "price": 120
     },
     {
-      "title": "Add luggage",
+      "title": `Add luggage`,
       "price": 170
     },
     {
-      "title": "Business lounge",
+      "title": `Business lounge`,
       "price": 160
     }
   ],
 
   "offers": []
-  //{
+  // {
 //   "title": ``,
 //   "price": ``,
 // }
@@ -292,7 +291,6 @@ const handleSiteMenuClick = (menuItem) => {
 
 
 // api.getPoints().then((points) => { // используя then мы смотрим что же там возвращается из сервера
-//   console.log(points);
 //   // Есть проблема: cтруктура объекта похожа, но некоторые ключи называются иначе,
 //   // а ещё на сервере используется snake_case, а у нас camelCase.
 //   // Можно, конечно, переписать часть нашего клиентского приложения, но зачем?
@@ -328,7 +326,7 @@ Promise.all([
 ])
   .then(([formOffers, points, pointDestinations]) => { // destinations в случае успешного запроса
 
-    offersModel.setOffers(formOffers)
+    offersModel.setOffers(formOffers);
 
     pointsModel.setPoints(UpdateType.INIT, points); // передать точки с типом обновления INIT
     destinationsModel.setDestinations(pointDestinations);
@@ -337,10 +335,10 @@ Promise.all([
     tripMenuComponent.setMenuClickHandler(handleSiteMenuClick); // 1.1.stat
     // filterPresenter.init();
   }).catch(() => { // если ошибка то
-  pointsModel.setPoints(UpdateType.INIT, []); // передать пустой массив с типом INIT
-  renderMenu();
-  tripMenuComponent.setMenuClickHandler(handleSiteMenuClick); // 1.1.stat
-});
+    pointsModel.setPoints(UpdateType.INIT, []); // передать пустой массив с типом INIT
+    renderMenu();
+    tripMenuComponent.setMenuClickHandler(handleSiteMenuClick); // 1.1.stat
+  });
 
 
 // const AUTHORIZATION = `Basic skuilejbspifSwcl1sa2j`; // строка авторизации
@@ -351,7 +349,6 @@ Promise.all([
 //     // const tripEventEditFormComponent =
 //     new TripEventEditFormView(dataItem, emptyOffers);
 //
-//     // console.log(emptyOffers);
 //   })
 //   .catch(() => { // если ошибка то
 //   });

@@ -18,8 +18,8 @@ export default class TripBoard {
     this._destinationsModel = destinationsModel;
     this._tripBoardContainer = tripBoardContainer;
     this._isLoading = true; // по умолчанию делаем состояние лоудинг, типо вечно крутится спинер
-this._api = api;
-this._offersModel = offersModel;
+    this._api = api;
+    this._offersModel = offersModel;
 
     this._eventListEmptyMessageComponent = new EventListEmptyMessageView();
     this._tripEventsListComponent = new TripEventsList();
@@ -155,11 +155,11 @@ this._offersModel = offersModel;
     return this._pointsModel.getPoints(); // возвращает массив в исходном состоянии если не сработал switch
   }
 
-  _getOffers(){
+  _getOffers() {
     return this._offersModel.getOffers();
   }
 
-  _getDestinations(){
+  _getDestinations() {
     return this._destinationsModel.getDestinations();
   }
 

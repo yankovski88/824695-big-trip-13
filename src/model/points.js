@@ -14,7 +14,6 @@ export default class PointsModel extends Observer {
   // метод для записи всех точек маршрута
   setPoints(updateType, points) {
     this._points = points.slice();
-console.log(updateType, points)
     this._notify(updateType); // теперь как только точки появятся модель всех уведомит
   }
 
@@ -67,24 +66,24 @@ console.log(updateType, points)
   }
 
 
-// метод Адаптер который адоптирует данные от сервера на читаемые данные для клиента
+  // метод Адаптер который адоптирует данные от сервера на читаемые данные для клиента
   static adaptToClient(point) { // получаем объект с неугодными нам полями изменили названия полей, удалили старые серверные и вернули отредоктированный объект
     const date = (time)=>{
       const daysGap = new Date(time).valueOf();
       const date = dayjs().add(daysGap, `day`).add(daysGap, `hour`).add(daysGap, `minute`).toDate();
-return date
+      return date;
     };
 
     const adaptedPoint = Object.assign(
-      {},
-      point,
-      {
+        {},
+        point,
+        {
         // в basePrice записали, то что пришло с сервера, плюс можно модифицировать данные как с датой
-        basePrice: point.base_price,
-        dateFrom: new Date(point.date_from).valueOf(), // date(point.date_from), //, // // На клиенте дата хранится как экземпляр Date dayjs().point.date_from.toDate(),
-        dateTo: new Date(point.date_to).valueOf(), // dayjs().point.date_to.toDate(),
-        isFavorite: point.is_favorite,
-      }
+          basePrice: point.base_price,
+          dateFrom: new Date(point.date_from).valueOf(), // date(point.date_from), //, // // На клиенте дата хранится как экземпляр Date dayjs().point.date_from.toDate(),
+          dateTo: new Date(point.date_to).valueOf(), // dayjs().point.date_to.toDate(),
+          isFavorite: point.is_favorite,
+        }
     );
 
     // const dateStart = dayjs().add(daysGap, `day`).add(daysGap, `hour`).add(-maxDaysGap, `minute`).toDate();
@@ -138,14 +137,14 @@ return date
   // и метод который адаптирует клиентские данные для сервера
   static adaptToServer(point) {
     const adaptedPoint = Object.assign(
-      {},
-      point,
-      {
-        "date_from": new Date(point.dateFrom).toISOString(), // На сервере дата хранится в ISO формате
-        "date_to": new Date(point.dateTo).toISOString(),
-        "base_price": point.basePrice,
-        "is_favorite": point.isFavorite,
-      }
+        {},
+        point,
+        {
+          "date_from": new Date(point.dateFrom).toISOString(), // На сервере дата хранится в ISO формате
+          "date_to": new Date(point.dateTo).toISOString(),
+          "base_price": point.basePrice,
+          "is_favorite": point.isFavorite,
+        }
     );
 
     // Ненужные ключи мы удаляем
