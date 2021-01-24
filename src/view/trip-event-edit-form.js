@@ -89,11 +89,11 @@ const createTripEventEditForm = (dataItem, routePointTypes, pointDestinations) =
     // console.log(formOffers);
 
     // код на получение всех оферсов по типу
-    const getAllOffers = (type, offers) => {
+    const getAllOffers = (type, editFormOffers) => {
 
       let typeOffers;
-      for (let item of offers) {
-        if (type === item.type) {
+      for (let item of editFormOffers) {
+        if (type.toLowerCase() === item.type) {
           typeOffers = item.offers;
         }
       }
