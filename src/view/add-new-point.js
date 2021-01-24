@@ -99,8 +99,8 @@ const createTripEventEditForm = (dataItem, routePointTypes, pointDestinations) =
   const {dateFrom, dateTo, destination, basePrice, type, offers, editFormOffers} = dataItem; // additionalOffers, photos,
   const emptyFormOffers = routePointTypes;
   const allPointDestinations = pointDestinations;
-  console.log(emptyFormOffers);
-  console.log(allPointDestinations);
+  // console.log(emptyFormOffers);
+  // console.log(allPointDestinations);
 
 
   // код на получение всех оферсов по типу

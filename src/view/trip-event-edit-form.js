@@ -96,6 +96,7 @@ const createTripEventEditForm = (dataItem, routePointTypes, pointDestinations) =
 
   // функция по отрисовке фрагмента всех преимуществ
   const getOffersTemplate = (formOffers) => {
+    console.log(`я в едит форме`);
     console.log(formOffers);
     return formOffers.reduce((total, element) => {
 
