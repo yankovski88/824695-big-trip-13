@@ -136,7 +136,7 @@ const createTripEventEditForm = (dataItem, routePointTypes, pointDestinations) =
 
       // // код который сравнивает два массива и если совподающие объекты, то возвращает true
       const isActive = offers.some((el) => {
-        return el === element;
+        return el.title === element.title;
       });
       if (element.title !== ``) {
         return total + `<div class="event__offer-selector">

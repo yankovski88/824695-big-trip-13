@@ -35,19 +35,7 @@ const createTripEventEditForm = (dataItem, routePointTypes, pointDestinations) =
   const allPointDestinations = pointDestinations;
 
 
-// код на получение всех оферсов по типу
-  const getAllOffers = (type, offers) => {
 
-    let typeOffers;
-    for (let item of offers) {
-      if (type === item.type) {
-        typeOffers = item.offers;
-      }
-    }
-    return typeOffers;
-  };
-
-  const pointOffers = getAllOffers(type, editFormOffers);
 
   // const editFormOffers = [
   //   {
@@ -95,16 +83,34 @@ const createTripEventEditForm = (dataItem, routePointTypes, pointDestinations) =
 
 
   // функция по отрисовке фрагмента всех преимуществ
-  const getOffersTemplate = (formOffers) => {
+  const getOffersTemplate = () => { // formOffers
+    // debugger
     console.log(`я в едит форме`);
-    console.log(formOffers);
+    // console.log(formOffers);
+
+    // код на получение всех оферсов по типу
+    const getAllOffers = (type, offers) => {
+
+      let typeOffers;
+      for (let item of offers) {
+        if (type === item.type) {
+          typeOffers = item.offers;
+        }
+      }
+      return typeOffers;
+    };
+console.log(editFormOffers)
+    const formOffers = getAllOffers(type, editFormOffers);
+    // debugger
+// const formOffers = pointOffers;
     return formOffers.reduce((total, element) => {
 
       // // код который сравнивает два массива и если совподающие объекты, то возвращает true
       const isActive = offers.some((el) => {
-        return el === element;
+        return el.title === element.title;
       });
-      if (element.title !== ``) {
+      console.log(element)
+      if (element !== ``) {
         return total + `<div class="event__offer-selector">
                         <input class="event__offer-checkbox  visually-hidden" id="event-offer-luggage-${element.title}" type="checkbox" name="event-offer-luggage"  
 ${isActive ? `checked` : ``}>
@@ -188,8 +194,8 @@ ${isActive ? `checked` : ``}>
                     <h3 class="event__section-title  event__section-title--offers">Offers</h3>
 
                     <div class="event__available-offers">
-                    
-     ${getOffersTemplate(pointOffers)}
+                    <!--pointOffers-->
+     ${getOffersTemplate()}
                     </div>
                   </section>
 
@@ -340,7 +346,7 @@ export default class TripEventEditFormView extends SmartView { // AbstractView
     const getActiveOffers = (editFormOffers) => { //  target цель выбора пользователя
       const newOffers = []; // массив со всеми активными объектами оферов
       const idCheckOffers = []; // массив с чекнутыми офферами
-      const allEmptyOffers = editFormOffers; // this._dataItem.editFormOffers; // все не чекнутые офферы
+      const allEmptyOffers = editFormOffers.slice(); // this._dataItem.editFormOffers; // все не чекнутые офферы
 
       const groupOffersElement = this.getElement().querySelector(`.event__available-offers`); // нашел группу где все оферы
       const inputOfOffersElement = groupOffersElement.querySelectorAll(`input`); // выташил из нее все инпуты по оферам
@@ -351,7 +357,7 @@ export default class TripEventEditFormView extends SmartView { // AbstractView
       });
 
 
-      // находим тип точки и по нему находим все егопустые оферы
+      // находим тип точки и по нему находим все его пустые оферы
       const typeEmptyOffers = [];
       const eventType = this.getElement().querySelector(`.event__type-output`).textContent;
       // будем сравнивать title из общего массива оферров конкретного этого объекта с его выделеными оферами из idCheckOffers
@@ -390,6 +396,7 @@ export default class TripEventEditFormView extends SmartView { // AbstractView
     };
     getActiveOffers(this._offers); //  вызов функции по замене старых чекнутых оферов на новые
     this._checkDate()
+
   }
 
 
