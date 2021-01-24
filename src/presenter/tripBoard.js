@@ -170,7 +170,6 @@ export default class TripBoard {
     // actionType - действие пользователя, нужно чтобы понять, какой метод модели вызвать. Нужен только для сообщения
     // updateType - тип изменений, нужно чтобы понять, что после нужно обновить. На это опираемся в _handleModelEvent
     // update - обновленные данные. Это уйдет в модель
-
     switch (actionType) { // 32
       case UserAction.UPDATE_POINT: // на действие пользователя по обновлению точки
         // this._pointsModel.updatePoint(updateType, update); // бедет дергаться метод модели updatePoint

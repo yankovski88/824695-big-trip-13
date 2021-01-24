@@ -299,26 +299,7 @@ const handleSiteMenuClick = (menuItem) => {
 // });
 // pointsModel.setPoints(tripItems);
 
-
-// api.getPoints()
-// .then((points) => { // в случае успешного запроса
-//
-//   pointsModel.setPoints(UpdateType.INIT, points); // передать точки с типом обновления INIT
-//   // пока задачи грузятся запрещаем смотреть статистику, это нужно чтобы не отправлялось много запросов при кликах
-//   renderMenu();
-//   tripMenuComponent.setMenuClickHandler(handleSiteMenuClick); // 1.1.stat
-//   // filterPresenter.init();
-// })
-// .catch(() => { // если ошибка то
-//   pointsModel.setPoints(UpdateType.INIT, []); // передать пустой массив с типом INIT
-//   renderMenu();
-//   tripMenuComponent.setMenuClickHandler(handleSiteMenuClick); // 1.1.stat
-// });
-//
-// api.getOffers().then((offersArray)=>{
-//   offersModel.setOffers(offersArray)}
-// );
-
+// код по запросу берет все данные
 Promise.all([
   api.getOffers(),
   api.getPoints(),
@@ -333,24 +314,33 @@ Promise.all([
     tripMenuComponent.setMenuClickHandler(handleSiteMenuClick); // 1.1.stat
     // filterPresenter.init();
   }).catch(() => { // если ошибка то
-    pointsModel.setPoints(UpdateType.INIT, []); // передать пустой массив с типом INIT
-    renderMenu();
-    tripMenuComponent.setMenuClickHandler(handleSiteMenuClick); // 1.1.stat
-  });
+  pointsModel.setPoints(UpdateType.INIT, []); // передать пустой массив с типом INIT
+  renderMenu();
+  tripMenuComponent.setMenuClickHandler(handleSiteMenuClick); // 1.1.stat
+});
 
-// api.getPoints().then(()=>{pointsModel.setPoints(UpdateType.INIT, points)}).catch()
-
-
-
-// const AUTHORIZATION = `Basic skuilejbspifSwcl1sa2j`; // строка авторизации
-// const END_POINT = `https://13.ecmascript.pages.academy/big-trip/`; // зафиксированный адрес сервера
-// const api = new Api(END_POINT, AUTHORIZATION); // создаем экземпляр нашего Api
-// api.getOffers()
-//   .then((emptyOffers) => { // в случае успешного запроса
-//     // const tripEventEditFormComponent =
-//     new TripEventEditFormView(dataItem, emptyOffers);
+// код не всегда срабатывает, то успевает загрузить данные, то нет
+// api.getOffers().then( (offers)=>{
+//   offersModel.setOffers(offers)
+// }).catch(() => { // если ошибка то
+//   console.log(`ошибка офера`)
+// });
 //
-//   })
-//   .catch(() => { // если ошибка то
-//   });
+// api.getPoints().then((points) => {
+//   pointsModel.setPoints(UpdateType.INIT, points)
+// }).catch(() => { // если ошибка то
+//   console.log(`ошибка point`)
+//   pointsModel.setPoints(UpdateType.INIT, []); // передать пустой массив с типом INIT
+//   renderMenu();
+//   tripMenuComponent.setMenuClickHandler(handleSiteMenuClick); // 1.1.stat
+// })
+//
+//
+// api.getDestinations().then((pointDestinations)=>{
+//   destinationsModel.setDestinations(pointDestinations);
+// }).catch( () =>
+//   {console.log(`ошибка дистанции`)}
+// );
+
+
 
