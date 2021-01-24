@@ -9,71 +9,71 @@ import "../../node_modules/flatpickr/dist/flatpickr.min.css";
 import {generateId} from "../mock/mock-trip-event-item";
 import {getRandomInteger} from "../util/common";
 
-const BLANK_POINT = {
-  "type": `Flight`,
-  "dateFrom": new Date(),
-  "dateTo": new Date(),
-  // "id": generateId(),
-  "isFavorite": getRandomInteger(0, 0),
-  "destination": {
-    "name": `Geneva`,
-    "description": "Geneva, in a middle of Europe, for those who value comfort and coziness, with an embankment of a mighty river as a centre of attraction, famous for its crowded street markets with the best street food in Asia.",
-    "pictures": [
-      {
-        "src": "http://picsum.photos/300/200?r=0.2711095928296725",
-        "description": "Geneva biggest supermarket"
-      },
-      {
-        "src": "http://picsum.photos/300/200?r=0.37260096662238484",
-        "description": "Geneva zoo"
-      },
-      {
-        "src": "http://picsum.photos/300/200?r=0.24136485619435555",
-        "description": "Geneva parliament building"
-      },
-      {
-        "src": "http://picsum.photos/300/200?r=0.020111608522429103",
-        "description": "Geneva city centre"
-      },
-      {
-        "src": "http://picsum.photos/300/200?r=0.7188000886995232",
-        "description": "Geneva parliament building"
-      }
-    ]
-  },
-  "basePrice": ``,
-  "editFormOffers": [
-    {
-      "title": "Choose meal",
-      "price": 120
-    },
-    {
-      "title": "Choose seats",
-      "price": 90
-    },
-    {
-      "title": "Upgrade to comfort class",
-      "price": 120
-    },
-    {
-      "title": "Upgrade to business class",
-      "price": 120
-    },
-    {
-      "title": "Add luggage",
-      "price": 170
-    },
-    {
-      "title": "Business lounge",
-      "price": 160
-    }
-  ],
-
-  "offers": [{
-    "title": ``,
-    "price": ``,
-  }]
-};
+// const BLANK_POINT = {
+//   "type": `Flight`,
+//   "dateFrom": new Date(),
+//   "dateTo": new Date(),
+//   // "id": generateId(),
+//   "isFavorite": getRandomInteger(0, 0),
+//   "destination": {
+//     "name": `Geneva`,
+//     "description": "Geneva, in a middle of Europe, for those who value comfort and coziness, with an embankment of a mighty river as a centre of attraction, famous for its crowded street markets with the best street food in Asia.",
+//     "pictures": [
+//       {
+//         "src": "http://picsum.photos/300/200?r=0.2711095928296725",
+//         "description": "Geneva biggest supermarket"
+//       },
+//       {
+//         "src": "http://picsum.photos/300/200?r=0.37260096662238484",
+//         "description": "Geneva zoo"
+//       },
+//       {
+//         "src": "http://picsum.photos/300/200?r=0.24136485619435555",
+//         "description": "Geneva parliament building"
+//       },
+//       {
+//         "src": "http://picsum.photos/300/200?r=0.020111608522429103",
+//         "description": "Geneva city centre"
+//       },
+//       {
+//         "src": "http://picsum.photos/300/200?r=0.7188000886995232",
+//         "description": "Geneva parliament building"
+//       }
+//     ]
+//   },
+//   "basePrice": ``,
+//   "editFormOffers": [
+//     {
+//       "title": "Choose meal",
+//       "price": 120
+//     },
+//     {
+//       "title": "Choose seats",
+//       "price": 90
+//     },
+//     {
+//       "title": "Upgrade to comfort class",
+//       "price": 120
+//     },
+//     {
+//       "title": "Upgrade to business class",
+//       "price": 120
+//     },
+//     {
+//       "title": "Add luggage",
+//       "price": 170
+//     },
+//     {
+//       "title": "Business lounge",
+//       "price": 160
+//     }
+//   ],
+//
+//   "offers": [{
+//     "title": ``,
+//     "price": ``,
+//   }]
+// };
 
 // функция по установке времени в форме
 const createFieldTime = (dateStart, dateFinish) => {
@@ -270,7 +270,7 @@ ${isActive ? `checked` : ``}>
 
 
 export default class AddNewPointView extends SmartView { // AbstractView
-  constructor(dataItem = BLANK_POINT, offers, pointDestinations) {
+  constructor(dataItem, offers, pointDestinations) {
     super();
     // this._destinations = destinations;
     this._dataItem = AddNewPointView.parseDataItemToData(dataItem); // 0 превращаем объект dataItem в объект data т.к. он более полный, было this._dataItem = dataItem;
@@ -279,10 +279,10 @@ export default class AddNewPointView extends SmartView { // AbstractView
 
     this._datepickerFinish = null; // 1 здесь будем хранить экземпляр _datepicker т.е. открытый показанный _datepicker. Это нужно для того чтобы потом можно после закрытия формы удалить.
     this._datepickerStart = null;
-    this._dateFrom = this._dataItem.dateFrom;
-    this._dateTo = this._dataItem.dateTo;
-    this._saveBtnElement = this.getElement().querySelector(`.event__save-btn`);
-    this._spamText = 20;
+    // this._dateFrom = this._dataItem.dateFrom;
+    // this._dateTo = this._dataItem.dateTo;
+    // this._saveBtnElement = this.getElement().querySelector(`.event__save-btn`);
+    this._SPAM_TEXT = 20;
 
     this._submitHandler = this._submitHandler.bind(this);
     this._cancelClickHandler = this._cancelClickHandler.bind(this);
@@ -391,7 +391,7 @@ export default class AddNewPointView extends SmartView { // AbstractView
   //     const inputOfOffersElement = groupOffersElement.querySelectorAll(`input`); // выташил из нее все инпуты по оферам
   //     inputOfOffersElement.forEach((item)=>{ // обхожу все инпуты
   //       if (item.attributes.checked) { // если чекнут
-  //         idCheckOffers.push(item.attributes.id.textContent.slice(this._spamText)); // то добавляем title офера в массив
+  //         idCheckOffers.push(item.attributes.id.textContent.slice(this._SPAM_TEXT)); // то добавляем title офера в массив
   //       }
   //     });
   //
@@ -410,7 +410,8 @@ export default class AddNewPointView extends SmartView { // AbstractView
 
   // метод по замене активных оферов
   _eventChangeOfferHandler(evt) {
-    console.log(this._dataItem)
+    console.log(`сработал _eventChangeOfferHandler`)
+    // console.log(this._dataItem)
     evt.preventDefault();
     if (evt.target.attributes.checked) { // если был чекнут,
       evt.target.removeAttribute(`checked`); // то удаляем чек
@@ -419,67 +420,28 @@ export default class AddNewPointView extends SmartView { // AbstractView
     }
 
     // код по замене всех данных объекта активных offers
-    const getActiveOffers = (editFormOffers) => { //  target цель выбора пользователя
+    const getActiveOffers = () => { //  target цель выбора пользователя
       const newOffers = []; // массив со всеми активными объектами оферов
       const idCheckOffers = []; // массив с чекнутыми офферами
-      const allEmptyOffers = editFormOffers; // this._dataItem.editFormOffers; // все не чекнутые офферы
-      console.log(allEmptyOffers);
       const groupOffersElement = this.getElement().querySelector(`.event__available-offers`); // нашел группу где все оферы
       const inputOfOffersElement = groupOffersElement.querySelectorAll(`input`); // выташил из нее все инпуты по оферам
       inputOfOffersElement.forEach((item) => { // обхожу все инпуты
         if (item.attributes.checked) { // если чекнут
-          idCheckOffers.push(item.attributes.id.textContent.slice(this._spamText)); // то добавляем title офера в массив
+          idCheckOffers.push(item.attributes.id.textContent.slice(this._SPAM_TEXT)); // то добавляем title офера в массив
         }
       });
 
-      // находим тип точки и по нему находим все егопустые оферы
-      const typeEmptyOffers = [];
-      const eventType = this.getElement().querySelector(`.event__type-output`).textContent.toLowerCase();
       // будем сравнивать title из общего массива оферров конкретного этого объекта с его выделеными оферами из idCheckOffers
-      for (let itemEmpty of allEmptyOffers) { // проходим по пустому массиву
-        // debugger
-        if (eventType === itemEmpty.type) {
-          typeEmptyOffers.push(itemEmpty)
-        }
-      }
-
-      console.log(idCheckOffers);
-      console.log(typeEmptyOffers);
-      // console.log(itemEmpty.type);
-      // debugger
-      // будем сравнивать title из общего массива оферров конкретного этого объекта с его выделеными оферами из idCheckOffers
-      for (let itemEmpty of typeEmptyOffers) { // проходим по пустому массиву
+      for (let itemEmpty of this._dataItem.editFormOffers) { // проходим по пустому массиву
         idCheckOffers.some((item) => { // проходим по массиву где названия чеков
-          for (let itemEmptyOffer of itemEmpty.offers) {
-            // console.log(item);
-            if (item === itemEmptyOffer.title) { // если название чека совпадает с заголовком пустого офера
-              // console.log(itemEmptyOffer.title);
-              newOffers.push(itemEmptyOffer); // то добавляем это объект в массив
+            if (item === itemEmpty.title) { // если название чека совпадает с заголовком пустого офера
+              newOffers.push(itemEmpty); // то добавляем это объект в массив
             } // получили массив чекнутых обектов для оферов
-          }
-
-
-          console.log(newOffers);
-
-          // // будем сравнивать title из общего массива оферров конкретного этого объекта с его выделеными оферами из idCheckOffers
-          // for (let itemEmpty of allEmptyOffers) { // проходим по пустому массиву
-          //   idCheckOffers.some((item)=>{ // проходим по массиву где названия чеков
-          //     for(let itemEmptyOffer of itemEmpty.offers){
-          //       if (item === itemEmptyOffer.title) { // если название чека совпадает с заголовком пустого офера
-          //         newOffers.push(itemEmptyOffer); // то добавляем это объект в массив
-          //       } // получили массив чекнутых обектов для оферов
-          //     }
-
         });
       }
-
-      console.log(this._dataItem.offers)
-      console.log(this._dataItem)
       this.updateData(this._dataItem.offers = newOffers); // + заменяем старые чекнутые оферы на новые
-      // console.log(this._dataItem)
     };
-    getActiveOffers(this._offers); //  вызов функции по замене старых чекнутых оферов на новые
-    console.log(this._dataItem)
+    getActiveOffers(); //  вызов функции по замене старых чекнутых оферов на новые
     this._checkDate();
   }
 

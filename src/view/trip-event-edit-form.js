@@ -96,13 +96,13 @@ const createTripEventEditForm = (dataItem, routePointTypes, pointDestinations) =
 
   // функция по отрисовке фрагмента всех преимуществ
   const getOffersTemplate = (formOffers) => {
-    // debugger // здесь был косяк и подвисал
+    console.log(formOffers);
     return formOffers.reduce((total, element) => {
+
       // // код который сравнивает два массива и если совподающие объекты, то возвращает true
       const isActive = offers.some((el) => {
-        return el.title === element.title;
+        return el === element;
       });
-
       if (element.title !== ``) {
         return total + `<div class="event__offer-selector">
                         <input class="event__offer-checkbox  visually-hidden" id="event-offer-luggage-${element.title}" type="checkbox" name="event-offer-luggage"  
@@ -225,7 +225,7 @@ export default class TripEventEditFormView extends SmartView { // AbstractView
     // this._dateTo = this._dataItem.dateTo;
     // this._editFormOffers = this._dataItem.editFormOffers
     this._saveBtnElement = this.getElement().querySelector(`.event__save-btn`);
-    this._spamText = 20;
+    this._SPAM_TEXT = 20;
     this._addBtn = document.querySelector(`.trip-main__event-add-btn`);
 
     this._submitHandler = this._submitHandler.bind(this);
@@ -345,7 +345,7 @@ export default class TripEventEditFormView extends SmartView { // AbstractView
       const inputOfOffersElement = groupOffersElement.querySelectorAll(`input`); // выташил из нее все инпуты по оферам
       inputOfOffersElement.forEach((item)=>{ // обхожу все инпуты
         if (item.attributes.checked) { // если чекнут
-          idCheckOffers.push(item.attributes.id.textContent.slice(this._spamText)); // то добавляем title офера в массив
+          idCheckOffers.push(item.attributes.id.textContent.slice(this._SPAM_TEXT)); // то добавляем title офера в массив
         }
       });
 

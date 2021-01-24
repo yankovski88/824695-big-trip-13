@@ -131,7 +131,7 @@ const BLANK_POINT = {
   "dateFrom": new Date(),
   "dateTo": new Date(),
   // "id": generateId(),
-  "isFavorite": getRandomInteger(0, 0),
+  "isFavorite": false,
   "destination": {
     "name": `Geneva`,
     "description": "Geneva, in a middle of Europe, for those who value comfort and coziness, with an embankment of a mighty river as a centre of attraction, famous for its crowded street markets with the best street food in Asia.",
