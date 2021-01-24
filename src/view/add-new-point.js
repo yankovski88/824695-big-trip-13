@@ -1,7 +1,7 @@
 import dayjs from "dayjs";
 import he from "he"; // импортировал библиотеку по экранированию тегов от хакеров
 import SmartView from "./smart.js";
-import {destinations, dataOffers} from "../mock/mock-trip-event-item.js";
+// import {destinations, dataOffers} from "../mock/mock-trip-event-item.js";
 import {TYPES} from "../const";
 
 import flatpickr from "flatpickr";
@@ -99,7 +99,7 @@ const createTripEventEditForm = (dataItem, routePointTypes, pointDestinations) =
   const {dateFrom, dateTo, destination, basePrice, type, offers, editFormOffers} = dataItem; // additionalOffers, photos,
   const emptyFormOffers = routePointTypes;
   const allPointDestinations = pointDestinations;
-console.log(emptyFormOffers);
+  console.log(emptyFormOffers);
   console.log(allPointDestinations);
 
 
@@ -131,7 +131,7 @@ console.log(emptyFormOffers);
 
   // функция по отрисовке фрагмента всех преимуществ
   const getOffersTemplate = (formOffers) => {
-console.log(formOffers);
+    console.log(formOffers);
     return formOffers.reduce((total, element) => {
 
       // // код который сравнивает два массива и если совподающие объекты, то возвращает true
@@ -272,7 +272,7 @@ ${isActive ? `checked` : ``}>
 export default class AddNewPointView extends SmartView { // AbstractView
   constructor(dataItem = BLANK_POINT, offers, pointDestinations) {
     super();
-    this._destinations = destinations;
+    // this._destinations = destinations;
     this._dataItem = AddNewPointView.parseDataItemToData(dataItem); // 0 превращаем объект dataItem в объект data т.к. он более полный, было this._dataItem = dataItem;
     this._offers = offers;
     this._pointDestinations = pointDestinations;
@@ -304,9 +304,9 @@ export default class AddNewPointView extends SmartView { // AbstractView
   // парсим типа, создаем копию данных с дополниетельным данными
   static parseDataItemToData(dataItem) {
     return Object.assign(
-        {},
-        dataItem
-        // {isDueDate: task.dueDate !== null,}
+      {},
+      dataItem
+      // {isDueDate: task.dueDate !== null,}
     );
   }
 
@@ -355,7 +355,7 @@ export default class AddNewPointView extends SmartView { // AbstractView
   _changePriceHandler(evt) { // оброботчик в котором будем менять данные по цене
     evt.preventDefault();
     this.updateData({ // передаем только одну строчку которую хотим обновить т.к. assign создано выше
-      basePrice: evt.target.value // 12 // this._dataItem.price
+      basePrice: parseInt(evt.target.value, 10) // 12 // this._dataItem.price
     }, true); // при нажатии enter закрывается форма
   }
 
@@ -371,6 +371,7 @@ export default class AddNewPointView extends SmartView { // AbstractView
       }
     };
     getChangeDestination(evt.target.value);
+    this._checkDate();
   }
 
   // _eventChangeOfferHandler(evt) {
@@ -422,10 +423,10 @@ export default class AddNewPointView extends SmartView { // AbstractView
       const newOffers = []; // массив со всеми активными объектами оферов
       const idCheckOffers = []; // массив с чекнутыми офферами
       const allEmptyOffers = editFormOffers; // this._dataItem.editFormOffers; // все не чекнутые офферы
-console.log(allEmptyOffers);
+      console.log(allEmptyOffers);
       const groupOffersElement = this.getElement().querySelector(`.event__available-offers`); // нашел группу где все оферы
       const inputOfOffersElement = groupOffersElement.querySelectorAll(`input`); // выташил из нее все инпуты по оферам
-      inputOfOffersElement.forEach((item)=>{ // обхожу все инпуты
+      inputOfOffersElement.forEach((item) => { // обхожу все инпуты
         if (item.attributes.checked) { // если чекнут
           idCheckOffers.push(item.attributes.id.textContent.slice(this._spamText)); // то добавляем title офера в массив
         }
@@ -437,7 +438,7 @@ console.log(allEmptyOffers);
       // будем сравнивать title из общего массива оферров конкретного этого объекта с его выделеными оферами из idCheckOffers
       for (let itemEmpty of allEmptyOffers) { // проходим по пустому массиву
         // debugger
-        if(eventType === itemEmpty.type){
+        if (eventType === itemEmpty.type) {
           typeEmptyOffers.push(itemEmpty)
         }
       }
@@ -448,8 +449,8 @@ console.log(allEmptyOffers);
       // debugger
       // будем сравнивать title из общего массива оферров конкретного этого объекта с его выделеными оферами из idCheckOffers
       for (let itemEmpty of typeEmptyOffers) { // проходим по пустому массиву
-        idCheckOffers.some((item)=>{ // проходим по массиву где названия чеков
-          for(let itemEmptyOffer of itemEmpty.offers){
+        idCheckOffers.some((item) => { // проходим по массиву где названия чеков
+          for (let itemEmptyOffer of itemEmpty.offers) {
             // console.log(item);
             if (item === itemEmptyOffer.title) { // если название чека совпадает с заголовком пустого офера
               // console.log(itemEmptyOffer.title);
@@ -458,7 +459,7 @@ console.log(allEmptyOffers);
           }
 
 
-console.log(newOffers);
+          console.log(newOffers);
 
           // // будем сравнивать title из общего массива оферров конкретного этого объекта с его выделеными оферами из idCheckOffers
           // for (let itemEmpty of allEmptyOffers) { // проходим по пустому массиву
@@ -479,12 +480,12 @@ console.log(newOffers);
     };
     getActiveOffers(this._offers); //  вызов функции по замене старых чекнутых оферов на новые
     console.log(this._dataItem)
+    this._checkDate();
   }
 
-
+  // код по замене всех данных объекта offers на тот который выбрал пользователь
   _eventChangeTypeHandler(evt) {
     evt.preventDefault();
-    // код по замене всех данных объекта offers на тот который выбрал пользователь
     const getChangeOffers = (target) => { // target цель выбора пользователя
       // debugger
       for (let item of this._offers) { // прохождение по массиву всех объектов. offers массив всех доп предложений
@@ -496,16 +497,32 @@ console.log(newOffers);
         }
       }
     };
+
     getChangeOffers(evt.target.value);
+    console.log(this._dataItem);
+    this._checkDate();
   }
 
+  // метод который после обновления проверяет дату и вводит disabled
+  _checkDate() {
+    // debugger
+    console.log(`_checkDate`);
+    if (this._dataItem.dateTo < this._dataItem.dateFrom) {
+      const saveBtnElement1 = this.getElement().querySelector(`.event__save-btn`);
+      saveBtnElement1.setAttribute(`disabled`, true);
+    }
+    else if (this._dataItem.dateTo > this._dataItem.dateFrom) {
+      const saveBtnElement2 = this.getElement().querySelector(`.event__save-btn`);
+      saveBtnElement2.removeAttribute(`disabled`);
+    }
+  }
 
 
   // 8
   // код обнуляет данные до стартовых которые пришли в tripBoard
   reset(tripItem) {
     this.updateData(
-        tripItem
+      tripItem
     );
   }
 
@@ -551,13 +568,13 @@ console.log(newOffers);
       // flatpickr есть смысл инициализировать только в случае,
       // если поле выбора даты доступно для заполнения
       this._datepickerStart = flatpickr( // инициализируем это просто передаем элемент где вызывать datepickr
-          this.getElement().querySelector(`#event-start-time-1`), // вставляем поле куда нужно вставить datepicker
-          {
-            enableTime: true, // добавлена настройка времени
-            dateFormat: `d/m/y H:i`, // формат даты и времени
-            defaultDate: this._dataItem.dateFrom, // конечная дата со временем
-            onChange: this._dueStartDateChangeHandler, // На событие flatpickr передаём наш колбэк. типа addEventListner на datePicker. Пользоваетель в календаре выберет дату и мы ее сюда запишем
-          }
+        this.getElement().querySelector(`#event-start-time-1`), // вставляем поле куда нужно вставить datepicker
+        {
+          enableTime: true, // добавлена настройка времени
+          dateFormat: `d/m/y H:i`, // формат даты и времени
+          defaultDate: this._dataItem.dateFrom, // конечная дата со временем
+          onChange: this._dueStartDateChangeHandler, // На событие flatpickr передаём наш колбэк. типа addEventListner на datePicker. Пользоваетель в календаре выберет дату и мы ее сюда запишем
+        }
       );
     }
   }
@@ -615,28 +632,30 @@ console.log(newOffers);
 
 
   _dueStartDateChangeHandler(userDate) {
-    if ((dayjs(userDate).toDate() > this._dataItem.dateTo)) {
-      this._saveBtnElement.setAttribute(`disabled`, true);
-    } else if ((dayjs(userDate).toDate() < this._dateTo)) {
-      this._saveBtnElement.removeAttribute(`disabled`);
-    }
+    // if ((dayjs(userDate).toDate() > this._dataItem.dateTo)) {
+    //   this._saveBtnElement.setAttribute(`disabled`, true);
+    // } else if ((dayjs(userDate).toDate() < this._dataItem.dateTo)) {
+    //   this._saveBtnElement.removeAttribute(`disabled`);
+    // }
     this.updateData({
       dateFrom: dayjs(userDate).toDate() // .hour(23).minute(59).second(59).toDate()
     }, true);
+    this._checkDate()
     console.log(dayjs(userDate).toDate());
     console.log(this._dataItem);
   }
 
   // 4
   _dueFinishDateChangeHandler([userDate]) {
-    if (dayjs(userDate).toDate() > this._dataItem.dateFrom) {
-      this._saveBtnElement.removeAttribute(`disabled`);
-    } else if ((dayjs(userDate).toDate() < this._dateFrom)) {
-      this._saveBtnElement.setAttribute(`disabled`, true);
-    }
+    // if (dayjs(userDate).toDate() > this._dataItem.dateFrom) {
+    //   this._saveBtnElement.removeAttribute(`disabled`);
+    // } else if ((dayjs(userDate).toDate() < this._dataItem.dateFrom)) {
+    //   this._saveBtnElement.setAttribute(`disabled`, true);
+    // }
     this.updateData({
       dateTo: dayjs(userDate).toDate() // .hour(23).minute(59).second(59).toDate()
     }, true);
+    this._checkDate()
     console.log(dayjs(userDate).toDate());
     console.log(this._dataItem);
   }

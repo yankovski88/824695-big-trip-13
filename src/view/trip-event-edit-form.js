@@ -323,6 +323,7 @@ export default class TripEventEditFormView extends SmartView { // AbstractView
       }
     };
     getChangeDestination(evt.target.value);
+    this._checkDate()
   }
 
   // метод по замене активных оферов
@@ -387,6 +388,7 @@ export default class TripEventEditFormView extends SmartView { // AbstractView
       this.updateData(this._dataItem.offers = newOffers); // + заменяем старые чекнутые оферы на новые
     };
     getActiveOffers(this._offers); //  вызов функции по замене старых чекнутых оферов на новые
+    this._checkDate()
   }
 
 
@@ -405,6 +407,7 @@ export default class TripEventEditFormView extends SmartView { // AbstractView
       }
     };
     getChangeOffers(evt.target.value);
+    this._checkDate()
   }
 
   // 8
@@ -456,6 +459,20 @@ export default class TripEventEditFormView extends SmartView { // AbstractView
     eventRollupBtn.addEventListener(`click`, this._rollupBtnClickHandler);
     // this._addBtn.removeAttribute(`disabled`);
 
+  }
+
+  // метод который после обновления проверяет дату и вводит disabled
+  _checkDate() {
+    // debugger
+    console.log(`_checkDate`);
+    if (this._dataItem.dateTo < this._dataItem.dateFrom) {
+      const saveBtnElement1 = this.getElement().querySelector(`.event__save-btn`);
+      saveBtnElement1.setAttribute(`disabled`, true);
+    }
+    else if (this._dataItem.dateTo > this._dataItem.dateFrom) {
+      const saveBtnElement2 = this.getElement().querySelector(`.event__save-btn`);
+      saveBtnElement2.removeAttribute(`disabled`);
+    }
   }
 
   _setDatepickerStart() {
@@ -510,26 +527,28 @@ export default class TripEventEditFormView extends SmartView { // AbstractView
 
 
   _dueStartDateChangeHandler(userDate) {
-    if ((dayjs(userDate).toDate() > this._dataItem.dateTo)) {
-      this._saveBtnElement.setAttribute(`disabled`, true);
-    } else if ((dayjs(userDate).toDate() < this._dataItem.dateTo)) {
-      this._saveBtnElement.removeAttribute(`disabled`);
-    }
+    // if ((dayjs(userDate).toDate() > this._dataItem.dateTo)) {
+    //   this._saveBtnElement.setAttribute(`disabled`, true);
+    // } else if ((dayjs(userDate).toDate() < this._dataItem.dateTo)) {
+    //   this._saveBtnElement.removeAttribute(`disabled`);
+    // }
     this.updateData({
       dateFrom: dayjs(userDate).toDate() // .hour(23).minute(59).second(59).toDate()
     }, true);
+    this._checkDate()
   }
 
   // 4
   _dueFinishDateChangeHandler([userDate]) {
-    if (dayjs(userDate).toDate() > this._dataItem.dateFrom) {
-      this._saveBtnElement.removeAttribute(`disabled`);
-    } else if ((dayjs(userDate).toDate() < this._dataItem.dateFrom)) {
-      this._saveBtnElement.setAttribute(`disabled`, true);
-    }
+    // if (dayjs(userDate).toDate() > this._dataItem.dateFrom) {
+    //   this._saveBtnElement.removeAttribute(`disabled`);
+    // } else if ((dayjs(userDate).toDate() < this._dataItem.dateFrom)) {
+    //   this._saveBtnElement.setAttribute(`disabled`, true);
+    // }
     this.updateData({
       dateTo: dayjs(userDate).toDate() // .hour(23).minute(59).second(59).toDate()
     }, true);
+    this._checkDate()
   }
 
   // Перегружаем метод родителя removeElement,
