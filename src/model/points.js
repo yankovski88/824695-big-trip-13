@@ -68,11 +68,11 @@ export default class PointsModel extends Observer {
 
   // метод Адаптер который адоптирует данные от сервера на читаемые данные для клиента
   static adaptToClient(point) { // получаем объект с неугодными нам полями изменили названия полей, удалили старые серверные и вернули отредоктированный объект
-    const date = (time)=>{
-      const daysGap = new Date(time).valueOf();
-      const date = dayjs().add(daysGap, `day`).add(daysGap, `hour`).add(daysGap, `minute`).toDate();
-      return date;
-    };
+    // const date = (time)=>{
+    //   const daysGap = new Date(time).valueOf();
+    //   const date = dayjs().add(daysGap, `day`).add(daysGap, `hour`).add(daysGap, `minute`).toDate();
+    //   return date;
+    // };
 
     const adaptedPoint = Object.assign(
         {},
@@ -80,8 +80,8 @@ export default class PointsModel extends Observer {
         {
         // в basePrice записали, то что пришло с сервера, плюс можно модифицировать данные как с датой
           basePrice: point.base_price,
-          dateFrom: new Date(point.date_from).valueOf(), // date(point.date_from), //, // // На клиенте дата хранится как экземпляр Date dayjs().point.date_from.toDate(),
-          dateTo: new Date(point.date_to).valueOf(), // dayjs().point.date_to.toDate(),
+          dateFrom: new Date(point.date_from), // date(point.date_from), //, // // На клиенте дата хранится как экземпляр Date dayjs().point.date_from.toDate(),
+          dateTo: new Date(point.date_to), // dayjs().point.date_to.toDate(),
           isFavorite: point.is_favorite,
         }
     );

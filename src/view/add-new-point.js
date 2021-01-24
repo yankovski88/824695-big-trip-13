@@ -9,71 +9,73 @@ import "../../node_modules/flatpickr/dist/flatpickr.min.css";
 import {generateId} from "../mock/mock-trip-event-item";
 import {getRandomInteger} from "../util/common";
 
-// const BLANK_POINT = {
-//   "type": `Flight`,
-//   "dateFrom": new Date(),
-//   "dateTo": new Date(),
-//   // "id": generateId(),
-//   "isFavorite": getRandomInteger(0, 0),
-//   "destination": {
-//     "name": `Geneva`,
-//     "description": "Geneva, in a middle of Europe, for those who value comfort and coziness, with an embankment of a mighty river as a centre of attraction, famous for its crowded street markets with the best street food in Asia.",
-//     "pictures": [
-//       {
-//         "src": "http://picsum.photos/300/200?r=0.2711095928296725",
-//         "description": "Geneva biggest supermarket"
-//       },
-//       {
-//         "src": "http://picsum.photos/300/200?r=0.37260096662238484",
-//         "description": "Geneva zoo"
-//       },
-//       {
-//         "src": "http://picsum.photos/300/200?r=0.24136485619435555",
-//         "description": "Geneva parliament building"
-//       },
-//       {
-//         "src": "http://picsum.photos/300/200?r=0.020111608522429103",
-//         "description": "Geneva city centre"
-//       },
-//       {
-//         "src": "http://picsum.photos/300/200?r=0.7188000886995232",
-//         "description": "Geneva parliament building"
-//       }
-//     ]
-//   },
-//   "basePrice": ``,
-//   "editFormOffers": [
-//     {
-//       "title": "Choose meal",
-//       "price": 120
-//     },
-//     {
-//       "title": "Choose seats",
-//       "price": 90
-//     },
-//     {
-//       "title": "Upgrade to comfort class",
-//       "price": 120
-//     },
-//     {
-//       "title": "Upgrade to business class",
-//       "price": 120
-//     },
-//     {
-//       "title": "Add luggage",
-//       "price": 170
-//     },
-//     {
-//       "title": "Business lounge",
-//       "price": 160
-//     }
-//   ],
-//
-//   "offers": [{
-//     "title": ``,
-//     "price": ``,
-//   }]
-// };
+const BLANK_POINT = {
+  "type": `Flight`,
+  "dateFrom": new Date(),
+  "dateTo": new Date(),
+  // "id": generateId(),
+  "isFavorite": false,
+  "destination": {
+    "name": `Geneva`,
+    "description": `Geneva, in a middle of Europe, for those who value comfort and coziness, with an embankment of a mighty river as a centre of attraction, famous for its crowded street markets with the best street food in Asia.`,
+    "pictures": [
+      {
+        "src": "http://picsum.photos/300/200?r=0.2711095928296725",
+        "description": "Geneva biggest supermarket"
+      },
+      {
+        "src": "http://picsum.photos/300/200?r=0.37260096662238484",
+        "description": "Geneva zoo"
+      },
+      {
+        "src": "http://picsum.photos/300/200?r=0.24136485619435555",
+        "description": "Geneva parliament building"
+      },
+      {
+        "src": "http://picsum.photos/300/200?r=0.020111608522429103",
+        "description": "Geneva city centre"
+      },
+      {
+        "src": "http://picsum.photos/300/200?r=0.7188000886995232",
+        "description": "Geneva parliament building"
+      }
+    ]
+  },
+  "basePrice": ``,
+  "editFormOffers": [
+    {
+      "title": `Choose meal`,
+      "price": 120
+    },
+    {
+      "title": `Choose seats`,
+      "price": 90
+    },
+    {
+      "title": `Upgrade to comfort class`,
+      "price": 120
+    },
+    {
+      "title": `Upgrade to business class`,
+      "price": 120
+    },
+    {
+      "title": `Add luggage`,
+      "price": 170
+    },
+    {
+      "title": `Business lounge`,
+      "price": 160
+    }
+  ],
+
+  "offers": []
+  // {
+//   "title": ``,
+//   "price": ``,
+// }
+};
+
 
 // функция по установке времени в форме
 const createFieldTime = (dateStart, dateFinish) => {
@@ -131,7 +133,7 @@ const createTripEventEditForm = (dataItem, routePointTypes, pointDestinations) =
 
 
     // код на получение всех оферсов по типу
-    const getAllOffers = (type, allOffers) => {
+    const getOffersByType = (type, allOffers) => {
 
       let typeOffers;
       for (let item of allOffers) {
@@ -141,7 +143,7 @@ const createTripEventEditForm = (dataItem, routePointTypes, pointDestinations) =
       }
       return typeOffers;
     };
-    const formOffers = getAllOffers(type, emptyFormOffers); // editFormOffers
+    const formOffers = getOffersByType(type, emptyFormOffers); // editFormOffers
     // debugger
     // const formOffers = pointOffers;
     return formOffers.reduce((total, element) => {
@@ -282,10 +284,11 @@ ${isActive ? `checked` : ``}>
 
 
 export default class AddNewPointView extends SmartView { // AbstractView
-  constructor(dataItem, offers, pointDestinations) {
+  constructor(offers, pointDestinations) {
+    // console.log(dataItem);
     super();
     // this._destinations = destinations;
-    this._dataItem = AddNewPointView.parseDataItemToData(dataItem); // 0 превращаем объект dataItem в объект data т.к. он более полный, было this._dataItem = dataItem;
+    this._dataItem = AddNewPointView.parseDataItemToData(BLANK_POINT); // dataItem 0 превращаем объект dataItem в объект data т.к. он более полный, было this._dataItem = dataItem;
     this._offers = offers;
     this._pointDestinations = pointDestinations;
 
@@ -294,7 +297,7 @@ export default class AddNewPointView extends SmartView { // AbstractView
     // this._dateFrom = this._dataItem.dateFrom;
     // this._dateTo = this._dataItem.dateTo;
     // this._saveBtnElement = this.getElement().querySelector(`.event__save-btn`);
-    this._SPAM_TEXT = 20;
+    this._TEXT_LIMIT = 20;
 
     this._submitHandler = this._submitHandler.bind(this);
     this._cancelClickHandler = this._cancelClickHandler.bind(this);
@@ -403,7 +406,7 @@ export default class AddNewPointView extends SmartView { // AbstractView
   //     const inputOfOffersElement = groupOffersElement.querySelectorAll(`input`); // выташил из нее все инпуты по оферам
   //     inputOfOffersElement.forEach((item)=>{ // обхожу все инпуты
   //       if (item.attributes.checked) { // если чекнут
-  //         idCheckOffers.push(item.attributes.id.textContent.slice(this._SPAM_TEXT)); // то добавляем title офера в массив
+  //         idCheckOffers.push(item.attributes.id.textContent.slice(this._TEXT_LIMIT)); // то добавляем title офера в массив
   //       }
   //     });
   //
@@ -437,7 +440,7 @@ export default class AddNewPointView extends SmartView { // AbstractView
       const inputOfOffersElement = groupOffersElement.querySelectorAll(`input`); // выташил из нее все инпуты по оферам
       inputOfOffersElement.forEach((item) => { // обхожу все инпуты
         if (item.attributes.checked) { // если чекнут
-          idCheckOffers.push(item.attributes.id.textContent.slice(this._SPAM_TEXT)); // то добавляем title офера в массив
+          idCheckOffers.push(item.attributes.id.textContent.slice(this._TEXT_LIMIT)); // то добавляем title офера в массив
         }
       });
 

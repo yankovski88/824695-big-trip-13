@@ -86,7 +86,7 @@ const createTripEventEditForm = (dataItem, routePointTypes, pointDestinations) =
   const getOffersTemplate = () => { // formOffers
 
     // код на получение всех оферсов по типу
-    const getAllOffers = (typePoint, editFormOffers) => {
+    const getOffersByType = (typePoint, editFormOffers) => {
 
       let typeOffers;
       for (let item of editFormOffers) {
@@ -96,7 +96,7 @@ const createTripEventEditForm = (dataItem, routePointTypes, pointDestinations) =
       }
       return typeOffers;
     };
-    const formOffers = getAllOffers(type, editFormOffers);
+    const formOffers = getOffersByType(type, editFormOffers);
     // debugger
 // const formOffers = pointOffers;
     return formOffers.reduce((total, element) => {
@@ -227,7 +227,7 @@ export default class TripEventEditFormView extends SmartView { // AbstractView
     // this._dateTo = this._dataItem.dateTo;
     // this._editFormOffers = this._dataItem.editFormOffers
     this._saveBtnElement = this.getElement().querySelector(`.event__save-btn`);
-    this._SPAM_TEXT = 20;
+    this._TEXT_LIMIT = 20;
     this._addBtn = document.querySelector(`.trip-main__event-add-btn`);
 
     this._submitHandler = this._submitHandler.bind(this);
@@ -275,7 +275,6 @@ export default class TripEventEditFormView extends SmartView { // AbstractView
   // 5
   // публичный метод который заново навешивает обработчики
   restoreHandlers() {
-
     this._setInnerHandlers(); // востанавливаем приватные обработчики
     this.setSubmitHandler(this._callback.submit); // востанавливаем внешние обработчики. вызвали обработчик который был сохранен в объекте.
     this.setCancelHandler(this._callback.cancel);
@@ -347,14 +346,15 @@ export default class TripEventEditFormView extends SmartView { // AbstractView
       const inputOfOffersElement = groupOffersElement.querySelectorAll(`input`); // выташил из нее все инпуты по оферам
       inputOfOffersElement.forEach((item)=>{ // обхожу все инпуты
         if (item.attributes.checked) { // если чекнут
-          idCheckOffers.push(item.attributes.id.textContent.slice(this._SPAM_TEXT)); // то добавляем title офера в массив
+          idCheckOffers.push(item.attributes.id.textContent.slice(this._TEXT_LIMIT)); // то добавляем title офера в массив
         }
       });
 
 
       // находим тип точки и по нему находим все его пустые оферы
       const typeEmptyOffers = [];
-      const eventType = this.getElement().querySelector(`.event__type-output`).textContent;
+      const eventType = this.getElement().querySelector(`.event__type-output`).textContent.toLowerCase();
+      // const eventType = this._dataItem.type;
       // будем сравнивать title из общего массива оферров конкретного этого объекта с его выделеными оферами из idCheckOffers
       for (let itemEmpty of allEmptyOffers) { // проходим по пустому массиву
 

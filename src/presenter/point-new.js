@@ -31,7 +31,7 @@ export default class PointNewPresenter {
       return;
     }
 
-    this._addNewPointComponent = new AddNewPointView(tripItem, this._offers, this._destinations); // вьюха для формы редоктирования tripItem
+    this._addNewPointComponent = new AddNewPointView(this._offers, this._destinations); // вьюха для формы редоктирования tripItem
     this._addNewPointComponent.setSubmitHandler(this._handleFormSubmit); // 6del установили обработчик на удаление
     this._addNewPointComponent.setCancelHandler(this._handleCanselClick); // 6del установили обработчик на удаление
 
