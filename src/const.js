@@ -39,5 +39,6 @@ export const TYPES = [`Taxi`, `Bus`, `Train`, `Ship`, `Transport`, `Drive`, `Fli
 // состояние задачи могут быть сохранения или удаления
 export const State = {
   SAVING: `SAVING`,
-  DELETING: `DELETING`
+  DELETING: `DELETING`,
+  ABORTING: `ABORTING`
 };

@@ -171,15 +171,17 @@ export default class TripBoard {
     // actionType - действие пользователя, нужно чтобы понять, какой метод модели вызвать. Нужен только для сообщения
     // updateType - тип изменений, нужно чтобы понять, что после нужно обновить. На это опираемся в _handleModelEvent
     // update - обновленные данные. Это уйдет в модель
+
     switch (actionType) { // 32
       case UserAction.UPDATE_POINT: // на действие пользователя по обновлению точки
-        console.log(State.SAVING)
         this._eventPresenter[update.id].setViewState(State.SAVING); // 8mod event прзеентеру по определенному id добавили флаг SAVING
 
         // this._pointsModel.updatePoint(updateType, update); // бедет дергаться метод модели updatePoint
         // делаем связь с сервером
         this._api.updatePoint(update).then((response) => { // сперва обновляем точку на сервере и если там ок
           this._pointsModel.updatePoint(updateType, response); // то обновляем точку локально
+        }).catch(() => {
+          this._eventPresenter[update.id].setViewState(State.ABORTING);
         });
         break;
 
@@ -188,6 +190,8 @@ export default class TripBoard {
 
         this._api.addPoint(update).then((response) => {
           this._pointsModel.addPoint(updateType, response);
+        }).catch(() => {
+          this._pointNewPresenter.setAborting();
         });
         break;
 
@@ -200,6 +204,8 @@ export default class TripBoard {
           // ведь что можно вернуть при удалении задачи?
           // Поэтому в модель мы всё также передаем update
           this._pointsModel.deletePoint(updateType, update);
+        }) .catch(() => {
+          this._eventPresenter[update.id].setViewState(State.ABORTING);
         });
         break;
     }

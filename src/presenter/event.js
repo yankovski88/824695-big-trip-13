@@ -110,6 +110,14 @@ export default class EventPresenter {
 
   // 8mod задача этого компонента взять и засетить компоненту все эти флаги
   setViewState(state) {
+    const resetFormState = () => {
+      this._tripEventEditComponent.updateData({
+        isDisabled: false,
+        isSaving: false,
+        isDeleting: false
+      });
+    };
+
     switch (state) {
       case State.SAVING:
         this._tripEventEditComponent.updateData({
@@ -122,6 +130,10 @@ export default class EventPresenter {
           isDisabled: true,
           isDeleting: true
         });
+        break;
+      case State.ABORTING:
+        this._tripEventItemComponent.shake(resetFormState);
+        this._tripEventEditComponent.shake(resetFormState);
         break;
     }
   }
