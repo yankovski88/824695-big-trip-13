@@ -254,8 +254,8 @@ export default class TripEventEditFormView extends SmartView { // AbstractView
         dataItem,
       {  isDisabled: false,
         isSaving: false,
-        isDeleting: false}
-      // {editFormOffers: offers},
+        isDeleting: false,}
+      // editFormOffers: this._offers},
         // {isDueDate: task.dueDate !== null,}
     );
   }

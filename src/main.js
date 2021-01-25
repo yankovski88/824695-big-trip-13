@@ -320,27 +320,136 @@ Promise.all([
 });
 
 // код не всегда срабатывает, то успевает загрузить данные, то нет
-// api.getOffers().then( (offers)=>{
-//   offersModel.setOffers(offers)
-// }).catch(() => { // если ошибка то
-//   console.log(`ошибка офера`)
-// });
+api.getOffers().then( (offers)=>{
+  offersModel.setOffers(offers)
+}).catch((e) => { // если ошибка то
+  console.log(`ошибка офера`)
+  console.log(e);
+});
+
+api.getDestinations().then((pointDestinations)=>{
+  destinationsModel.setDestinations(pointDestinations);
+}).catch((el) =>
+  {console.log(`ошибка дистанции`)
+    console.log(el)
+  }
+);
 //
+// const getPoints = ()=>{};
 // api.getPoints().then((points) => {
 //   pointsModel.setPoints(UpdateType.INIT, points)
-// }).catch(() => { // если ошибка то
+// }).catch((e) => { // если ошибка то
 //   console.log(`ошибка point`)
+//   console.log(e)
 //   pointsModel.setPoints(UpdateType.INIT, []); // передать пустой массив с типом INIT
 //   renderMenu();
 //   tripMenuComponent.setMenuClickHandler(handleSiteMenuClick); // 1.1.stat
 // })
-//
-//
-// api.getDestinations().then((pointDestinations)=>{
-//   destinationsModel.setDestinations(pointDestinations);
-// }).catch( () =>
-//   {console.log(`ошибка дистанции`)}
-// );
 
+
+
+// // код не всегда срабатывает, то успевает загрузить данные, то нет
+// api.getOffers().then((offers) => {
+//   offersModel.setOffers(offers)
+// }).catch((e) => { // если ошибка то
+//   console.log(`ошибка офера`)
+//   console.log(e);
+// });
+//
+// api.getDestinations().then((pointDestinations) => {
+//   destinationsModel.setDestinations(pointDestinations);
+// }).catch((el) => {
+//     console.log(`ошибка дистанции`)
+//     console.log(el)
+//   }
+// );
+//
+//
+// api.getPoints().then((points) => {
+//   pointsModel.setPoints(UpdateType.INIT, points)
+// }).catch((e) => { // если ошибка то
+//   console.log(`ошибка point`)
+//   console.log(e)
+//   pointsModel.setPoints(UpdateType.INIT, []); // передать пустой массив с типом INIT
+//   renderMenu();
+//   tripMenuComponent.setMenuClickHandler(handleSiteMenuClick); // 1.1.stat
+// })
+
+
+
+
+// const getOffers = ()=>{
+//   return new Promise((resolve, reject)=>{
+//     return api.getOffers() ?
+//       resolve((offers)=>{
+//         offersModel.setOffers(offers)
+//       }) :
+//       reject((e)=>{console.log(e)})
+//   })
+// }
+// const getPoints = () => {
+//   return new Promise((resolve, reject) => {
+//       return api.getPoints() ?
+//         resolve((points) => {
+//           pointsModel.setPoints(UpdateType.INIT, points)
+//         }) :
+//         reject((e) => { // если ошибка то
+//           console.log(`ошибка point`);
+//           console.log(e);
+//           pointsModel.setPoints(UpdateType.INIT, []); // передать пустой массив с типом INIT
+//           renderMenu();
+//           tripMenuComponent.setMenuClickHandler(handleSiteMenuClick) // 1.1.stat
+//         })
+//     }
+//   )
+// };
+// const getDestinations = ()=>{
+//   return new Promise((resolve, reject)=>{
+//     return api.getDestinations() ?
+//       resolve((pointDestinations)=>{
+//         destinationsModel.setDestinations(pointDestinations);
+//       }) :
+//       reject((e)=>{console.log(e)})
+//   })
+// }
+// getOffers().then(getPoints).then(getDestinations).catch((error) => console.log(error));
+
+
+
+
+
+// const buyProducts = () => {
+//   return new Promise((resolve) => {
+//     const products = [`Картофель`, `Капуста`, `Мясо`];
+//     resolve(products);
+//   });
+// };
+//
+// const prepareProducts = (products) => {
+//   console.log(`> Нарезаю продукты: ${products.join(`, `)}`);
+//   return new Promise((resolve) => {
+//     setTimeout(() => {
+//       console.log(`> Продукты нарезаны!`);
+//       resolve(products);
+//     }, TIMEOUT);
+//   });
+// };
+//
+// const makeSoup = (preparedProducts) => {
+//   console.log(`> Начинаю варить суп из: ${preparedProducts.join(`, `)}`);
+//   return new Promise((resolve, reject) => {
+//     setTimeout(() => {
+//       return Math.random() > 0.5
+//         ? resolve(`> Суп готов!`)
+//         : reject(`> Упс! Сломалась плита.`);
+//     }, TIMEOUT);
+//   });
+// };
+//
+// buyProducts()
+//   .then(prepareProducts)
+//   .then(makeSoup)
+//   .then((result) => console.log(result))
+//   .catch((error) => console.log(error));
 
 

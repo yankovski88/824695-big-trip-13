@@ -73,7 +73,7 @@ export default class PointNewPresenter {
       });
     };
 
-    this._taskEditComponent.shake(resetFormState);
+    this._addNewPointComponent.shake(resetFormState);
   }
 
   // обраотчик сохранения формы
@@ -89,7 +89,7 @@ export default class PointNewPresenter {
     );
 
     this._addBtn.removeAttribute(`disabled`);
-    this.destroy();
+    // this.destroy();
   }
 
   // обраотчик который закрывается без сохранения формы

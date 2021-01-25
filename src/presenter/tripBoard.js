@@ -205,6 +205,7 @@ export default class TripBoard {
           // Поэтому в модель мы всё также передаем update
           this._pointsModel.deletePoint(updateType, update);
         }) .catch(() => {
+          console.log(`del`)
           this._eventPresenter[update.id].setViewState(State.ABORTING);
         });
         break;
