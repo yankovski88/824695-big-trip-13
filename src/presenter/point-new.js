@@ -57,15 +57,19 @@ export default class PointNewPresenter {
   }
 
 
+
   // обраотчик сохранения формы
   _handleFormSubmit(point) {
+    debugger
     this._changeData(
         UserAction.ADD_POINT,
         UpdateType.MINOR,
+      point
         // Пока у нас нет сервера, который бы после сохранения
         // выдывал честный id задачи, нам нужно позаботиться об этом самим
-        Object.assign({id: generateId()}, point)
+        // Object.assign({id: generateId()}, point)
     );
+
     this._addBtn.removeAttribute(`disabled`);
     this.destroy();
   }

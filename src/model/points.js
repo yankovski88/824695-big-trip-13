@@ -99,7 +99,7 @@ export default class PointsModel extends Observer {
         {
           "date_from": new Date(point.dateFrom).toISOString(), // На сервере дата хранится в ISO формате
           "date_to": new Date(point.dateTo).toISOString(),
-          "base_price": point.basePrice,
+          "base_price": parseInt(point.basePrice, 10) ? parseInt(point.basePrice, 10) : 0,
           "is_favorite": point.isFavorite,
         }
     );

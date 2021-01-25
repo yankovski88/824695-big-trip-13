@@ -10,7 +10,7 @@ import {generateId} from "../mock/mock-trip-event-item";
 import {getRandomInteger} from "../util/common";
 
 const BLANK_POINT = {
-  "type": `Flight`,
+  "type": `flight`,
   "dateFrom": new Date(),
   "dateTo": new Date(),
   // "id": generateId(),
@@ -70,10 +70,6 @@ const BLANK_POINT = {
   ],
 
   "offers": []
-  // {
-//   "title": ``,
-//   "price": ``,
-// }
 };
 
 

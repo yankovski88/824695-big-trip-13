@@ -21,8 +21,8 @@ import StatisticsView from "./view/statistics.js";
 import Api from "./api.js";
 // import {SortType} from "./const"; // stat
 
-const AUTHORIZATION = `Basic skuilejbspifSwcl1sa2`; // j2 строка авторизации
-const END_POINT = `https://13.ecmascript.pages.academy/big-trip/`; // зафиксированный адрес сервера
+const AUTHORIZATION = `Basic skuile`; // jbspifSwcl1sa2 строка авторизации
+const END_POINT = `https://13.ecmascript.pages.academy/big-trip`; // зафиксированный адрес сервера
 const api = new Api(END_POINT, AUTHORIZATION); // создаем экземпляр нашего Api
 
 
