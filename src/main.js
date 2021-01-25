@@ -319,21 +319,23 @@ Promise.all([
   tripMenuComponent.setMenuClickHandler(handleSiteMenuClick); // 1.1.stat
 });
 
-// код не всегда срабатывает, то успевает загрузить данные, то нет
-api.getOffers().then( (offers)=>{
-  offersModel.setOffers(offers)
-}).catch((e) => { // если ошибка то
-  console.log(`ошибка офера`)
-  console.log(e);
-});
 
-api.getDestinations().then((pointDestinations)=>{
-  destinationsModel.setDestinations(pointDestinations);
-}).catch((el) =>
-  {console.log(`ошибка дистанции`)
-    console.log(el)
-  }
-);
+//
+// // код не всегда срабатывает, то успевает загрузить данные, то нет
+// api.getOffers().then( (offers)=>{
+//   offersModel.setOffers(offers)
+// }).catch((e) => { // если ошибка то
+//   console.log(`ошибка офера`)
+//   console.log(e);
+// });
+//
+// api.getDestinations().then((pointDestinations)=>{
+//   destinationsModel.setDestinations(pointDestinations);
+// }).catch((el) =>
+//   {console.log(`ошибка дистанции`)
+//     console.log(el)
+//   }
+// );
 //
 // const getPoints = ()=>{};
 // api.getPoints().then((points) => {
@@ -375,6 +377,20 @@ api.getDestinations().then((pointDestinations)=>{
 //   tripMenuComponent.setMenuClickHandler(handleSiteMenuClick); // 1.1.stat
 // })
 
+
+
+// api.getOffers().then((offers)=>{
+//   offersModel.setOffers(offers)
+// }).catch((e)=>{console.log(e)}).then(api.getPoints()).then((points) => {
+//   pointsModel.setPoints(UpdateType.INIT, points)
+// }).catch((e) => { // если ошибка то
+//   console.log(`ошибка point`)}).then(
+//   api.getDestinations().then(
+//     (pointDestinations)=>{
+//       destinationsModel.setDestinations(pointDestinations);
+//     }
+//   ).catch((e)=>{console.log(e)})
+// )
 
 
 

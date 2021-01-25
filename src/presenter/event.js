@@ -1,9 +1,7 @@
-// импортируем вью для event
 import {remove, renderElement, RenderPosition} from "../util/render";
 import TripEventEditFormView from "../view/trip-event-edit-form";
 import TripEventItemView from "../view/trip-event-item";
-import {UserAction, UpdateType, State} from "../const.js"; // 24
-
+import {UserAction, UpdateType, State} from "../const.js";
 
 // 4 наблюдатель
 const Mode = {
@@ -11,11 +9,9 @@ const Mode = {
   EDITING: `EDITING`
 };
 
-
-
 export default class EventPresenter {
   // changeData поддерживаем получение колбека _handleViewAction который приходит с наружи
-  constructor(eventContainer, changeData, changeMode) { // поддерживаем колбек который приходит с наружи   // 5 наблюдатель
+  constructor(eventContainer, changeData, changeMode) { // поддерживаем колбек который приходит с наружи 5 наблюдатель
     this._eventContainer = eventContainer; // куда рендерить
     this._changeData = changeData; // 3 нов. записываем в свойства класса
     this._changeMode = changeMode; // 6 наблюдатель
@@ -34,9 +30,7 @@ export default class EventPresenter {
     this._handleFavoriteClick = this._handleFavoriteClick.bind(this);
     this._handleDeleteClick = this._handleDeleteClick.bind(this); // 7del
   }
-  init(tripItem, offers, pointDestinations) { //
-
-
+  init(tripItem, offers, pointDestinations) {
     this._tripItem = tripItem;
     this._offers = offers;
     this._pointDestinations = pointDestinations;
@@ -45,19 +39,16 @@ export default class EventPresenter {
     const prevTripEventEditComponent = this._tripEventEditComponent;
 
     this._tripEventItemComponent = new TripEventItemView(this._tripItem); // виюха для item
-
     this._tripEventEditComponent = new TripEventEditFormView(this._tripItem, this._offers, this._pointDestinations); // вьюха для формы редоктирования
 
     this._tripEventEditComponent.setDeleteClickHandler(this._handleDeleteClick); // 6del установили обработчик на удаление
     this._tripEventEditComponent.setSubmitHandler(this._handleFormSubmit);
-    // редоктируемый task
+    // редоктируемая точка
     this._replaceFormToItem(); // замена формы на точку маршрута
-    // код который рендерит форму при клике на стрелку вниз в item
 
     this._tripEventItemComponent.setClickHandler(() => {
       this._replaceItemToForm();
       // при удалении элемента из дом обработчик можно не удалять. удалять на document и нов элемент обработчиком
-      // this._handleFormSubmit(tripItem);
     });
 
     // код который скрывает форму если кликнуть в форме редоктирования кнопку треугольник
@@ -151,9 +142,6 @@ export default class EventPresenter {
   // функция которая из формы редоктирования делает предложение Item
   _replaceFormToItem() {
     this._tripEventEditComponent.getElement().replaceWith(this._tripEventItemComponent.getElement());
-    // document.removeEventListener(`keydown`, this._onEscKeyPress);
-    // document.removeEventListener(`submit`, this._handleFormSubmit);
-    // document.removeEventListener(`click`, this._onEventRollupBtnClick);
 
     this._mode = Mode.DEFAULT; // 13 наблюдатель. Текущий режим по умолчанию
   }
@@ -165,8 +153,6 @@ export default class EventPresenter {
         UserAction.UPDATE_POINT, // 25
         UpdateType.MINOR, // 26 идет обновление точки так что минор
         update); // update это данные которые будут добавлены во вьюхе this._dataItem
-
-    // this._replaceFormToItem(); // замена формы на точку маршрута
   }
 
   // обраотчик который закрывается без сохранения формы
@@ -200,7 +186,6 @@ export default class EventPresenter {
         )
     );
   }
-
 
   _handleDeleteClick(point) { // 8del
     this._changeData( // этот тот метод который вызовет изменения в модели

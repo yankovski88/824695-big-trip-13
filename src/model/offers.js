@@ -1,8 +1,4 @@
 import Observer from "../util/observer.js";
-import {getRandomInteger} from "../util/common";
-import {dataOffers, generateId, getDestination} from "../mock/mock-trip-event-item";
-import dayjs from "dayjs";
-
 
 // 1 создал модель
 export default class OffersModel extends Observer {
@@ -16,7 +12,6 @@ export default class OffersModel extends Observer {
     offers.forEach((item)=>{
       this._offers.push(item);
     });
-    // this._offers = offers.slice();
   }
 
   // метод по возврату всех точек маршрута

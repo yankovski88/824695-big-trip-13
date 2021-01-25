@@ -1,8 +1,4 @@
 import Observer from "../util/observer.js";
-import {getRandomInteger} from "../util/common";
-import {dataOffers, generateId, getDestination} from "../mock/mock-trip-event-item";
-import dayjs from "dayjs";
-
 
 // 1 создал модель
 export default class PointsModel extends Observer {
@@ -75,8 +71,8 @@ export default class PointsModel extends Observer {
         {
         // в basePrice записали, то что пришло с сервера, плюс можно модифицировать данные как с датой
           basePrice: point.base_price,
-          dateFrom: new Date(point.date_from), // date(point.date_from), //, // // На клиенте дата хранится как экземпляр Date dayjs().point.date_from.toDate(),
-          dateTo: new Date(point.date_to), // dayjs().point.date_to.toDate(),
+          dateFrom: new Date(point.date_from),
+          dateTo: new Date(point.date_to),
           isFavorite: point.is_favorite,
         }
     );
@@ -86,7 +82,6 @@ export default class PointsModel extends Observer {
     delete adaptedPoint.date_from;
     delete adaptedPoint.date_to;
     delete adaptedPoint.is_favorite;
-
 
     return adaptedPoint;
   }
@@ -112,8 +107,6 @@ export default class PointsModel extends Observer {
 
     return adaptedPoint;
   }
-
-
 }
 
 

@@ -2,7 +2,7 @@ import Observer from "../util/observer.js";
 import {FilterType} from "../const.js";
 
 // Задача модели - хранить выбранный фильтр и уведомлять наблюдателей, если таковой изменится.
-export default class FilterModel extends Observer { // 47
+export default class FilterModel extends Observer {
   constructor() {
     super();
     this._activeFilter = FilterType.EVERYTHING; // храним только выбранный фильтр

@@ -442,13 +442,13 @@ export default class TripEventEditFormView extends SmartView { // AbstractView
   // обработчик который вызывает сохранненый колбек при клике на cencel
   _cancelClickHandler(evt) {
     evt.preventDefault();
+// debugger
     this._callback.cancel();
   }
 
   // установим публичный обработчик на cansel и стрелку вниз
   setCancelHandler(callback) {
     this._callback.cancel = callback;
-
     const eventResetBtn = this.getElement().querySelector(`.event__reset-btn`);
     eventResetBtn.addEventListener(`click`, this._cancelClickHandler);
   }
