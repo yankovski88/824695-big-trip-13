@@ -1,7 +1,7 @@
 import AbstractView from "./abstract";
 import {SortType} from "../const.js";
 
-const createTripEventsSort = (currentSortType) => { // 45 ${currentSortType === SortType.DEFAULT ? `board__filter--active` : ``}
+const createTripEventsSort = (currentSortType) => {
   return `<form class="trip-events__trip-sort  trip-sort" action="#" method="get" >
             <div class="trip-sort__item  trip-sort__item--day">
               <input id="sort-day" class="trip-sort__input  visually-hidden" type="radio" name="trip-sort" value="sort-day" data-sort-type="${SortType.DAY}" checked ${currentSortType === SortType.DAY ? `checked` : ``}>
@@ -40,7 +40,6 @@ export default class TripEventsSortView extends AbstractView {
   }
 
   getTemplate() {
-    // return createTripEventsSort(); // this._dataItem
     return createTripEventsSort(this._currentSortType); // 44
   }
 

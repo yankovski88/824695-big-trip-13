@@ -2,8 +2,6 @@ import AbstractView from "./abstract.js";
 
 const createTripFilter = (filter, currentFilterType) => {
 
-  // const {type, name, count} = filter[0]; // 51
-
   return `<form class="trip-filters" action="#" method="get">
 <div class="trip-filters__filter">
    

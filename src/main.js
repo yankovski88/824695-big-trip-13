@@ -4,9 +4,9 @@ import TripMenuView from "./view/trip-menu.js";
 // import TripEventEditFormView from "./view/trip-event-edit-form.js";
 // import AddNewPointView from "./view/add-new-point.js";
 
-import {getTripEventItem} from "./mock/mock-trip-event-item.js";
+// import {getTripEventItem} from "./mock/mock-trip-event-item.js";
 import TripBoard from "./presenter/tripBoard";
-import TripInfo from "./presenter/tripInfo";
+// import TripInfo from "../../824695-big-trip-test/presenter/tripInfo";
 import PointsModel from "./model/points.js"; // 3 импорт модель
 import FilterModel from "./model/filter.js"; // 48
 import OffersModel from "./model/offers.js"; // 48
@@ -71,9 +71,9 @@ const renderMenu = () => {
 // 5 передаем экземпляр модели в конструктор
 const tripBoardPresenter = new TripBoard(tripEventElement, pointsModel, filterModel, api, offersModel, destinationsModel); //  61 создал призентер с контейнером в который вставим все
 // tripEventElement это контейнер в который нужно отрисовать
-const tripInfoPresenter = new TripInfo(tripMainElement, pointsModel); // tripInfoElement
+// const tripInfoPresenter = new TripInfo(tripMainElement, pointsModel); // tripInfoElement
 
-tripInfoPresenter.init(); // элемент info Нужно ИСАПРАВИТЬ т.к. у нас уже модель, а не просто данные tripItems
+// tripInfoPresenter.init(); // элемент info Нужно ИСАПРАВИТЬ т.к. у нас уже модель, а не просто данные tripItems
 tripBoardPresenter.init(); // элементы доски // tripItems
 
 const filterPresenter = new FilterPresenter(tripControlsElement, filterModel); // 60 pointsModel

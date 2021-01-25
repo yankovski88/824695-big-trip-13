@@ -1,19 +1,15 @@
 import dayjs from "dayjs";
 import he from "he"; // импортировал библиотеку по экранированию тегов от хакеров
 import SmartView from "./smart.js";
-// import {destinations, dataOffers} from "../mock/mock-trip-event-item.js";
 import {TYPES} from "../const";
 
 import flatpickr from "flatpickr";
 import "../../node_modules/flatpickr/dist/flatpickr.min.css";
-import {generateId} from "../mock/mock-trip-event-item";
-import {getRandomInteger} from "../util/common";
 
 const BLANK_POINT = {
   "type": `flight`,
   "dateFrom": new Date(),
   "dateTo": new Date(),
-  // "id": generateId(),
   "isFavorite": false,
   "destination": {
     "name": `Geneva`,
@@ -75,10 +71,7 @@ const BLANK_POINT = {
 
 // функция по установке времени в форме
 const createFieldTime = (dateStart, dateFinish, isDisabled) => {
-  // if(dateStart === `` && dateFinish === ``){
-  //   const dateStart = new Date();
-  //   const dateFinish = new Date();
-  // }
+
   // установка формата времени
   const startTime = dayjs(dateStart).format(`DD/MM/YY HH:mm`);
   const finishTime = dayjs(dateFinish).format(`DD/MM/YY HH:mm`);
@@ -97,24 +90,6 @@ const createTripEventEditForm = (dataItem, routePointTypes, pointDestinations) =
   const {dateFrom, dateTo, destination, basePrice, type, offers, isDisabled, isSaving} = dataItem; // editFormOffers additionalOffers, photos,
   const emptyFormOffers = routePointTypes;
   const allPointDestinations = pointDestinations;
-
-  // код на получение всех оферсов по типу
-  // const getAllOffers = (type, offers) => {
-  //   let typeOffers;
-  //   for (let item of offers) {
-  //     if (type === item.type) {
-  //       typeOffers = item.offers;
-  //     }
-  //   }
-  //   return typeOffers;
-  // };
-  //
-  // const pointOffers = getAllOffers(type, editFormOffers);
-
-
-  // const isDateValid = ()=>{
-  //   return dateFrom < dateTo
-  // };
 
   // генерирует разметку фоток
   const createEventPhotoTemplate = () => {

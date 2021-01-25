@@ -5,8 +5,8 @@ import SmartView from "./smart.js";
 import flatpickr from "flatpickr";
 import "../../node_modules/flatpickr/dist/flatpickr.min.css";
 import {UpdateType, UserAction, TYPES} from "../const";
-import {getRandomInteger} from "../util/common";
-import {getTripEventItem} from "../mock/mock-trip-event-item";
+// import {getRandomInteger} from "../util/common";
+// import {getTripEventItem} from "../mock/mock-trip-event-item";
 import Api from "../api.js";
 import OffersModel from "../model/offers.js"
 

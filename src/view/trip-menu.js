@@ -35,7 +35,6 @@ export default class TripMenuView extends AbstractView {
 
     if (!(evt.target.classList.contains(`trip-tabs__btn--active`))) {
       evt.target.classList.add(`trip-tabs__btn--active`);
-      // this._callback.menuClick(evt.target.attributes.value.value); // по чем кликнули цель бедем помещать в колбек который будет в main
     }
     this._callback.menuClick(evt.target.attributes.value.value); // по чем кликнули цель бедем помещать в колбек который будет в main
   }
@@ -43,23 +42,8 @@ export default class TripMenuView extends AbstractView {
   // - Добавим подписку для обработчика перехода
   setMenuClickHandler(callback) {
     this._callback.menuClick = callback;
-    // this.getElement().addEventListener(`change`, this._menuClickHandler); // почему не работает change
     this._menuLinks.forEach((item)=>{
       item.addEventListener(`click`, this._menuClickHandler);
     });
-  }
-
-  // можно позже удалить код
-  // - Научим представление меню учитывать выбранный пункт
-  // метод в который передаем параметр значения меню value
-  setMenuItem(menuItem) {
-
-    const item = this.getElement().querySelector(`[value=${menuItem}]`);
-    // item это найти в элементе меню атрибут value со значением menuItem
-
-    if (item !== null) { // если item не равно нулю, то атрибут найден
-      item.checked = true; // и этому элементу добавляем свойство checked = true, но в разметке чет оно не появляется
-    }
-
   }
 }

@@ -4,7 +4,7 @@ import {getDateDiff} from "../util/render.js";
 import AbstractView from "./abstract.js";
 
 const createTripEventItem = (dataItems) => {
-  const {id, type, basePrice, dateFrom, dateTo, destination, isFavorite, offers} = dataItems; // favorite
+  const {id, type, basePrice, dateFrom, dateTo, destination, isFavorite, offers} = dataItems;
 
   // код который определяет favorite или нет и если да то добовляет active
   const getFavorite = (favoriteItem) => {

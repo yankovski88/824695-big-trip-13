@@ -69,7 +69,6 @@ const renderMoneyChart = (moneyCtx, labels, points) => {
             display: false,
             drawBorder: false
           },
-          // minBarLength: 50
         }],
       },
       legend: {
@@ -136,7 +135,6 @@ const renderTypeChart = (typeCtx, labels, points) => {
             display: false,
             drawBorder: false
           },
-          // barThickness: 44,
         }],
         xAxes: [{
           ticks: {
@@ -147,7 +145,6 @@ const renderTypeChart = (typeCtx, labels, points) => {
             display: false,
             drawBorder: false
           },
-          // minBarLength: 50
         }],
       },
       legend: {
@@ -229,7 +226,6 @@ const renderTimeChart = (timeCtx, labels, points) => {
             display: false,
             drawBorder: false
           },
-          // minBarLength: 50
         }],
       },
       legend: {
