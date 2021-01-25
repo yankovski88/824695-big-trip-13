@@ -12,25 +12,24 @@ import OffersModel from "../model/offers.js"
 
 
 // функция по установке времени в форме
-const createFieldTime = (dateStart, dateFinish) => {
+const createFieldTime = (dateStart, dateFinish, isDisabled) => {
   // установка формата времени
   const startTime = dayjs(dateStart).format(`DD/MM/YY HH:mm`);
   const finishTime = dayjs(dateFinish).format(`DD/MM/YY HH:mm`);
-// debugger
 
   return `<div class="event__field-group  event__field-group--time">
     <label class="visually-hidden" for="event-start-time-1">From</label>
-    <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${startTime}">
+    <input ${isDisabled ? `disabled`:``} class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${startTime}">
     &mdash;
 <label class="visually-hidden" for="event-end-time-1">To</label>
-    <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${finishTime}">
+    <input ${isDisabled ? `disabled`:``} class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${finishTime}">
     </div>`;
 };
 
 
 // функция по отрисовке всей формы
 const createTripEventEditForm = (dataItem, routePointTypes, pointDestinations) => { // destinations сюда попадают данные и запоняется шаблон
-  const {dateFrom, dateTo, destination, basePrice, type, offers} = dataItem; // editFormOffers
+  const {dateFrom, dateTo, destination, basePrice, type, offers, isDisabled, isSaving, isDeleting} = dataItem; // editFormOffers
   const editFormOffers = routePointTypes;
   const allPointDestinations = pointDestinations;
 
@@ -75,15 +74,15 @@ const createTripEventEditForm = (dataItem, routePointTypes, pointDestinations) =
   };
 
   // добавление кнопки вверх
-  const createEventRollupBtn = () => {
-    return `<button class="event__rollup-btn" type="button">
+  const createEventRollupBtn = (isDeleting) => {
+    return `<button class="event__rollup-btn" type="button" ${isDisabled ? `disabled`:``}>
          <span class="visually-hidden">Open event</span>
       </button>`;
   };
 
 
   // функция по отрисовке фрагмента всех преимуществ
-  const getOffersTemplate = () => { // formOffers
+  const getOffersTemplate = (isDisabled) => { // formOffers
 
     // код на получение всех оферсов по типу
     const getOffersByType = (typePoint, editFormOffers) => {
@@ -97,7 +96,6 @@ const createTripEventEditForm = (dataItem, routePointTypes, pointDestinations) =
       return typeOffers;
     };
     const formOffers = getOffersByType(type, editFormOffers);
-    // debugger
 // const formOffers = pointOffers;
     return formOffers.reduce((total, element) => {
 
@@ -107,7 +105,7 @@ const createTripEventEditForm = (dataItem, routePointTypes, pointDestinations) =
       });
       if (element !== ``) {
         return total + `<div class="event__offer-selector">
-                        <input class="event__offer-checkbox  visually-hidden" id="event-offer-luggage-${element.title}" type="checkbox" name="event-offer-luggage"  
+                        <input ${isDisabled ? `disabled`:``} class="event__offer-checkbox  visually-hidden" id="event-offer-luggage-${element.title}" type="checkbox" name="event-offer-luggage"  
 ${isActive ? `checked` : ``}>
                             <label class="event__offer-label" for="event-offer-luggage-${element.title}">
                           <span class="event__offer-title">${element.title}</span>
@@ -121,17 +119,17 @@ ${isActive ? `checked` : ``}>
     }, ``);
   };
 
-  const createTime = createFieldTime(dateFrom, dateTo);
+  const createTime = createFieldTime(dateFrom, dateTo, isDisabled);
 
 
   // код рисут список type
-  const getEditType = (types) => {
+  const getEditType = (types, isDisabled) => {
     return types.reduce((total, element)=>{
       const isActiveType = [type].some((el) => {
         return el === element;
       });
       return total + `<div class="event__type-item">
-                          <input ${isActiveType ? `checked` : ``}  id="event-type-${element.toLowerCase()}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${element.toLowerCase()}" >
+                          <input ${isDisabled ? `disabled`:``} ${isActiveType ? `checked` : ``}  id="event-type-${element.toLowerCase()}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${element.toLowerCase()}" >
                           <label class="event__type-label  event__type-label--${element.toLowerCase()}" for="event-type-${element.toLowerCase()}-1">${element}</label>
                         </div>`;
     }, ``);
@@ -146,20 +144,20 @@ ${isActive ? `checked` : ``}>
                       <span class="visually-hidden">Choose event type</span>
                       <img class="event__type-icon" width="17" height="17" src="img/icons/${type.toLowerCase()}.png" alt="Event type icon">
                     </label>
-                    <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox">
+                    <input ${isDisabled ? `disabled`:``}  class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox">
 
                     <div class="event__type-list">
                                 <fieldset class="event__type-group">
                         <legend class="visually-hidden">Event type</legend>
 
-       ${getEditType(TYPES)}
+       ${getEditType(TYPES, isDisabled)}
                       </fieldset>
                     </div>
                   </div>
 
                   <div class="event__field-group  event__field-group--destination">
                     <label class="event__label  event__type-output" for="event-destination-1">${type}</label>
-                    <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" 
+                    <input ${isDisabled ? `disabled`:``} class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" 
                     value="${he.encode(destination.name)}" list="destination-list-1" >
                     <datalist id="destination-list-1">
                       <option value="Amsterdam"></option>
@@ -175,14 +173,14 @@ ${isActive ? `checked` : ``}>
                       <span class="visually-hidden">Price</span>
                       &euro; 
                     </label>
-                    <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${he.encode(basePrice.toString())}" onkeypress="return (event.charCode >= 48 && event.charCode <= 57)"   onkeyup="this.value = this.value.replace(/^0+(?=\\d)/,'');">
+                    <input ${isDisabled ? `disabled`:``} class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${he.encode(basePrice.toString())}" onkeypress="return (event.charCode >= 48 && event.charCode <= 57)"   onkeyup="this.value = this.value.replace(/^0+(?=\\d)/,'');">
                   </div>
 <!--{isDateValid() ?  : disabled}-->
-                  <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-<button class="event__reset-btn" type="reset">Delete</button>
+                  <button ${isDisabled ? `disabled`:``} class="event__save-btn  btn  btn--blue" type="submit">${isSaving ? `Saving...` : `Save`}</button>
+<button ${isDisabled ? `disabled`:``} class="event__reset-btn" type="reset"> ${isDeleting ? `Deleting...` : `Delete`}</button>
   
                   <!--<button class="event__reset-btn" type="reset"> Cancel</button>-->
-    ${createEventRollupBtn()}
+    ${createEventRollupBtn(isDisabled)}
                 </header>
                 <section class="event__details">
                   <section class="event__section  event__section--offers">
@@ -190,7 +188,7 @@ ${isActive ? `checked` : ``}>
 
                     <div class="event__available-offers">
                     <!--pointOffers-->
-     ${getOffersTemplate()}
+     ${getOffersTemplate(isDisabled)}
                     </div>
                   </section>
 
@@ -254,6 +252,9 @@ export default class TripEventEditFormView extends SmartView { // AbstractView
     return Object.assign(
         {},
         dataItem,
+      {  isDisabled: false,
+        isSaving: false,
+        isDeleting: false}
       // {editFormOffers: offers},
         // {isDueDate: task.dueDate !== null,}
     );
@@ -264,6 +265,10 @@ export default class TripEventEditFormView extends SmartView { // AbstractView
     // if (!data.isDueDate) {
     //   data.dueDate = null;
     // }
+    delete data.isDisabled;
+    delete data.isSaving;
+    delete data.isDeleting;
+
     return data;
   }
 
@@ -399,7 +404,6 @@ export default class TripEventEditFormView extends SmartView { // AbstractView
     evt.preventDefault();
     // код по замене всех данных объекта offers на тот который выбрал пользователь
     const getChangeOffers = (target) => { // target цель выбора пользователя
-      // debugger
       for (let item of this._offers) { // прохождение по массиву всех объектов. offers массив всех доп предложений
         if (target === item.type.toLowerCase()) { // когда найдется выбор пользователя в нашем массиве
           this.updateData(this._dataItem.type = item.type);
@@ -581,7 +585,6 @@ export default class TripEventEditFormView extends SmartView { // AbstractView
   }
 
   _handleOfferClick() {
-    // debugger
     this._changeData( // и после замены сообщаем в changeData
         UserAction.UPDATE_POINT, // 22 это говорит, что мы  только обновляем, а не удаляем или что-то добавляем.
         UpdateType.MINOR, // 23 точка никуда не девается, а только помечается меняется или нет, так что это минор.

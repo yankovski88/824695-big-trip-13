@@ -74,7 +74,7 @@ const BLANK_POINT = {
 
 
 // функция по установке времени в форме
-const createFieldTime = (dateStart, dateFinish) => {
+const createFieldTime = (dateStart, dateFinish, isDisabled) => {
   // if(dateStart === `` && dateFinish === ``){
   //   const dateStart = new Date();
   //   const dateFinish = new Date();
@@ -85,16 +85,16 @@ const createFieldTime = (dateStart, dateFinish) => {
 
   return `<div class="event__field-group  event__field-group--time">
     <label class="visually-hidden" for="event-start-time-1">From</label>
-    <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${startTime}">
+    <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${startTime}" ${isDisabled ? `disabled`:``}>
     &mdash;
 <label class="visually-hidden" for="event-end-time-1">To</label>
-    <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${finishTime}">
+    <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${finishTime}" ${isDisabled ? `disabled`:``}>
     </div>`;
 };
 
 // функция по отрисовке всей формы
 const createTripEventEditForm = (dataItem, routePointTypes, pointDestinations) => { // сюда попадают данные и запоняется шаблон dataItem
-  const {dateFrom, dateTo, destination, basePrice, type, offers, editFormOffers} = dataItem; // additionalOffers, photos,
+  const {dateFrom, dateTo, destination, basePrice, type, offers, isDisabled, isSaving} = dataItem; // editFormOffers additionalOffers, photos,
   const emptyFormOffers = routePointTypes;
   const allPointDestinations = pointDestinations;
 
@@ -125,12 +125,11 @@ const createTripEventEditForm = (dataItem, routePointTypes, pointDestinations) =
 
 
   // функция по отрисовке фрагмента всех преимуществ
-  const getOffersTemplate = () => { // formOffers
+  const getOffersTemplate = (isDisabled) => { // formOffers
 
 
     // код на получение всех оферсов по типу
     const getOffersByType = (type, allOffers) => {
-
       let typeOffers;
       for (let item of allOffers) {
         if (type.toLowerCase() === item.type) {
@@ -139,8 +138,8 @@ const createTripEventEditForm = (dataItem, routePointTypes, pointDestinations) =
       }
       return typeOffers;
     };
+
     const formOffers = getOffersByType(type, emptyFormOffers); // editFormOffers
-    // debugger
     // const formOffers = pointOffers;
     return formOffers.reduce((total, element) => {
 
@@ -151,7 +150,7 @@ const createTripEventEditForm = (dataItem, routePointTypes, pointDestinations) =
       if (element !== ``) {
         return total + `<div class="event__offer-selector">
                         <input class="event__offer-checkbox  visually-hidden" id="event-offer-luggage-${element.title}" type="checkbox" name="event-offer-luggage"  
-${isActive ? `checked` : ``}>
+${isActive ? `checked` : ``} ${isDisabled ? `disabled`:``}>
                             <label class="event__offer-label" for="event-offer-luggage-${element.title}">
                           <span class="event__offer-title">${element.title}</span>
                           &plus;&euro;&nbsp;
@@ -164,42 +163,16 @@ ${isActive ? `checked` : ``}>
     }, ``);
   };
 
-  //   // функция по отрисовке фрагмента всех преимуществ
-  //   const getOffersTemplate = (formOffers) => {
-  //     // debugger // здесь был косяк и подвисал
-  //     return formOffers.reduce((total, element) => {
-  //       // // код который сравнивает два массива и если совподающие объекты, то возвращает true
-  //       const isActive = offers.some((el) => {
-  //         return el.title === element.title;
-  //       });
-  //
-  //       if (element.title !== ``) {
-  //         return total + `<div class="event__offer-selector">
-  //                         <input class="event__offer-checkbox  visually-hidden" id="event-offer-luggage-${element.title}" type="checkbox" name="event-offer-luggage"
-  // ${isActive ? `checked` : ``}>
-  //                             <label class="event__offer-label" for="event-offer-luggage-${element.title}">
-  //                           <span class="event__offer-title">${element.title}</span>
-  //                           &plus;&euro;&nbsp;
-  //                           <span class="event__offer-price">${element.price}</span>
-  //                         </label>
-  //                       </div>`;
-  //       } else {
-  //         return total + ``;
-  //       }
-  //     }, ``);
-  //   };
-
-  const createTime = createFieldTime(dateFrom, dateTo);
-
+  const createTime = createFieldTime(dateFrom, dateTo, isDisabled);
 
   // код рисут список type
-  const getEditType = (types) => {
+  const getEditType = (types, isDisabled) => {
     return types.reduce((total, element) => {
       const isActiveType = [type].some((el) => {
         return el === element;
       });
       return total + `<div class="event__type-item">
-                          <input ${isActiveType ? `checked` : ``}  id="event-type-${element.toLowerCase()}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${element.toLowerCase()}" >
+                          <input ${isActiveType ? `checked` : ``} ${isDisabled ? `disabled`:``}  id="event-type-${element.toLowerCase()}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${element.toLowerCase()}" >
                           <label class="event__type-label  event__type-label--${element.toLowerCase()}" for="event-type-${element.toLowerCase()}-1">${element}</label>
                         </div>`;
     }, ``);
@@ -214,20 +187,20 @@ ${isActive ? `checked` : ``}>
                       <span class="visually-hidden">Choose event type</span>
                       <img class="event__type-icon" width="17" height="17" src="img/icons/${type.toLowerCase()}.png" alt="Event type icon">
                     </label>
-                    <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox">
+                    <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox" ${isDisabled ? `disabled`:``}>
 
                     <div class="event__type-list">
                                 <fieldset class="event__type-group">
                         <legend class="visually-hidden">Event type</legend>
 
-       ${getEditType(TYPES)}
+       ${getEditType(TYPES, isDisabled)}
                       </fieldset>
                     </div>
                   </div>
 
                   <div class="event__field-group  event__field-group--destination">
                     <label class="event__label  event__type-output" for="event-destination-1">${type}</label>
-                    <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${he.encode(destination.name)}" list="destination-list-1">
+                    <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${he.encode(destination.name)}" list="destination-list-1" ${isDisabled ? `disabled`:``}>
                     <datalist id="destination-list-1">
                       <option value="Amsterdam"></option>
                       <option value="Geneva"></option>
@@ -242,11 +215,11 @@ ${isActive ? `checked` : ``}>
                       <span class="visually-hidden">Price</span>
                       &euro; 
                     </label>
-                    <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${he.encode(basePrice.toString())}" onkeypress="return (event.charCode >= 48 && event.charCode <= 57)"   onkeyup="this.value = this.value.replace(/^0+(?=\\d)/,'');">
+                    <input ${isDisabled ? `disabled`:``} class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${he.encode(basePrice.toString())}" onkeypress="return (event.charCode >= 48 && event.charCode <= 57)"   onkeyup="this.value = this.value.replace(/^0+(?=\\d)/,'');">
                   </div>
 <!--{isDateValid() ?  : disabled}-->
-                  <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-<button class="event__reset-btn" type="reset">Cansel</button>
+                  <button class="event__save-btn  btn  btn--blue" type="submit" ${isDisabled ? `disabled`:``}>${isSaving ? `Saving...` : `Save`}</button>
+<button class="event__reset-btn" type="reset" ${isDisabled ? `disabled`:``}>Cansel</button>
   
                   <!--<button class="event__reset-btn" type="reset"> Cancel</button>-->
     <!--{createEventRollupBtn()}-->
@@ -257,7 +230,7 @@ ${isActive ? `checked` : ``}>
 
                     <div class="event__available-offers">
                     <!--editFormOffers-->
-     ${getOffersTemplate()}
+     ${getOffersTemplate(isDisabled)}
                     </div>
                   </section>
 
@@ -281,9 +254,7 @@ ${isActive ? `checked` : ``}>
 
 export default class AddNewPointView extends SmartView { // AbstractView
   constructor(offers, pointDestinations) {
-    // console.log(dataItem);
     super();
-    // this._destinations = destinations;
     this._dataItem = AddNewPointView.parseDataItemToData(BLANK_POINT); // dataItem 0 превращаем объект dataItem в объект data т.к. он более полный, было this._dataItem = dataItem;
     this._offers = offers;
     this._pointDestinations = pointDestinations;
@@ -316,7 +287,10 @@ export default class AddNewPointView extends SmartView { // AbstractView
   static parseDataItemToData(dataItem) {
     return Object.assign(
         {},
-        dataItem
+        dataItem,
+      {  isDisabled: false,
+        isSaving: false,
+        isDeleting: false}
         // {isDueDate: task.dueDate !== null,}
     );
   }
@@ -327,6 +301,10 @@ export default class AddNewPointView extends SmartView { // AbstractView
     // if (!data.isDueDate) {
     //   data.dueDate = null;
     // }
+    delete data.isDisabled;
+    delete data.isSaving;
+    delete data.isDeleting;
+
     return data;
   }
 
@@ -458,7 +436,6 @@ export default class AddNewPointView extends SmartView { // AbstractView
   _eventChangeTypeHandler(evt) {
     evt.preventDefault();
     const getChangeOffers = (target) => { // target цель выбора пользователя
-      // debugger
       for (let item of this._offers) { // прохождение по массиву всех объектов. offers массив всех доп предложений
         if (target === item.type.toLowerCase()) { // когда найдется выбор пользователя в нашем массиве
           this.updateData(this._dataItem.type = item.type);

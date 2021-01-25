@@ -2,12 +2,13 @@ import dayjs from "dayjs";
 import EventListEmptyMessageView from "../view/trip-event-msg.js";
 import TripEventsList from "../view/trip-events-list.js";
 import EventPresenter from "./event.js";
+
 import TripEventsSortView from "../view/trip-events-sort-view";
 import PointNewPresenter from "./point-new.js"; // 3add импортируем прзентер добавления точки
 
 import {filter} from "../util/filter.js"; // 62
 import {renderElement, RenderPosition, remove} from "../util/render"; // 41
-import {SortType, UpdateType, UserAction} from "../const.js"; // 31 FilterType
+import {SortType, UpdateType, UserAction, State} from "../const.js"; // 31 FilterType
 import LoadingView from "../view/loading.js";
 
 // класс который занимается отрисовкой всего того, что входит в борд
@@ -172,6 +173,9 @@ export default class TripBoard {
     // update - обновленные данные. Это уйдет в модель
     switch (actionType) { // 32
       case UserAction.UPDATE_POINT: // на действие пользователя по обновлению точки
+        console.log(State.SAVING)
+        this._eventPresenter[update.id].setViewState(State.SAVING); // 8mod event прзеентеру по определенному id добавили флаг SAVING
+
         // this._pointsModel.updatePoint(updateType, update); // бедет дергаться метод модели updatePoint
         // делаем связь с сервером
         this._api.updatePoint(update).then((response) => { // сперва обновляем точку на сервере и если там ок
@@ -180,12 +184,16 @@ export default class TripBoard {
         break;
 
       case UserAction.ADD_POINT:
+        this._pointNewPresenter.setSaving(); // 8mod
+
         this._api.addPoint(update).then((response) => {
           this._pointsModel.addPoint(updateType, response);
         });
         break;
 
       case UserAction.DELETE_POINT:
+        this._eventPresenter[update.id].setViewState(State.DELETING); // 8mod
+
         this._api.deletePoint(update).then(() => {
           // Обратите внимание, метод удаления задачи на сервере
           // ничего не возвращает. Это и верно,

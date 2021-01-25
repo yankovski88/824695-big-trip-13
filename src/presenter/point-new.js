@@ -56,11 +56,17 @@ export default class PointNewPresenter {
     document.removeEventListener(`keydown`, this._onEscKeyPress);
   }
 
-
+  // 8mod засетить компоненту добавления задачи дизейблы
+  setSaving() {
+    this._addNewPointComponent.updateData({
+      isDisabled: true,
+      isSaving: true
+    });
+  }
 
   // обраотчик сохранения формы
   _handleFormSubmit(point) {
-    debugger
+
     this._changeData(
         UserAction.ADD_POINT,
         UpdateType.MINOR,

@@ -2,7 +2,7 @@
 import {remove, renderElement, RenderPosition} from "../util/render";
 import TripEventEditFormView from "../view/trip-event-edit-form";
 import TripEventItemView from "../view/trip-event-item";
-import {UserAction, UpdateType} from "../const.js"; // 24
+import {UserAction, UpdateType, State} from "../const.js"; // 24
 
 
 // 4 наблюдатель
@@ -10,6 +10,8 @@ const Mode = {
   DEFAULT: `DEFAULT`,
   EDITING: `EDITING`
 };
+
+
 
 export default class EventPresenter {
   // changeData поддерживаем получение колбека _handleViewAction который приходит с наружи
@@ -82,7 +84,10 @@ export default class EventPresenter {
     }
 
     if (this._mode === Mode.EDITING) { // 9 наблюдатель
-      prevTripEventEditComponent.getElement().replaceWith(this._tripEventEditComponent.getElement());
+      // prevTripEventEditComponent.getElement().replaceWith(this._tripEventEditComponent.getElement());
+      prevTripEventEditComponent.getElement().replaceWith(this._tripEventItemComponent.getElement());
+
+      this._mode = Mode.DEFAULT; // 8mod в местах где используем мод не завбываем его сбрасывать
     }
 
     // нужно удалить ссылку на предыдущий item
@@ -102,6 +107,25 @@ export default class EventPresenter {
       this._replaceFormToItem();
     }
   }
+
+  // 8mod задача этого компонента взять и засетить компоненту все эти флаги
+  setViewState(state) {
+    switch (state) {
+      case State.SAVING:
+        this._tripEventEditComponent.updateData({
+          isDisabled: true,
+          isSaving: true
+        });
+        break;
+      case State.DELETING:
+        this._tripEventEditComponent.updateData({
+          isDisabled: true,
+          isDeleting: true
+        });
+        break;
+    }
+  }
+
 
   // функция которая заменяет item маршрута на форму редоктирования
   _replaceItemToForm() {
@@ -130,7 +154,7 @@ export default class EventPresenter {
         UpdateType.MINOR, // 26 идет обновление точки так что минор
         update); // update это данные которые будут добавлены во вьюхе this._dataItem
 
-    this._replaceFormToItem(); // замена формы на точку маршрута
+    // this._replaceFormToItem(); // замена формы на точку маршрута
   }
 
   // обраотчик который закрывается без сохранения формы
@@ -151,7 +175,6 @@ export default class EventPresenter {
   // этот метод вызывает _changeData который пришел из tripBoard _handleEventChange который является тоже методом
   // для изменения данных. Этому методу нужно сообщить измененные данные. И здесь эти данные будем менять!!!
   _handleFavoriteClick() {
-    // debugger
     this._changeData( // и после замены сообщаем в changeData
         UserAction.UPDATE_POINT, // 22 это говорит, что мы  только обновляем, а не удаляем или что-то добавляем.
         UpdateType.MINOR, // 23 точка никуда не девается, а только помечается меняется или нет, так что это минор.
