@@ -113,7 +113,7 @@ export default class EventPresenter {
       case State.SAVING:
         this._tripEventEditComponent.updateData({
           isDisabled: true,
-          isSaving: true
+          isSaving: true,
         });
         break;
       case State.DELETING:
@@ -173,6 +173,7 @@ export default class EventPresenter {
   // этот метод вызывает _changeData который пришел из tripBoard _handleEventChange который является тоже методом
   // для изменения данных. Этому методу нужно сообщить измененные данные. И здесь эти данные будем менять!!!
   _handleFavoriteClick() {
+    // debugger
     this._changeData( // и после замены сообщаем в changeData
         UserAction.UPDATE_POINT, // 22 это говорит, что мы  только обновляем, а не удаляем или что-то добавляем.
         UpdateType.MINOR, // 23 точка никуда не девается, а только помечается меняется или нет, так что это минор.

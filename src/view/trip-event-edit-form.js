@@ -31,12 +31,12 @@ const createTripEventEditForm = (dataItem, routePointTypes, pointDestinations) =
   const getDestinations = (destinations) => {
     const nameDestinations = [];
     for (let item of destinations) {
-      nameDestinations.push(item.name)
+      nameDestinations.push(item.name);
     }
     return nameDestinations;
   };
 
-// код рисут список type
+  // код рисут список type
   const createDestinationsTemplate = (destinations) => {
     return destinations.reduce((total, element) => {
       const isActiveDestinations = [destination].some((el) => {
@@ -50,9 +50,9 @@ const createTripEventEditForm = (dataItem, routePointTypes, pointDestinations) =
   const getTypes = (pointTypes) => {
     const types = [];
     for (let item of pointTypes) {
-      types.push(item.type)
+      types.push(item.type);
     }
-    return types
+    return types;
   };
 
 
@@ -65,21 +65,21 @@ const createTripEventEditForm = (dataItem, routePointTypes, pointDestinations) =
   };
 
   // добавление кнопки вверх
-  const createEventRollupBtn = (isDisabled) => {
-    return `<button class="event__rollup-btn" type="button" ${isDisabled ? `disabled` : ``}>
+  const createEventRollupBtn = (isDisabledElement) => {
+    return `<button class="event__rollup-btn" type="button" ${isDisabledElement ? `disabled` : ``}>
          <span class="visually-hidden">Open event</span>
       </button>`;
   };
 
 
   // функция по отрисовке фрагмента всех преимуществ
-  const getOffersTemplate = (isDisabled) => { // formOffers
+  const getOffersTemplate = (isDisabledElement) => { // formOffers
 
     // код на получение всех оферсов по типу
-    const getOffersByType = (typePoint, editFormOffers) => {
+    const getOffersByType = (typePoint, formOffers) => {
 
       let typeOffers;
-      for (let item of editFormOffers) {
+      for (let item of formOffers) {
         if (typePoint.toLowerCase() === item.type) {
           typeOffers = item.offers;
         }
@@ -95,7 +95,7 @@ const createTripEventEditForm = (dataItem, routePointTypes, pointDestinations) =
       });
       if (element !== ``) {
         return total + `<div class="event__offer-selector">
-                        <input ${isDisabled ? `disabled` : ``} class="event__offer-checkbox  visually-hidden" id="event-offer-luggage-${element.title}" type="checkbox" name="event-offer-luggage"  
+                        <input ${isDisabledElement ? `disabled` : ``} class="event__offer-checkbox  visually-hidden" id="event-offer-luggage-${element.title}" type="checkbox" name="event-offer-luggage"  
 ${isActive ? `checked` : ``}>
                             <label class="event__offer-label" for="event-offer-luggage-${element.title}">
                           <span class="event__offer-title">${element.title}</span>
@@ -113,13 +113,13 @@ ${isActive ? `checked` : ``}>
 
 
   // код рисут список type
-  const getEditType = (types, isDisabled) => {
+  const getEditType = (types, isDisabledElement) => {
     return types.reduce((total, element) => {
       const isActiveType = [type].some((el) => {
         return el === element;
       });
       return total + `<div class="event__type-item">
-                          <input ${isDisabled ? `disabled` : ``} ${isActiveType ? `checked` : ``}  id="event-type-${element.toLowerCase()}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${element.toLowerCase()}" >
+                          <input ${isDisabledElement ? `disabled` : ``} ${isActiveType ? `checked` : ``}  id="event-type-${element.toLowerCase()}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${element.toLowerCase()}" >
                           <label class="event__type-label  event__type-label--${element.toLowerCase()}" for="event-type-${element.toLowerCase()}-1">${element}</label>
                         </div>`;
     }, ``);
@@ -231,13 +231,13 @@ export default class TripEventEditFormView extends SmartView { // AbstractView
   // парсим типа, создаем копию данных с дополниетельным данными
   static parseDataItemToData(dataItem) { // offers
     return Object.assign(
-      {},
-      dataItem,
-      {
-        isDisabled: false,
-        isSaving: false,
-        isDeleting: false,
-      }
+        {},
+        dataItem,
+        {
+          isDisabled: false,
+          isSaving: false,
+          isDeleting: false,
+        }
     );
   }
 
@@ -305,7 +305,7 @@ export default class TripEventEditFormView extends SmartView { // AbstractView
         if (target === item.name) { // когда найдется выбор пользователя в нашем массиве
           this.updateData(this._dataItem.destination = item); // то заменить прошлые данные на новый объект
           evt.target.setCustomValidity(``);
-        } else if(target !== item.name){
+        } else if (target !== item.name) {
           evt.target.setCustomValidity(`Данной точки маршрута не существует. Выберите из спииска.`);
         }
       }
@@ -345,7 +345,7 @@ export default class TripEventEditFormView extends SmartView { // AbstractView
       for (let itemEmpty of allEmptyOffers) { // проходим по пустому массиву
 
         if (eventType === itemEmpty.type) {
-          typeEmptyOffers.push(itemEmpty)
+          typeEmptyOffers.push(itemEmpty);
         }
       }
 
@@ -363,7 +363,7 @@ export default class TripEventEditFormView extends SmartView { // AbstractView
       this.updateData(this._dataItem.offers = newOffers); // + заменяем старые чекнутые оферы на новые
     };
     getActiveOffers(this._offers); //  вызов функции по замене старых чекнутых оферов на новые
-    this._checkDate()
+    this._checkDate();
 
   }
 
@@ -379,15 +379,15 @@ export default class TripEventEditFormView extends SmartView { // AbstractView
       }
     };
     getChangeOffers(evt.target.value);
-    this._checkDate()
+    this._checkDate();
   }
 
   // 8
   // код обнуляет данные до стартовых которые пришли в tripBoard
   reset(tripItem) {
     this.updateData(
-      tripItem
-    )
+        tripItem
+    );
   }
 
   // обработчик который вызывает сохраннеый колбек на отправку формы
@@ -404,12 +404,12 @@ export default class TripEventEditFormView extends SmartView { // AbstractView
     formEditEvent.addEventListener(`submit`, this._submitHandler);
   }
 
-//   // обработчик который вызывает сохранненый колбек при клике на cencel
-//   _cancelClickHandler(evt) {
-//     evt.preventDefault();
-// // debugger
-//     this._callback.cancel();
-//   }
+  //   // обработчик который вызывает сохранненый колбек при клике на cencel
+  //   _cancelClickHandler(evt) {
+  //     evt.preventDefault();
+  // // debugger
+  //     this._callback.cancel();
+  //   }
 
   // // установим публичный обработчик на cansel и стрелку вниз
   // setCancelHandler(callback) {
@@ -439,8 +439,7 @@ export default class TripEventEditFormView extends SmartView { // AbstractView
     if (this._dataItem.dateTo < this._dataItem.dateFrom) {
       const saveBtnElement1 = this.getElement().querySelector(`.event__save-btn`);
       saveBtnElement1.setAttribute(`disabled`, true);
-    }
-    else if (this._dataItem.dateTo > this._dataItem.dateFrom) {
+    } else if (this._dataItem.dateTo > this._dataItem.dateFrom) {
       const saveBtnElement2 = this.getElement().querySelector(`.event__save-btn`);
       saveBtnElement2.removeAttribute(`disabled`);
     }
@@ -460,13 +459,13 @@ export default class TripEventEditFormView extends SmartView { // AbstractView
       // flatpickr есть смысл инициализировать только в случае,
       // если поле выбора даты доступно для заполнения
       this._datepickerStart = flatpickr( // инициализируем это просто передаем элемент где вызывать datepickr
-        this.getElement().querySelector(`#event-start-time-1`), // вставляем поле куда нужно вставить datepicker
-        {
-          enableTime: true, // добавлена настройка времени
-          dateFormat: `d/m/y H:i`, // формат даты и времени
-          defaultDate: this._dataItem.dateFrom, // конечная дата со временем
-          onChange: this._dueStartDateChangeHandler, // На событие flatpickr передаём наш колбэк. типа addEventListner на datePicker. Пользоваетель в календаре выберет дату и мы ее сюда запишем
-        }
+          this.getElement().querySelector(`#event-start-time-1`), // вставляем поле куда нужно вставить datepicker
+          {
+            enableTime: true, // добавлена настройка времени
+            dateFormat: `d/m/y H:i`, // формат даты и времени
+            defaultDate: this._dataItem.dateFrom, // конечная дата со временем
+            onChange: this._dueStartDateChangeHandler, // На событие flatpickr передаём наш колбэк. типа addEventListner на datePicker. Пользоваетель в календаре выберет дату и мы ее сюда запишем
+          }
       );
     }
   }
@@ -485,13 +484,13 @@ export default class TripEventEditFormView extends SmartView { // AbstractView
       // flatpickr есть смысл инициализировать только в случае,
       // если поле выбора даты доступно для заполнения
       this._datepickerFinish = flatpickr( // инициализируем это просто передаем элемент где вызывать datepickr
-        this.getElement().querySelector(`#event-end-time-1`), // вставляем поле куда нужно вставить datepicker
-        {
-          enableTime: true, // добавлена настройка времени
-          dateFormat: `d/m/y H:i`, // формат даты и времени
-          defaultDate: this._dataItem.dateTo, // startTime,
-          onChange: this._dueFinishDateChangeHandler, // На событие flatpickr передаём наш колбэк. типа addEventListner на datePicker. Пользоваетель в календаре выберет дату и мы ее сюда запишем
-        }
+          this.getElement().querySelector(`#event-end-time-1`), // вставляем поле куда нужно вставить datepicker
+          {
+            enableTime: true, // добавлена настройка времени
+            dateFormat: `d/m/y H:i`, // формат даты и времени
+            defaultDate: this._dataItem.dateTo, // startTime,
+            onChange: this._dueFinishDateChangeHandler, // На событие flatpickr передаём наш колбэк. типа addEventListner на datePicker. Пользоваетель в календаре выберет дату и мы ее сюда запишем
+          }
       );
     }
   }
@@ -501,7 +500,7 @@ export default class TripEventEditFormView extends SmartView { // AbstractView
     this.updateData({
       dateFrom: dayjs(userDate).toDate() // .hour(23).minute(59).second(59).toDate()
     }, true);
-    this._checkDate()
+    this._checkDate();
   }
 
   // 4
@@ -509,7 +508,7 @@ export default class TripEventEditFormView extends SmartView { // AbstractView
     this.updateData({
       dateTo: dayjs(userDate).toDate() // .hour(23).minute(59).second(59).toDate()
     }, true);
-    this._checkDate()
+    this._checkDate();
   }
 
   // Перегружаем метод родителя removeElement,
@@ -517,10 +516,21 @@ export default class TripEventEditFormView extends SmartView { // AbstractView
   removeElement() { // 4del назвали метод удаления также как и родителя
     super.removeElement(); // вызывали родительский метод удаления
 
-    if (this._datepicker) { // и если есть datepicker
-      this._datepicker.destroy(); // то удаляем его
-      this._datepicker = null;
+    // if (this._datepicker) { // и если есть datepicker
+    //   this._datepicker.destroy(); // то удаляем его
+    //   this._datepicker = null;
+    // }
+
+    if (this._datepickerStart) {
+      this._datepickerStart.destroy();
+      this._datepickerStart = null;
     }
+
+    if (this._datepickerFinish) {
+      this._datepickerFinish.destroy();
+      this._datepickerFinish = null;
+    }
+
   }
 
   _formDeleteClickHandler(evt) { // 3del вызывается колбек. ЭТО МЕТОД.
@@ -537,16 +547,16 @@ export default class TripEventEditFormView extends SmartView { // AbstractView
 
   _handleOfferClick() {
     this._changeData( // и после замены сообщаем в changeData
-      UserAction.UPDATE_POINT, // 22 это говорит, что мы  только обновляем, а не удаляем или что-то добавляем.
-      UpdateType.MINOR, // 23 точка никуда не девается, а только помечается меняется или нет, так что это минор.
-      Object.assign(
-        {},
-        this._tripItem, // берем текущий объект описывающий задачу
-        {
-          isFavorite: !this._tripItem.isFavorite // и меняем в нем признак избранности. isFavorite
-          // и сообщить этот новый объект в _changeData
-        }
-      )
+        UserAction.UPDATE_POINT, // 22 это говорит, что мы  только обновляем, а не удаляем или что-то добавляем.
+        UpdateType.MINOR, // 23 точка никуда не девается, а только помечается меняется или нет, так что это минор.
+        Object.assign(
+            {},
+            this._tripItem, // берем текущий объект описывающий задачу
+            {
+              isFavorite: !this._tripItem.isFavorite // и меняем в нем признак избранности. isFavorite
+              // и сообщить этот новый объект в _changeData
+            }
+        )
     );
   }
 

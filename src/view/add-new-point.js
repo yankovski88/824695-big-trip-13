@@ -1,10 +1,8 @@
 import dayjs from "dayjs";
 import he from "he"; // импортировал библиотеку по экранированию тегов от хакеров
 import SmartView from "./smart.js";
-
 import flatpickr from "flatpickr";
 import "../../node_modules/flatpickr/dist/flatpickr.min.css";
-import {UpdateType, UserAction} from "../const";
 
 const BLANK_POINT = {
   "type": `flight`,
@@ -12,7 +10,7 @@ const BLANK_POINT = {
   "dateTo": new Date(),
   "isFavorite": false,
   "destination": {
-    "name": ``, // Geneva
+    "name": ``,
     "description": `Geneva, in a middle of Europe, for those who value comfort and coziness, with an embankment of a mighty river as a centre of attraction, famous for its crowded street markets with the best street food in Asia.`,
     "pictures": [
       {
@@ -86,8 +84,6 @@ const createFieldTime = (dateStart, dateFinish, isDisabled) => {
 };
 
 
-
-
 // функция по отрисовке всей формы
 const createTripEventEditForm = (dataItem, routePointTypes, pointDestinations) => { // сюда попадают данные и запоняется шаблон dataItem
   const {dateFrom, dateTo, destination, basePrice, type, offers, isDisabled, isSaving} = dataItem;
@@ -124,20 +120,20 @@ const createTripEventEditForm = (dataItem, routePointTypes, pointDestinations) =
 
   // генерирует разметку фоток
   const createEventPhotoTemplate = () => {
-      return destination.pictures.reduce((total, element) => { // перебрал все элементы photos и присоединил их в total
-        return total + `<img class="event__photo" src="${element.src}" alt="${element.description}">`;
-      }, ``);
+    return destination.pictures.reduce((total, element) => { // перебрал все элементы photos и присоединил их в total
+      return total + `<img class="event__photo" src="${element.src}" alt="${element.description}">`;
+    }, ``);
   };
 
 
   // функция по отрисовке фрагмента всех преимуществ
-  const getOffersTemplate = (isDisabled) => { // formOffers
+  const getOffersTemplate = (isDisabledElement) => { // formOffers
 
     // код на получение всех оферсов по типу
-    const getOffersByType = (type, allOffers) => {
+    const getOffersByType = (itemType, allOffers) => {
       let typeOffers;
       for (let item of allOffers) {
-        if (type.toLowerCase() === item.type) {
+        if (itemType.toLowerCase() === item.type) {
           typeOffers = item.offers;
         }
       }
@@ -154,7 +150,7 @@ const createTripEventEditForm = (dataItem, routePointTypes, pointDestinations) =
       if (element !== ``) {
         return total + `<div class="event__offer-selector">
                         <input class="event__offer-checkbox  visually-hidden" id="event-offer-luggage-${element.title}" type="checkbox" name="event-offer-luggage"  
-${isActive ? `checked` : ``} ${isDisabled ? `disabled` : ``}>
+${isActive ? `checked` : ``} ${isDisabledElement ? `disabled` : ``}>
                             <label class="event__offer-label" for="event-offer-luggage-${element.title}">
                           <span class="event__offer-title">${element.title}</span>
                           &plus;&euro;&nbsp;
@@ -170,13 +166,13 @@ ${isActive ? `checked` : ``} ${isDisabled ? `disabled` : ``}>
   const createTime = createFieldTime(dateFrom, dateTo, isDisabled);
 
   // код рисут список type
-  const getEditType = (types, isDisabled) => {
+  const getEditType = (types, isDisabledElement) => {
     return types.reduce((total, element) => {
       const isActiveType = [type].some((el) => {
         return el === element;
       });
       return total + `<div class="event__type-item">
-                          <input ${isActiveType ? `checked` : ``} ${isDisabled ? `disabled` : ``}  id="event-type-${element.toLowerCase()}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${element.toLowerCase()}" >
+                          <input ${isActiveType ? `checked` : ``} ${isDisabledElement ? `disabled` : ``}  id="event-type-${element.toLowerCase()}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${element.toLowerCase()}" >
                           <label class="event__type-label  event__type-label--${element.toLowerCase()}" for="event-type-${element.toLowerCase()}-1">${element}</label>
                         </div>`;
     }, ``);
@@ -235,7 +231,7 @@ ${isActive ? `checked` : ``} ${isDisabled ? `disabled` : ``}>
                   </section>
 
                   <section  
-                  class="event__section  event__section--destination  ${destination.name ? `` :`visually-hidden`}">
+                  class="event__section  event__section--destination  ${destination.name ? `` : `visually-hidden`}">
                     <h3 class="event__section-title  event__section-title--destination">Destination</h3>
                     <p class="event__destination-description">${destination.description}</p>
 
@@ -340,10 +336,6 @@ export default class AddNewPointView extends SmartView { // AbstractView
 
   _changeDestinationHandler(evt) {
     evt.preventDefault();
-    // const nameDestinations = this._pointDestinations.reduce((acc, current) => {
-    //   return [...acc, current.name];
-    // }, []);
-    // console.log(nameDestinations)
 
     // код по замене всех данных объекта destination на тот который выбрал пользователь
     const getChangeDestination = (target) => { // target цель выбора пользователя
@@ -351,11 +343,7 @@ export default class AddNewPointView extends SmartView { // AbstractView
         if (target === item.name) { // когда найдется выбор пользователя в нашем массиве
           this.updateData(this._dataItem.destination = item); // то заменить прошлые данные на новый объект
           evt.target.setCustomValidity(``);
-        }
-        // else if (!nameDestinations.includes(evt.target.value)) {
-        //       evt.target.setCustomValidity(`Данной точки маршрута не существует. Попробуйте выбрать из предложенного списка`);
-        //     }
-        else if((target !== item.name) || target === ``){
+        } else if ((target !== item.name) || target === ``) {
           evt.target.setCustomValidity(`Данной точки маршрута не существует. Выберите из спииска.`);
         }
       }
@@ -364,7 +352,6 @@ export default class AddNewPointView extends SmartView { // AbstractView
     getChangeDestination(evt.target.value);
     this._checkDate();
   }
-
 
 
   // _pointDestinationHandle(evt) {
@@ -385,7 +372,6 @@ export default class AddNewPointView extends SmartView { // AbstractView
   //   }
   //   evt.target.reportValidity();
   // }
-
 
 
   // метод по замене активных оферов
@@ -590,7 +576,6 @@ export default class AddNewPointView extends SmartView { // AbstractView
       this._datepicker = null;
     }
   }
-
 
 
 }

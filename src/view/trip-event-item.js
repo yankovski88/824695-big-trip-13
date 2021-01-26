@@ -5,13 +5,13 @@ import AbstractView from "./abstract.js";
 
 const createTripEventItem = (dataItems) => {
   const {id, type, basePrice, dateFrom, dateTo, destination, isFavorite, offers} = dataItems;
-
   // код который определяет favorite или нет и если да то добовляет active
   const getFavorite = (favoriteItem) => {
-    if (favoriteItem) {
-      return `event__favorite-btn--active`;
-    }
-    return ``;
+    return favoriteItem ? `event__favorite-btn--active` : ``;
+    // if (favoriteItem) {
+    //   return `event__favorite-btn--active`;
+    // }
+    // return ``;
   };
 
   // код в котором получаем offers в точку event
