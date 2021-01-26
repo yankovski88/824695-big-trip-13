@@ -8,10 +8,6 @@ const createTripEventItem = (dataItems) => {
   // код который определяет favorite или нет и если да то добовляет active
   const getFavorite = (favoriteItem) => {
     return favoriteItem ? `event__favorite-btn--active` : ``;
-    // if (favoriteItem) {
-    //   return `event__favorite-btn--active`;
-    // }
-    // return ``;
   };
 
   // код в котором получаем offers в точку event

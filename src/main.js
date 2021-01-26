@@ -41,7 +41,6 @@ const tripBoardPresenter = new TripBoard(tripEventElement, pointsModel, filterMo
 tripBoardPresenter.init(); // элементы доски
 
 const filterPresenter = new FilterPresenter(tripControlsElement, filterModel); // 60 pointsModel
-filterPresenter.init();
 
 // 1add код который создаем новую точку маршрута
 const addBtn = document.querySelector(`.trip-main__event-add-btn`);
@@ -123,13 +122,13 @@ Promise.all([
     // пока задачи грузятся запрещаем смотреть статистику, это нужно чтобы не отправлялось много запросов при кликах
     renderMenu();
     tripMenuComponent.setMenuClickHandler(handleSiteMenuClick); // 1.1.stat
-    // filterPresenter.init();
+    filterPresenter.init();
   }).catch(() => { // если ошибка то
     pointsModel.setPoints(UpdateType.INIT, []); // передать пустой массив с типом INIT
     pointsModel.setOffers(UpdateType.INIT, []);
     pointsModel.setDestinations(UpdateType.INIT, []);
 
-    // renderMenu(); // не знаю или можно оставлять
+    renderMenu(); // не знаю или можно оставлять
     tripMenuComponent.setMenuClickHandler(handleSiteMenuClick); // 1.1.stat
   });
 

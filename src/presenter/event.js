@@ -20,9 +20,7 @@ export default class EventPresenter {
     this._tripEventEditComponent = null;
     this._mode = Mode.DEFAULT; // 7 наблюдатель. Изначально говорим режим дефолт
 
-    this._totalPriceItem = 0;
     this._destinations = [];
-    this._startDateInfo = [];
 
     this._handleFormSubmit = this._handleFormSubmit.bind(this);
     this._onEscKeyPress = this._onEscKeyPress.bind(this);
@@ -56,11 +54,7 @@ export default class EventPresenter {
       this._tripEventEditComponent.reset(this._tripItem); // код для удаления не сохраненных данных в форме
       this._replaceFormToItem();
     });
-    // // код который скрывает форму при клике на кенсел
-    // this._tripEventEditComponent.setCancelHandler(() => {
-    //   this._tripEventEditComponent.reset(this._tripItem); // код для удаления не сохраненных данных в форме
-    //   this._replaceFormToItem();
-    // });
+
     // передали эти обработчики в соответствующие вьюхи
     this._tripEventItemComponent.setFavoriteClickHandler(this._handleFavoriteClick); // нужно сделать клик по favorite
 
@@ -173,7 +167,6 @@ export default class EventPresenter {
   // этот метод вызывает _changeData который пришел из tripBoard _handleEventChange который является тоже методом
   // для изменения данных. Этому методу нужно сообщить измененные данные. И здесь эти данные будем менять!!!
   _handleFavoriteClick() {
-    // debugger
     this._changeData( // и после замены сообщаем в changeData
         UserAction.UPDATE_POINT, // 22 это говорит, что мы  только обновляем, а не удаляем или что-то добавляем.
         UpdateType.MINOR, // 23 точка никуда не девается, а только помечается меняется или нет, так что это минор.

@@ -14,6 +14,7 @@ import LoadingView from "../view/loading.js";
 // класс который занимается отрисовкой всего того, что входит в борд
 export default class TripBoard {
   constructor(tripBoardContainer, pointsModel, filterModel, api, offersModel, destinationsModel) {
+    this._amountOfPoints = 0;
     this._filterModel = filterModel;
     this._pointsModel = pointsModel; // 6 создали свойство класса, чтобы в дальнейшем переиспользовать
     this._destinationsModel = destinationsModel;
@@ -78,11 +79,10 @@ export default class TripBoard {
       this._renderLoading();
       return;
     }
-    // const offers = Object.assign({}, this._getOffers());
 
     const points = this._getPoints(); // берем все данные из модели по точкам маршрута уже отсортированные и отфильтрованные
     const pointCount = points.length; // считаем их колличество
-    if (pointCount === 0) { // если оно равно 0
+    if (pointCount === this._amountOfPoints) { // если оно равно 0
       this._renderEmptyMessage(); // то вывести этот метод, а он выводит пустое сообщение
       return;
     }

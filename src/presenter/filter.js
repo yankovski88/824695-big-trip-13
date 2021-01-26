@@ -31,8 +31,6 @@ export default class FilterPresenter { // 59
     }
 
     replace(this._filterComponent, prevFilterComponent); // сделать
-    // this._filterComponent.replaceWith(prevFilterComponent); // ЧТО ЕСТЬ ЧТО НЕТУ
-    // prevFilterComponent.replaceWith(this._filterComponent); // ЧТО ЕСТЬ ЧТО НЕТУ
 
     remove(prevFilterComponent);
   }
@@ -51,7 +49,6 @@ export default class FilterPresenter { // 59
   }
 
   _getFilters() {
-    // const tasks = this._tasksModel.getTasks();
     return [
       {
         type: FilterType.EVERYTHING,

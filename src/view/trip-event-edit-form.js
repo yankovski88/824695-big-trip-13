@@ -3,8 +3,6 @@ import he from "he"; // импортировал библиотеку по эк�
 import SmartView from "./smart.js";
 import flatpickr from "flatpickr";
 import "../../node_modules/flatpickr/dist/flatpickr.min.css";
-import {UpdateType, UserAction} from "../const";
-
 
 // функция по установке времени в форме
 const createFieldTime = (dateStart, dateFinish, isDisabled) => {
@@ -203,14 +201,12 @@ export default class TripEventEditFormView extends SmartView { // AbstractView
     this._dataItem = TripEventEditFormView.parseDataItemToData(dataItem); // 0 превращаем объект dataItem в объект data т.к. он более полный, было this._dataItem = dataItem;
     this._offers = offers;
     this._pointDestinations = pointDestinations;
-    this._datepickerFinish = null; // 1 здесь будем хранить экземпляр _datepicker т.е. открытый показанный _datepicker. Это нужно для того чтобы потом можно после закрытия формы удалить.
+    this._datepickerFinish = null;
     this._datepickerStart = null;
     this._TEXT_LIMIT = 20;
     this._addBtn = document.querySelector(`.trip-main__event-add-btn`);
 
     this._submitHandler = this._submitHandler.bind(this);
-    // this._cancelClickHandler = this._cancelClickHandler.bind(this);
-    // 4
     this._changePriceHandler = this._changePriceHandler.bind(this); // бинд по замене price
     this._changeDestinationHandler = this._changeDestinationHandler.bind(this);
     this._eventChangeOfferHandler = this._eventChangeOfferHandler.bind(this);
@@ -224,12 +220,11 @@ export default class TripEventEditFormView extends SmartView { // AbstractView
     this._setInnerHandlers(); // обновляем внутренние обработчики
     this._setDatepickerStart(); // 4 устанавливаем _setDatepicker с помощью пакета flatpickr
     this._setDatepickerFinish(); // 4 устанавливаем _setDatepicker с помощью пакета flatpickr
-
   }
 
   // 0.1
   // парсим типа, создаем копию данных с дополниетельным данными
-  static parseDataItemToData(dataItem) { // offers
+  static parseDataItemToData(dataItem) {
     return Object.assign(
         {},
         dataItem,
@@ -287,11 +282,10 @@ export default class TripEventEditFormView extends SmartView { // AbstractView
 
   }
 
-  // 3.1.
   _changePriceHandler(evt) { // оброботчик в котором будем менять данные по цене
     evt.preventDefault();
     this.updateData({ // передаем только одну строчку которую хотим обновить т.к. assign создано выше
-      basePrice: parseInt(evt.target.value, 10) // 12 // this._dataItem.price
+      basePrice: parseInt(evt.target.value, 10)
     }, true); // при нажатии enter закрывается форма
   }
 
@@ -382,7 +376,6 @@ export default class TripEventEditFormView extends SmartView { // AbstractView
     this._checkDate();
   }
 
-  // 8
   // код обнуляет данные до стартовых которые пришли в tripBoard
   reset(tripItem) {
     this.updateData(
@@ -393,7 +386,7 @@ export default class TripEventEditFormView extends SmartView { // AbstractView
   // обработчик который вызывает сохраннеый колбек на отправку формы
   _submitHandler(evt) {
     evt.preventDefault();
-    this._callback.submit(this._dataItem); // ?????????? _dataItem
+    this._callback.submit(this._dataItem);
   }
 
   // установим публичный обработчик на отправку формы
@@ -403,20 +396,6 @@ export default class TripEventEditFormView extends SmartView { // AbstractView
     const formEditEvent = this.getElement().querySelector(`form`);
     formEditEvent.addEventListener(`submit`, this._submitHandler);
   }
-
-  //   // обработчик который вызывает сохранненый колбек при клике на cencel
-  //   _cancelClickHandler(evt) {
-  //     evt.preventDefault();
-  // // debugger
-  //     this._callback.cancel();
-  //   }
-
-  // // установим публичный обработчик на cansel и стрелку вниз
-  // setCancelHandler(callback) {
-  //   this._callback.cancel = callback;
-  //   const eventResetBtn = this.getElement().querySelector(`.event__reset-btn`);
-  //   eventResetBtn.addEventListener(`click`, this._cancelClickHandler);
-  // }
 
   _rollupBtnClickHandler(evt) {
     evt.preventDefault();
@@ -429,13 +408,10 @@ export default class TripEventEditFormView extends SmartView { // AbstractView
 
     const eventRollupBtn = this.getElement().querySelector(`.event__rollup-btn`);
     eventRollupBtn.addEventListener(`click`, this._rollupBtnClickHandler);
-    // this._addBtn.removeAttribute(`disabled`);
-
   }
 
   // метод который после обновления проверяет дату и вводит disabled
   _checkDate() {
-
     if (this._dataItem.dateTo < this._dataItem.dateFrom) {
       const saveBtnElement1 = this.getElement().querySelector(`.event__save-btn`);
       saveBtnElement1.setAttribute(`disabled`, true);
@@ -516,11 +492,6 @@ export default class TripEventEditFormView extends SmartView { // AbstractView
   removeElement() { // 4del назвали метод удаления также как и родителя
     super.removeElement(); // вызывали родительский метод удаления
 
-    // if (this._datepicker) { // и если есть datepicker
-    //   this._datepicker.destroy(); // то удаляем его
-    //   this._datepicker = null;
-    // }
-
     if (this._datepickerStart) {
       this._datepickerStart.destroy();
       this._datepickerStart = null;
@@ -544,20 +515,4 @@ export default class TripEventEditFormView extends SmartView { // AbstractView
     const eventResetBtnDel = this.getElement().querySelector(`.event__reset-btn`);
     eventResetBtnDel.addEventListener(`click`, this._formDeleteClickHandler);
   }
-
-  _handleOfferClick() {
-    this._changeData( // и после замены сообщаем в changeData
-        UserAction.UPDATE_POINT, // 22 это говорит, что мы  только обновляем, а не удаляем или что-то добавляем.
-        UpdateType.MINOR, // 23 точка никуда не девается, а только помечается меняется или нет, так что это минор.
-        Object.assign(
-            {},
-            this._tripItem, // берем текущий объект описывающий задачу
-            {
-              isFavorite: !this._tripItem.isFavorite // и меняем в нем признак избранности. isFavorite
-              // и сообщить этот новый объект в _changeData
-            }
-        )
-    );
-  }
-
 }
