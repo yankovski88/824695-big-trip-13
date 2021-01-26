@@ -3,7 +3,7 @@ import he from "he"; // импортировал библиотеку по эк�
 import SmartView from "./smart.js";
 import flatpickr from "flatpickr";
 import "../../node_modules/flatpickr/dist/flatpickr.min.css";
-import {UpdateType, UserAction, TYPES} from "../const";
+import {UpdateType, UserAction} from "../const";
 
 
 // функция по установке времени в форме
@@ -23,9 +23,21 @@ const createFieldTime = (dateStart, dateFinish, isDisabled) => {
 
 
 // функция по отрисовке всей формы
-const createTripEventEditForm = (dataItem, routePointTypes) => { // destinations сюда попадают данные и запоняется шаблон
+const createTripEventEditForm = (dataItem, routePointTypes, pointDestinations) => { // destinations сюда попадают данные и запоняется шаблон
   const {dateFrom, dateTo, destination, basePrice, type, offers, isDisabled, isSaving, isDeleting} = dataItem;
-  const editFormOffers = routePointTypes;
+  const editFormOffers = routePointTypes.slice();
+  const allPointDestinations = pointDestinations.slice();
+
+  // функция по получению массива типов точки
+  const getTypes = (pointTypes)=>{
+    const types = [];
+    for(let item of pointTypes){
+      types.push(item.type)
+    }
+    return types
+  };
+
+
 
 
   // генерирует разметку фоток
@@ -112,7 +124,7 @@ ${isActive ? `checked` : ``}>
                                 <fieldset class="event__type-group">
                         <legend class="visually-hidden">Event type</legend>
 
-       ${getEditType(TYPES, isDisabled)}
+       ${getEditType(getTypes(editFormOffers), isDisabled)}
                       </fieldset>
                     </div>
                   </div>

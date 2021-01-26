@@ -33,9 +33,6 @@ export const MenuItem = {
   STATISTICS: `STATISTICS`
 };
 
-// массив из которого выберится случайный тип маршрута
-export const TYPES = [`Taxi`, `Bus`, `Train`, `Ship`, `Transport`, `Drive`, `Flight`, `Check-in`, `Sightseeing`, `Restaurant`];
-
 // состояние задачи могут быть сохранения или удаления
 export const State = {
   SAVING: `SAVING`,

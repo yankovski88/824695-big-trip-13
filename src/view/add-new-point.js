@@ -86,9 +86,21 @@ const createFieldTime = (dateStart, dateFinish, isDisabled) => {
 };
 
 // функция по отрисовке всей формы
-const createTripEventEditForm = (dataItem, routePointTypes) => { // сюда попадают данные и запоняется шаблон dataItem
+const createTripEventEditForm = (dataItem, routePointTypes, pointDestinations) => { // сюда попадают данные и запоняется шаблон dataItem
   const {dateFrom, dateTo, destination, basePrice, type, offers, isDisabled, isSaving} = dataItem;
   const emptyFormOffers = routePointTypes;
+  const allPointDestinations = pointDestinations.slice();
+
+
+  // функция по получению массива типов точки
+  const getTypes = (pointTypes)=>{
+    const types = [];
+    for(let item of pointTypes){
+      types.push(item.type)
+    }
+    return types
+  };
+
 
   // генерирует разметку фоток
   const createEventPhotoTemplate = () => {
@@ -165,7 +177,7 @@ ${isActive ? `checked` : ``} ${isDisabled ? `disabled`:``}>
                                 <fieldset class="event__type-group">
                         <legend class="visually-hidden">Event type</legend>
 
-       ${getEditType(TYPES, isDisabled)}
+       ${getEditType(getTypes(emptyFormOffers), isDisabled)}
                       </fieldset>
                     </div>
                   </div>

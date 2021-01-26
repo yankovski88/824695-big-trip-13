@@ -2,10 +2,9 @@ import {renderElement, RenderPosition, remove} from "./util/render";
 
 import TripBoard from "./presenter/tripBoard";
 import PointsModel from "./model/points.js"; // 3 импорт модель
-import FilterModel from "./model/filter.js"; // 48
-import OffersModel from "./model/offers.js"; // 48
-import DestinationsModel from "./model/destinations.js"; // 48
-
+import FilterModel from "./model/filter.js";
+import OffersModel from "./model/offers.js";
+import DestinationsModel from "./model/destinations.js";
 
 import FilterPresenter from "./presenter/filter.js";
 import StatisticsView from "./view/statistics.js";
@@ -116,10 +115,11 @@ Promise.all([
   api.getPoints(),
   api.getDestinations(),
 ])
-  .then(([formOffers, points, pointDestinations]) => { // destinations в случае успешного запроса
+  .then(([formOffers, points, pointDestinations, types]) => { // destinations в случае успешного запроса
     offersModel.setOffers(formOffers);
     pointsModel.setPoints(UpdateType.INIT, points); // передать точки с типом обновления INIT
     destinationsModel.setDestinations(pointDestinations);
+
     // пока задачи грузятся запрещаем смотреть статистику, это нужно чтобы не отправлялось много запросов при кликах
     renderMenu();
     tripMenuComponent.setMenuClickHandler(handleSiteMenuClick); // 1.1.stat
