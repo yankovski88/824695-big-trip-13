@@ -13,12 +13,12 @@ export default class EventPresenter {
   // changeData поддерживаем получение колбека _handleViewAction который приходит с наружи
   constructor(eventContainer, changeData, changeMode) { // поддерживаем колбек который приходит с наружи 5 наблюдатель
     this._eventContainer = eventContainer; // куда рендерить
-    this._changeData = changeData; // 3 нов. записываем в свойства класса
-    this._changeMode = changeMode; // 6 наблюдатель
+    this._changeData = changeData; // нов. записываем в свойства класса
+    this._changeMode = changeMode; // наблюдатель
 
     this._tripEventItemComponent = null;
     this._tripEventEditComponent = null;
-    this._mode = Mode.DEFAULT; // 7 наблюдатель. Изначально говорим режим дефолт
+    this._mode = Mode.DEFAULT; // наблюдатель. Изначально говорим режим дефолт
 
     this._destinations = [];
 
@@ -26,7 +26,7 @@ export default class EventPresenter {
     this._onEscKeyPress = this._onEscKeyPress.bind(this);
     this._onEventRollupBtnClick = this._onEventRollupBtnClick.bind(this);
     this._handleFavoriteClick = this._handleFavoriteClick.bind(this);
-    this._handleDeleteClick = this._handleDeleteClick.bind(this); // 7del
+    this._handleDeleteClick = this._handleDeleteClick.bind(this);
   }
   init(tripItem, offers, pointDestinations) {
     this._tripItem = tripItem;
@@ -68,8 +68,7 @@ export default class EventPresenter {
       prevTripEventItemComponent.getElement().replaceWith(this._tripEventItemComponent.getElement());
     }
 
-    if (this._mode === Mode.EDITING) { // 9 наблюдатель
-      // prevTripEventEditComponent.getElement().replaceWith(this._tripEventEditComponent.getElement());
+    if (this._mode === Mode.EDITING) { // наблюдатель
       prevTripEventEditComponent.getElement().replaceWith(this._tripEventItemComponent.getElement());
 
       this._mode = Mode.DEFAULT; // 8mod в местах где используем мод не завбываем его сбрасывать
@@ -129,8 +128,8 @@ export default class EventPresenter {
     this._tripEventItemComponent.getElement().replaceWith(this._tripEventEditComponent.getElement());
     document.addEventListener(`keydown`, this._onEscKeyPress);
 
-    this._changeMode(); // 11 наблюдатель. Сначала закрой везде Edit
-    this._mode = Mode.EDITING; // 12 наблюдатель. Потом добавь режим EDITING. Этот режим в init откроет редактирование
+    this._changeMode(); // наблюдатель. Сначала закрой везде Edit
+    this._mode = Mode.EDITING; // наблюдатель. Потом добавь режим EDITING. Этот режим в init откроет редактирование
   }
 
   // функция которая из формы редоктирования делает предложение Item
@@ -143,9 +142,9 @@ export default class EventPresenter {
 
   // обраотчик сохранения формы
   _handleFormSubmit(update) {
-    this._changeData( // 10 Это обработчик с tripBoard this._handleEventChange в котором находится
-        UserAction.UPDATE_POINT, // 25
-        UpdateType.MINOR, // 26 идет обновление точки так что минор
+    this._changeData( // Это обработчик с tripBoard this._handleEventChange в котором находится
+        UserAction.UPDATE_POINT,
+        UpdateType.MINOR, // идет обновление точки так что минор
         update); // update это данные которые будут добавлены во вьюхе this._dataItem
   }
 
@@ -168,8 +167,8 @@ export default class EventPresenter {
   // для изменения данных. Этому методу нужно сообщить измененные данные. И здесь эти данные будем менять!!!
   _handleFavoriteClick() {
     this._changeData( // и после замены сообщаем в changeData
-        UserAction.UPDATE_POINT, // 22 это говорит, что мы  только обновляем, а не удаляем или что-то добавляем.
-        UpdateType.MINOR, // 23 точка никуда не девается, а только помечается меняется или нет, так что это минор.
+        UserAction.UPDATE_POINT, // это говорит, что мы  только обновляем, а не удаляем или что-то добавляем.
+        UpdateType.MINOR, // точка никуда не девается, а только помечается меняется или нет, так что это минор.
         Object.assign(
             {},
             this._tripItem, // берем текущий объект описывающий задачу
@@ -181,7 +180,7 @@ export default class EventPresenter {
     );
   }
 
-  _handleDeleteClick(point) { // 8del
+  _handleDeleteClick(point) {
     this._changeData( // этот тот метод который вызовет изменения в модели
         UserAction.DELETE_POINT, // передаем что хотим удалить
         UpdateType.MINOR, // что изменения минор

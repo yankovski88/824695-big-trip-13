@@ -1,7 +1,7 @@
 import {renderElement, RenderPosition, remove} from "./util/render";
 
 import TripBoard from "./presenter/tripBoard";
-import PointsModel from "./model/points.js"; // 3 импорт модель
+import PointsModel from "./model/points.js";
 import FilterModel from "./model/filter.js";
 import OffersModel from "./model/offers.js";
 import DestinationsModel from "./model/destinations.js";
@@ -11,38 +11,38 @@ import StatisticsView from "./view/statistics.js";
 import TripMenuView from "./view/trip-menu.js";
 
 import Api from "./api.js";
-import {MenuItem, UpdateType, FilterType} from "./const.js"; // 2stat
+import {MenuItem, UpdateType, FilterType} from "./const.js";
 
-const AUTHORIZATION = `Basic skuile`; // jbspifSwcl1sa2 строка авторизации
+const AUTHORIZATION = `Basic skuile`; // строка авторизации
 const END_POINT = `https://13.ecmascript.pages.academy/big-trip`; // зафиксированный адрес сервера
 const api = new Api(END_POINT, AUTHORIZATION); // создаем экземпляр нашего Api
 
 let currentMenuActive = MenuItem.POINTS; // меню по умолчанию
 
-const pointsModel = new PointsModel(); // 4 создали экземпляр модели
+const pointsModel = new PointsModel(); // создали экземпляр модели
 const offersModel = new OffersModel();
 const destinationsModel = new DestinationsModel();
 
-const filterModel = new FilterModel(); // 49
+const filterModel = new FilterModel();
 
 const tripEventElement = document.querySelector(`.trip-events`);
 
 const tripMainElement = document.querySelector(`.trip-main`);
 const tripControlsElement = tripMainElement.querySelector(`.trip-main__trip-controls`);
 
-const tripMenuComponent = new TripMenuView(); // 3stat
+const tripMenuComponent = new TripMenuView();
 const renderMenu = () => {
   const visuallyHiddenFirstH2Element = tripControlsElement.querySelector(`h2.visually-hidden`);
-  renderElement(visuallyHiddenFirstH2Element, tripMenuComponent, RenderPosition.AFTEREND); // 4stat рендер меню
+  renderElement(visuallyHiddenFirstH2Element, tripMenuComponent, RenderPosition.AFTEREND);
 };
 
-// 5 передаем экземпляр модели в конструктор
+// передаем экземпляр модели в конструктор
 const tripBoardPresenter = new TripBoard(tripEventElement, pointsModel, filterModel, api, offersModel, destinationsModel); //  61 создал призентер с контейнером в который вставим все
 tripBoardPresenter.init(); // элементы доски
 
-const filterPresenter = new FilterPresenter(tripControlsElement, filterModel); // 60 pointsModel
+const filterPresenter = new FilterPresenter(tripControlsElement, filterModel);
 
-// 1add код который создаем новую точку маршрута
+//  код который создаем новую точку маршрута
 const addBtn = document.querySelector(`.trip-main__event-add-btn`);
 
 addBtn.addEventListener(`click`, (evt) => { // нашли кноку создания новой точки маршрута
@@ -121,7 +121,7 @@ Promise.all([
 
     // пока задачи грузятся запрещаем смотреть статистику, это нужно чтобы не отправлялось много запросов при кликах
     renderMenu();
-    tripMenuComponent.setMenuClickHandler(handleSiteMenuClick); // 1.1.stat
+    tripMenuComponent.setMenuClickHandler(handleSiteMenuClick);
     filterPresenter.init();
   }).catch(() => { // если ошибка то
     pointsModel.setPoints(UpdateType.INIT, []); // передать пустой массив с типом INIT
@@ -129,7 +129,7 @@ Promise.all([
     pointsModel.setDestinations(UpdateType.INIT, []);
 
     renderMenu(); // не знаю или можно оставлять
-    tripMenuComponent.setMenuClickHandler(handleSiteMenuClick); // 1.1.stat
+    tripMenuComponent.setMenuClickHandler(handleSiteMenuClick);
   });
 
 

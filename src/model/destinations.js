@@ -1,6 +1,6 @@
 import Observer from "../util/observer.js";
 
-// 1 создал модель
+// создал модель
 export default class DestinationsModel extends Observer {
   constructor() {
     super();

@@ -58,7 +58,6 @@ const renderMoneyChart = (moneyCtx, labels, points) => {
             display: false,
             drawBorder: false
           },
-          // barThickness: 44,
         }],
         xAxes: [{
           ticks: {
@@ -215,7 +214,6 @@ const renderTimeChart = (timeCtx, labels, points) => {
             display: false,
             drawBorder: false
           },
-          // barThickness: 44,
         }],
         xAxes: [{
           ticks: {

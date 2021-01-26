@@ -71,7 +71,7 @@ const createTripEventEditForm = (dataItem, routePointTypes, pointDestinations) =
 
 
   // функция по отрисовке фрагмента всех преимуществ
-  const getOffersTemplate = (isDisabledElement) => { // formOffers
+  const getOffersTemplate = (isDisabledElement) => {
 
     // код на получение всех оферсов по типу
     const getOffersByType = (typePoint, formOffers) => {
@@ -87,7 +87,7 @@ const createTripEventEditForm = (dataItem, routePointTypes, pointDestinations) =
     const formOffers = getOffersByType(type, editFormOffers);
     return formOffers.reduce((total, element) => {
 
-      // // код который сравнивает два массива и если совподающие объекты, то возвращает true
+      // код который сравнивает два массива и если совподающие объекты, то возвращает true
       const isActive = offers.some((el) => {
         return el.title === element.title;
       });
@@ -193,12 +193,12 @@ ${isActive ? `checked` : ``}>
 };
 
 
-export default class TripEventEditFormView extends SmartView { // AbstractView
+export default class TripEventEditFormView extends SmartView {
 
   constructor(dataItem, offers, pointDestinations) {
 
     super();
-    this._dataItem = TripEventEditFormView.parseDataItemToData(dataItem); // 0 превращаем объект dataItem в объект data т.к. он более полный, было this._dataItem = dataItem;
+    this._dataItem = TripEventEditFormView.parseDataItemToData(dataItem); // превращаем объект dataItem в объект data т.к. он более полный, было this._dataItem = dataItem;
     this._offers = offers;
     this._pointDestinations = pointDestinations;
     this._datepickerFinish = null;
@@ -212,9 +212,9 @@ export default class TripEventEditFormView extends SmartView { // AbstractView
     this._eventChangeOfferHandler = this._eventChangeOfferHandler.bind(this);
     this._eventChangeTypeHandler = this._eventChangeTypeHandler.bind(this);
     this._rollupBtnClickHandler = this._rollupBtnClickHandler.bind(this);
-    this._dueFinishDateChangeHandler = this._dueFinishDateChangeHandler.bind(this); // 2 заведем обработчик на _datepicker
-    this._dueStartDateChangeHandler = this._dueStartDateChangeHandler.bind(this); // 2 заведем обработчик на _datepicker
-    this._formDeleteClickHandler = this._formDeleteClickHandler.bind(this); // 1del
+    this._dueFinishDateChangeHandler = this._dueFinishDateChangeHandler.bind(this); // заведем обработчик на _datepicker
+    this._dueStartDateChangeHandler = this._dueStartDateChangeHandler.bind(this); // заведем обработчик на _datepicker
+    this._formDeleteClickHandler = this._formDeleteClickHandler.bind(this);
 
 
     this._setInnerHandlers(); // обновляем внутренние обработчики
@@ -222,7 +222,6 @@ export default class TripEventEditFormView extends SmartView { // AbstractView
     this._setDatepickerFinish(); // 4 устанавливаем _setDatepicker с помощью пакета flatpickr
   }
 
-  // 0.1
   // парсим типа, создаем копию данных с дополниетельным данными
   static parseDataItemToData(dataItem) {
     return Object.assign(
@@ -236,7 +235,7 @@ export default class TripEventEditFormView extends SmartView { // AbstractView
     );
   }
 
-  // 0.2 берем все данные которые накликал пользователь в форме редоктирвоания event. Далее эти данные отправим на перерисовку event.
+  // берем все данные которые накликал пользователь в форме редоктирвоания event. Далее эти данные отправим на перерисовку event.
   static parseDataToDataItem(data) {
     data = Object.assign({}, data);
     delete data.isDisabled;
@@ -251,7 +250,6 @@ export default class TripEventEditFormView extends SmartView { // AbstractView
     return createTripEventEditForm(this._dataItem, this._offers, this._pointDestinations);
   }
 
-  // 5
   // публичный метод который заново навешивает обработчики
   restoreHandlers() {
     this._setInnerHandlers(); // востанавливаем приватные обработчики
@@ -263,7 +261,6 @@ export default class TripEventEditFormView extends SmartView { // AbstractView
     this.setDeleteClickHandler(this._callback.deleteClick); // 5del
   }
 
-  // 3
   // обработчик который заново навешивает внутрение обработчики
   _setInnerHandlers() {
 
@@ -474,7 +471,7 @@ export default class TripEventEditFormView extends SmartView { // AbstractView
 
   _dueStartDateChangeHandler(userDate) {
     this.updateData({
-      dateFrom: dayjs(userDate).toDate() // .hour(23).minute(59).second(59).toDate()
+      dateFrom: dayjs(userDate).toDate()
     }, true);
     this._checkDate();
   }
@@ -482,7 +479,7 @@ export default class TripEventEditFormView extends SmartView { // AbstractView
   // 4
   _dueFinishDateChangeHandler([userDate]) {
     this.updateData({
-      dateTo: dayjs(userDate).toDate() // .hour(23).minute(59).second(59).toDate()
+      dateTo: dayjs(userDate).toDate()
     }, true);
     this._checkDate();
   }
@@ -504,12 +501,12 @@ export default class TripEventEditFormView extends SmartView { // AbstractView
 
   }
 
-  _formDeleteClickHandler(evt) { // 3del вызывается колбек. ЭТО МЕТОД.
+  _formDeleteClickHandler(evt) { // вызывается колбек. ЭТО МЕТОД.
     evt.preventDefault();
     this._callback.deleteClick(this._dataItem); // НЕ знаю что выбрать этот или нижний вариант
   }
 
-  setDeleteClickHandler(callback) { // 2del установил обработчик на удаление. Это МЕТОД
+  setDeleteClickHandler(callback) { // установил обработчик на удаление. Это МЕТОД
     this._callback.deleteClick = callback; // добавление колбека в объект, для последующего его вызова по ссылке
 
     const eventResetBtnDel = this.getElement().querySelector(`.event__reset-btn`);

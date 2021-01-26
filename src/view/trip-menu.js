@@ -2,7 +2,7 @@ import {MenuItem} from "../const.js"; // 6stat
 import AbstractView from "./abstract.js";
 
 
-// 7 stat перекинули уникальное value чтобы потом на основании его редактировать
+// перекинули уникальное value чтобы потом на основании его редактировать
 const createTripMenu = () => {
   return `<nav class="trip-controls__trip-tabs  trip-tabs">
 
@@ -12,7 +12,6 @@ const createTripMenu = () => {
 };
 
 
-// 8 stat
 export default class TripMenuView extends AbstractView {
   constructor() {
     super();

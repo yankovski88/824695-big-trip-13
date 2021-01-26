@@ -6,7 +6,6 @@ export default class SmartView extends AbstractView {
     this._dataItem = {}; // не
   }
 
-  // 2
   // метод updateData, который будет обновлять данные в свойстве dataItem
   updateData(update, justDataUpdating) { // метод принимает то (update), что нужно в этом dataItem обновить // justDataUpdating
     if (!update) { // если нет обновлений
@@ -27,7 +26,6 @@ export default class SmartView extends AbstractView {
     this.updateElement(); // вызываем обновить элемент
   }
 
-  // 1
   // Объявим метод updateElement, его задача удалить старый DOM элемент, вызвать генерацию нового и заменить один на другой
   updateElement() {
     let prevElement = this.getElement(); // сохранили изначальную(предыдущую) форму редактирования

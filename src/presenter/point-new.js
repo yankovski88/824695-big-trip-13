@@ -23,8 +23,8 @@ export default class PointNewPresenter {
     }
 
     this._addNewPointComponent = new AddNewPointView(this._offers, this._destinations); // вьюха для формы редоктирования tripItem
-    this._addNewPointComponent.setSubmitHandler(this._handleFormSubmit); // 6del установили обработчик на удаление
-    this._addNewPointComponent.setCancelHandler(this._handleCanselClick); // 6del установили обработчик на удаление
+    this._addNewPointComponent.setSubmitHandler(this._handleFormSubmit); // установили обработчик на удаление
+    this._addNewPointComponent.setCancelHandler(this._handleCanselClick); // установили обработчик на удаление
 
     renderElement(this._eventContainer, this._addNewPointComponent, RenderPosition.AFTERBEGIN);
 
@@ -43,7 +43,7 @@ export default class PointNewPresenter {
     document.removeEventListener(`keydown`, this._onEscKeyPress);
   }
 
-  // 8mod засетить компоненту добавления задачи дизейблы
+  // засетить компоненту добавления задачи дизейблы
   setSaving() {
     this._addNewPointComponent.updateData({
       isDisabled: true,
@@ -83,7 +83,7 @@ export default class PointNewPresenter {
     }
   }
 
-  _handleCanselClick() { // 8del
+  _handleCanselClick() {
     this._addBtn.removeAttribute(`disabled`);
     this.destroy();
   }

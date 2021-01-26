@@ -20,7 +20,7 @@ export const UpdateType = {
   INIT: `INIT` // это нужно чтобы инициализировать проект когда данные придут с сревера
 };
 
-export const FilterType = { // 46 типы фильтров
+export const FilterType = { // типы фильтров
   EVERYTHING: `everything`,
   FUTURE: `future`,
   PAST: `past`,

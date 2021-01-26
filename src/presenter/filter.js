@@ -2,7 +2,7 @@ import TripFilterView from "../view/trip-filter.js";
 import {renderElement, RenderPosition, remove, replace} from "../util/render.js";
 import {FilterType, UpdateType} from "../const.js";
 
-export default class FilterPresenter { // 59
+export default class FilterPresenter {
   constructor(filterContainer, filterModel) { // презентер должен уметь получать в себя 2 вещи
     // filterContainer контейнер куда рисовать фильтры
     // filterModel модель откуда он будет брать данные для фильтра это флиьтр модель. Это текущий фильтр.

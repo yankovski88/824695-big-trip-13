@@ -143,7 +143,7 @@ const createTripEventEditForm = (dataItem, routePointTypes, pointDestinations) =
     const formOffers = getOffersByType(type, emptyFormOffers);
     return formOffers.reduce((total, element) => {
 
-      // // код который сравнивает два массива и если совподающие объекты, то возвращает true
+      // код который сравнивает два массива и если совподающие объекты, то возвращает true
       const isActive = offers.some((el) => {
         return el.title === element.title;
       });
@@ -270,8 +270,8 @@ export default class AddNewPointView extends SmartView { // AbstractView
     this._dueStartDateChangeHandler = this._dueStartDateChangeHandler.bind(this); // 2 заведем обработчик на _datepicker
 
     this._setInnerHandlers(); // обновляем внутренние обработчики
-    this._setDatepickerStart(); // 4 устанавливаем _setDatepicker с помощью пакета flatpickr
-    this._setDatepickerFinish(); // 4 устанавливаем _setDatepicker с помощью пакета flatpickr
+    this._setDatepickerStart(); // устанавливаем _setDatepicker с помощью пакета flatpickr
+    this._setDatepickerFinish(); // устанавливаем _setDatepicker с помощью пакета flatpickr
 
   }
 
@@ -300,17 +300,15 @@ export default class AddNewPointView extends SmartView { // AbstractView
     return createTripEventEditForm(this._dataItem, this._offers, this._pointDestinations);
   }
 
-  // 5
   // публичный метод который заново навешивает обработчики
   restoreHandlers() {
     this._setInnerHandlers(); // востанавливаем приватные обработчики
     this.setSubmitHandler(this._callback.submit); // востанавливаем внешние обработчики. вызвали обработчик который был сохранен в объекте.
     this.setCancelHandler(this._callback.cancel);
-    this._setDatepickerFinish(); // 5 востанавливаем обработчик
-    this._setDatepickerStart(); // 5 востанавливаем обработчик
+    this._setDatepickerFinish(); // востанавливаем обработчик
+    this._setDatepickerStart(); // востанавливаем обработчик
   }
 
-  // 3
   // обработчик который заново навешивает внутрение обработчики
   _setInnerHandlers() {
     this._eventInputPrice = this.getElement().querySelector(`.event__input--price`);
@@ -326,7 +324,7 @@ export default class AddNewPointView extends SmartView { // AbstractView
     this._eventTypeGroup.addEventListener(`input`, this._eventChangeTypeHandler);
   }
 
-  // 3.1.
+
   _changePriceHandler(evt) { // оброботчик в котором будем менять данные по цене
     evt.preventDefault();
     this.updateData({ // передаем только одну строчку которую хотим обновить т.к. assign создано выше
@@ -352,27 +350,6 @@ export default class AddNewPointView extends SmartView { // AbstractView
     getChangeDestination(evt.target.value);
     this._checkDate();
   }
-
-
-  // _pointDestinationHandle(evt) {
-  //   evt.preventDefault();
-  //   const destinationList = this._destinations.reduce((acc, current) => {
-  //     return [...acc, current.name];
-  //   }, []);
-  //   if (!destinationList.includes(evt.target.value)) {
-  //     evt.target.setCustomValidity(`Данной точки маршрута не существует. Попробуйте выбрать из предложенного списка`);
-  //   } else {
-  //     evt.target.setCustomValidity(``);
-  //     const destinationObject = this._destinations.find((elem) => elem.name === evt.target.value);
-  //     this.updateData({
-  //       destination: destinationObject.name,
-  //       description: destinationObject.description,
-  //       photos: destinationObject.photos
-  //     });
-  //   }
-  //   evt.target.reportValidity();
-  // }
-
 
   // метод по замене активных оферов
   _eventChangeOfferHandler(evt) {
@@ -436,14 +413,12 @@ export default class AddNewPointView extends SmartView { // AbstractView
     }
   }
 
-
-  // // 8
-  // // код обнуляет данные до стартовых которые пришли в tripBoard
-  // reset(tripItem) {
-  //   this.updateData(
-  //       tripItem
-  //   );
-  // }
+  // код обнуляет данные до стартовых которые пришли в tripBoard
+  reset(tripItem) {
+    this.updateData(
+        tripItem
+    );
+  }
 
   // обработчик который вызывает сохраннеый колбек на отправку формы
   _submitHandler(evt) {
@@ -557,7 +532,6 @@ export default class AddNewPointView extends SmartView { // AbstractView
     this._checkDate();
   }
 
-  // 4
   _dueFinishDateChangeHandler([userDate]) {
     this.updateData({
       dateTo: dayjs(userDate).toDate() // .hour(23).minute(59).second(59).toDate()

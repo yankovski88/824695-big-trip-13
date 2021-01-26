@@ -16,7 +16,7 @@ export default class TripBoard {
   constructor(tripBoardContainer, pointsModel, filterModel, api, offersModel, destinationsModel) {
     this._amountOfPoints = 0;
     this._filterModel = filterModel;
-    this._pointsModel = pointsModel; // 6 создали свойство класса, чтобы в дальнейшем переиспользовать
+    this._pointsModel = pointsModel; // создали свойство класса, чтобы в дальнейшем переиспользовать
     this._destinationsModel = destinationsModel;
     this._tripBoardContainer = tripBoardContainer;
     this._isLoading = true; // по умолчанию делаем состояние лоудинг, типо вечно крутится спинер
@@ -36,14 +36,14 @@ export default class TripBoard {
     this._main = document.querySelector(`.page-body__page-main`);
     this._pageBodyContainer = this._main.querySelector(`.page-body__container`);
 
-    this._handleModeChange = this._handleModeChange.bind(this); // 1 наблюдатель
+    this._handleModeChange = this._handleModeChange.bind(this); // наблюдатель
 
     this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
 
-    this._handleViewAction = this._handleViewAction.bind(this); // 21 оброботчик вызывает обновление модели
-    this._handleModelEvent = this._handleModelEvent.bind(this); // 18 это обработка уведомлений от модели.
+    this._handleViewAction = this._handleViewAction.bind(this); // оброботчик вызывает обновление модели
+    this._handleModelEvent = this._handleModelEvent.bind(this); // это обработка уведомлений от модели.
 
-    // 4add т.к. мы имопртируем презентер PointNewPresenter, то нужно создать инстанс презентера новой точки маршрута
+    // т.к. мы имопртируем презентер PointNewPresenter, то нужно создать инстанс презентера новой точки маршрута
     this._pointNewPresenter = new PointNewPresenter(this._tripEventsListComponent, this._handleViewAction, this._getOffers(), this._getDestinations());
   }
 
@@ -54,12 +54,12 @@ export default class TripBoard {
     // повторной инициализации подписаться
 
     // модели передали в инициализацию пока не знаю зачем
-    this._pointsModel.addObserver(this._handleModelEvent); // 17 stat  В модель точек с помощью обсерверов передали колбек который будет вызывать модель.
-    this._filterModel.addObserver(this._handleModelEvent); // 65
+    this._pointsModel.addObserver(this._handleModelEvent); // stat  В модель точек с помощью обсерверов передали колбек который будет вызывать модель.
+    this._filterModel.addObserver(this._handleModelEvent); //
     this._renderBoard();
   }
 
-  // 2add метод который создает точку маршрута
+  // метод который создает точку маршрута
   createPoint(blank, callback) { // был толтко blank
     this._pointNewPresenter.init(blank, callback); // должна производится инитицилизация которая отвечает за форму добавления tripItem
   }
@@ -73,7 +73,7 @@ export default class TripBoard {
     this._filterModel.removeObserver(this._handleModelEvent);
   }
 
-  // 40 рендарим доску со всеми списками, точками маршрута, а если их нет, то выводим пустое сообщение
+  // рендарим доску со всеми списками, точками маршрута, а если их нет, то выводим пустое сообщение
   _renderBoard() {
     if (this._isLoading) {
       this._renderLoading();
@@ -94,9 +94,9 @@ export default class TripBoard {
 
   _getPoints() { // это и есть метод для хождения в модели. Также этот метод всегда возвращает актуальную сортировку
 
-    const filterType = this._filterModel.getFilter(); // 66 взяли из одной модели тип фильтра
-    const points = this._pointsModel.getPoints(); // 67 // взяли задачи из другой модели
-    const filtredPoints = filter[filterType](points); // 68 filtredPoints это уже отфильтрованный массив типа будующее, прошлое, все
+    const filterType = this._filterModel.getFilter(); // взяли из одной модели тип фильтра
+    const points = this._pointsModel.getPoints(); // взяли задачи из другой модели
+    const filtredPoints = filter[filterType](points); // filtredPoints это уже отфильтрованный массив типа будующее, прошлое, все
     // filter в объекте фильтр по типу фильтра [filterType] получаем функцию фильтрации и передаем ей все точки из модели точек (points)
     // далее ниже в свиче идет их сортировка отфильтрованных фильтром
 
@@ -145,7 +145,7 @@ export default class TripBoard {
         break;
 
       case UserAction.ADD_POINT:
-        this._pointNewPresenter.setSaving(); // 8mod
+        this._pointNewPresenter.setSaving();
 
         this._api.addPoint(update).then((response) => {
           this._pointsModel.addPoint(updateType, response);
@@ -155,7 +155,7 @@ export default class TripBoard {
         break;
 
       case UserAction.DELETE_POINT:
-        this._eventPresenter[update.id].setViewState(State.DELETING); // 8mod
+        this._eventPresenter[update.id].setViewState(State.DELETING);
         this._api.deletePoint(update).then(() => {
           this._pointsModel.deletePoint(updateType, update);
         }).catch(() => {
@@ -166,7 +166,7 @@ export default class TripBoard {
   }
 
   // обработать событие модели
-  // 19 это колбек в котором модель вызывает его по обсерверу. Передаем его как налюдателя
+  // это колбек в котором модель вызывает его по обсерверу. Передаем его как налюдателя
   // этот метод передается как колбек observera. Он должен обработать что модель изменилась. И понять, что перерисовать берем updateType
   _handleModelEvent(updateType, data) { // В зависимости от типа изменений решаем, что делать
     switch (updateType) { // 33
@@ -193,10 +193,10 @@ export default class TripBoard {
     }
   }
 
-  // 39 очистить доску
+  // очистить доску
   _clearBoard({resetSortType = false} = {}) {
 
-    this._pointNewPresenter.destroy(); // 6add
+    this._pointNewPresenter.destroy();
 
     Object // удаляем все типа карточки
       .values(this._eventPresenter)
@@ -215,8 +215,8 @@ export default class TripBoard {
   }
 
   // метод если форма открыта, то закрыть, воспитатель
-  _handleModeChange() { // 2 наблюдатель
-    this._pointNewPresenter.destroy(); // 5add
+  _handleModeChange() { // наблюдатель
+    this._pointNewPresenter.destroy();
 
     Object
       .values(this._eventPresenter)
@@ -279,7 +279,7 @@ export default class TripBoard {
   }
 
   // рендарим все точки маршрута
-  _renderEventItems(tripItems) { // 14 метод который получает массив объектов точек
+  _renderEventItems(tripItems) { // метод который получает массив объектов точек
     tripItems.forEach((item) => { // проходим по этому массиву
       this._renderItem(item); // передаем каждый объект в this._renderItem где дальше он все отрисует
     });
