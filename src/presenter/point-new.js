@@ -15,6 +15,7 @@ export default class PointNewPresenter {
     this._onEscKeyPress = this._onEscKeyPress.bind(this);
     this._handleCanselClick = this._handleCanselClick.bind(this); // 7del
     this._addBtn = document.querySelector(`.trip-main__event-add-btn`);
+    // this._inputDestination = document.querySelector(`.event__input--destination`);
   }
 
   init() {

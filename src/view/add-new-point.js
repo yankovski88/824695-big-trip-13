@@ -340,6 +340,10 @@ export default class AddNewPointView extends SmartView { // AbstractView
 
   _changeDestinationHandler(evt) {
     evt.preventDefault();
+    // const nameDestinations = this._pointDestinations.reduce((acc, current) => {
+    //   return [...acc, current.name];
+    // }, []);
+    // console.log(nameDestinations)
 
     // код по замене всех данных объекта destination на тот который выбрал пользователь
     const getChangeDestination = (target) => { // target цель выбора пользователя
@@ -347,16 +351,40 @@ export default class AddNewPointView extends SmartView { // AbstractView
         if (target === item.name) { // когда найдется выбор пользователя в нашем массиве
           this.updateData(this._dataItem.destination = item); // то заменить прошлые данные на новый объект
           evt.target.setCustomValidity(``);
-        } else if(target !== item.name){
+        }
+        // else if (!nameDestinations.includes(evt.target.value)) {
+        //       evt.target.setCustomValidity(`Данной точки маршрута не существует. Попробуйте выбрать из предложенного списка`);
+        //     }
+        else if((target !== item.name) || target === ``){
           evt.target.setCustomValidity(`Данной точки маршрута не существует. Выберите из спииска.`);
         }
       }
+
     };
     getChangeDestination(evt.target.value);
     this._checkDate();
   }
 
 
+
+  // _pointDestinationHandle(evt) {
+  //   evt.preventDefault();
+  //   const destinationList = this._destinations.reduce((acc, current) => {
+  //     return [...acc, current.name];
+  //   }, []);
+  //   if (!destinationList.includes(evt.target.value)) {
+  //     evt.target.setCustomValidity(`Данной точки маршрута не существует. Попробуйте выбрать из предложенного списка`);
+  //   } else {
+  //     evt.target.setCustomValidity(``);
+  //     const destinationObject = this._destinations.find((elem) => elem.name === evt.target.value);
+  //     this.updateData({
+  //       destination: destinationObject.name,
+  //       description: destinationObject.description,
+  //       photos: destinationObject.photos
+  //     });
+  //   }
+  //   evt.target.reportValidity();
+  // }
 
 
 

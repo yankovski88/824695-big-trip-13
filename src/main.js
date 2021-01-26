@@ -125,9 +125,12 @@ Promise.all([
     tripMenuComponent.setMenuClickHandler(handleSiteMenuClick); // 1.1.stat
     // filterPresenter.init();
   }).catch(() => { // если ошибка то
-    pointsModel.setPoints(UpdateType.INIT, []); // передать пустой массив с типом INIT
-    renderMenu();
-    tripMenuComponent.setMenuClickHandler(handleSiteMenuClick); // 1.1.stat
-  });
+  pointsModel.setPoints(UpdateType.INIT, []); // передать пустой массив с типом INIT
+  pointsModel.setOffers(UpdateType.INIT, []);
+  pointsModel.setDestinations(UpdateType.INIT, []);
+
+  // renderMenu(); // не знаю или можно оставлять
+  tripMenuComponent.setMenuClickHandler(handleSiteMenuClick); // 1.1.stat
+});
 
 
