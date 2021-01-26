@@ -68,7 +68,7 @@ export default class PointNewPresenter {
     this._changeData(
         UserAction.ADD_POINT,
         UpdateType.MINOR,
-      point
+        point
     );
 
     this._addBtn.removeAttribute(`disabled`);

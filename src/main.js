@@ -115,7 +115,7 @@ Promise.all([
   api.getPoints(),
   api.getDestinations(),
 ])
-  .then(([formOffers, points, pointDestinations, types]) => { // destinations в случае успешного запроса
+  .then(([formOffers, points, pointDestinations]) => { // destinations в случае успешного запроса
     offersModel.setOffers(formOffers);
     pointsModel.setPoints(UpdateType.INIT, points); // передать точки с типом обновления INIT
     destinationsModel.setDestinations(pointDestinations);
@@ -125,14 +125,9 @@ Promise.all([
     tripMenuComponent.setMenuClickHandler(handleSiteMenuClick); // 1.1.stat
     // filterPresenter.init();
   }).catch(() => { // если ошибка то
-  pointsModel.setPoints(UpdateType.INIT, []); // передать пустой массив с типом INIT
-  renderMenu();
-  tripMenuComponent.setMenuClickHandler(handleSiteMenuClick); // 1.1.stat
-});
-
-
-
-
-
+    pointsModel.setPoints(UpdateType.INIT, []); // передать пустой массив с типом INIT
+    renderMenu();
+    tripMenuComponent.setMenuClickHandler(handleSiteMenuClick); // 1.1.stat
+  });
 
 

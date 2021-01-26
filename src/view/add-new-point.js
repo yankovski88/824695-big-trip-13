@@ -1,7 +1,6 @@
 import dayjs from "dayjs";
 import he from "he"; // импортировал библиотеку по экранированию тегов от хакеров
 import SmartView from "./smart.js";
-import {TYPES} from "../const";
 
 import flatpickr from "flatpickr";
 import "../../node_modules/flatpickr/dist/flatpickr.min.css";
@@ -16,24 +15,24 @@ const BLANK_POINT = {
     "description": `Geneva, in a middle of Europe, for those who value comfort and coziness, with an embankment of a mighty river as a centre of attraction, famous for its crowded street markets with the best street food in Asia.`,
     "pictures": [
       {
-        "src": "http://picsum.photos/300/200?r=0.2711095928296725",
-        "description": "Geneva biggest supermarket"
+        "src": `http://picsum.photos/300/200?r=0.2711095928296725`,
+        "description": `Geneva biggest supermarket`
       },
       {
-        "src": "http://picsum.photos/300/200?r=0.37260096662238484",
-        "description": "Geneva zoo"
+        "src": `http://picsum.photos/300/200?r=0.37260096662238484`,
+        "description": `Geneva zoo`
       },
       {
-        "src": "http://picsum.photos/300/200?r=0.24136485619435555",
-        "description": "Geneva parliament building"
+        "src": `http://picsum.photos/300/200?r=0.24136485619435555`,
+        "description": `Geneva parliament building`
       },
       {
-        "src": "http://picsum.photos/300/200?r=0.020111608522429103",
-        "description": "Geneva city centre"
+        "src": `http://picsum.photos/300/200?r=0.020111608522429103`,
+        "description": `Geneva city centre`
       },
       {
-        "src": "http://picsum.photos/300/200?r=0.7188000886995232",
-        "description": "Geneva parliament building"
+        "src": `http://picsum.photos/300/200?r=0.7188000886995232`,
+        "description": `Geneva parliament building`
       }
     ]
   },
@@ -78,10 +77,10 @@ const createFieldTime = (dateStart, dateFinish, isDisabled) => {
 
   return `<div class="event__field-group  event__field-group--time">
     <label class="visually-hidden" for="event-start-time-1">From</label>
-    <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${startTime}" ${isDisabled ? `disabled`:``}>
+    <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${startTime}" ${isDisabled ? `disabled` : ``}>
     &mdash;
 <label class="visually-hidden" for="event-end-time-1">To</label>
-    <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${finishTime}" ${isDisabled ? `disabled`:``}>
+    <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${finishTime}" ${isDisabled ? `disabled` : ``}>
     </div>`;
 };
 
@@ -91,15 +90,15 @@ const createTripEventEditForm = (dataItem, routePointTypes, pointDestinations) =
   const emptyFormOffers = routePointTypes;
   const allPointDestinations = pointDestinations.slice();
 
-const getDestinations = (allPointDestinations)=>{
-  const destinations = [];
-  for(let item of allPointDestinations){
-    destinations.push(item.name)
-  }
-  return destinations;
-};
+  const getDestinations = (allDestinations)=>{
+    const destinations = [];
+    for (let item of allDestinations) {
+      destinations.push(item.name);
+    }
+    return destinations;
+  };
 
-// код рисут список type
+  // код рисут список type
   const createDestinationsTemplate = (destinations) => {
     return destinations.reduce((total, element) => {
       const isActiveDestinations = [destination].some((el) => {
@@ -112,10 +111,10 @@ const getDestinations = (allPointDestinations)=>{
   // функция по получению массива типов точки
   const getTypes = (pointTypes)=>{
     const types = [];
-    for(let item of pointTypes){
-      types.push(item.type)
+    for (let item of pointTypes) {
+      types.push(item.type);
     }
-    return types
+    return types;
   };
 
 
@@ -151,7 +150,7 @@ const getDestinations = (allPointDestinations)=>{
       if (element !== ``) {
         return total + `<div class="event__offer-selector">
                         <input class="event__offer-checkbox  visually-hidden" id="event-offer-luggage-${element.title}" type="checkbox" name="event-offer-luggage"  
-${isActive ? `checked` : ``} ${isDisabled ? `disabled`:``}>
+${isActive ? `checked` : ``} ${isDisabled ? `disabled` : ``}>
                             <label class="event__offer-label" for="event-offer-luggage-${element.title}">
                           <span class="event__offer-title">${element.title}</span>
                           &plus;&euro;&nbsp;
@@ -173,7 +172,7 @@ ${isActive ? `checked` : ``} ${isDisabled ? `disabled`:``}>
         return el === element;
       });
       return total + `<div class="event__type-item">
-                          <input ${isActiveType ? `checked` : ``} ${isDisabled ? `disabled`:``}  id="event-type-${element.toLowerCase()}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${element.toLowerCase()}" >
+                          <input ${isActiveType ? `checked` : ``} ${isDisabled ? `disabled` : ``}  id="event-type-${element.toLowerCase()}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${element.toLowerCase()}" >
                           <label class="event__type-label  event__type-label--${element.toLowerCase()}" for="event-type-${element.toLowerCase()}-1">${element}</label>
                         </div>`;
     }, ``);
@@ -188,7 +187,7 @@ ${isActive ? `checked` : ``} ${isDisabled ? `disabled`:``}>
                       <span class="visually-hidden">Choose event type</span>
                       <img class="event__type-icon" width="17" height="17" src="img/icons/${type.toLowerCase()}.png" alt="Event type icon">
                     </label>
-                    <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox" ${isDisabled ? `disabled`:``}>
+                    <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox" ${isDisabled ? `disabled` : ``}>
 
                     <div class="event__type-list">
                                 <fieldset class="event__type-group">
@@ -201,7 +200,7 @@ ${isActive ? `checked` : ``} ${isDisabled ? `disabled`:``}>
 
                   <div class="event__field-group  event__field-group--destination">
                     <label class="event__label  event__type-output" for="event-destination-1">${type}</label>
-                    <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${he.encode(destination.name)}" list="destination-list-1" ${isDisabled ? `disabled`:``}>
+                    <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${he.encode(destination.name)}" list="destination-list-1" ${isDisabled ? `disabled` : ``}>
                     <datalist id="destination-list-1">
                     ${createDestinationsTemplate(getDestinations(allPointDestinations))}
            
@@ -215,10 +214,10 @@ ${isActive ? `checked` : ``} ${isDisabled ? `disabled`:``}>
                       <span class="visually-hidden">Price</span>
                       &euro; 
                     </label>
-                    <input ${isDisabled ? `disabled`:``} class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${he.encode(basePrice.toString())}" onkeypress="return (event.charCode >= 48 && event.charCode <= 57)"   onkeyup="this.value = this.value.replace(/^0+(?=\\d)/,'');">
+                    <input ${isDisabled ? `disabled` : ``} class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${he.encode(basePrice.toString())}" onkeypress="return (event.charCode >= 48 && event.charCode <= 57)"   onkeyup="this.value = this.value.replace(/^0+(?=\\d)/,'');">
                   </div>
-                  <button class="event__save-btn  btn  btn--blue" type="submit" ${isDisabled ? `disabled`:``}>${isSaving ? `Saving...` : `Save`}</button>
-<button class="event__reset-btn" type="reset" ${isDisabled ? `disabled`:``}>Cansel</button>
+                  <button class="event__save-btn  btn  btn--blue" type="submit" ${isDisabled ? `disabled` : ``}>${isSaving ? `Saving...` : `Save`}</button>
+<button class="event__reset-btn" type="reset" ${isDisabled ? `disabled` : ``}>Cansel</button>
   
     
                 </header>
@@ -280,9 +279,9 @@ export default class AddNewPointView extends SmartView { // AbstractView
     return Object.assign(
         {},
         dataItem,
-      {  isDisabled: false,
-        isSaving: false,
-        isDeleting: false}
+        {isDisabled: false,
+          isSaving: false,
+          isDeleting: false}
     );
   }
 

@@ -14,10 +14,10 @@ const createFieldTime = (dateStart, dateFinish, isDisabled) => {
 
   return `<div class="event__field-group  event__field-group--time">
     <label class="visually-hidden" for="event-start-time-1">From</label>
-    <input ${isDisabled ? `disabled`:``} class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${startTime}">
+    <input ${isDisabled ? `disabled` : ``} class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${startTime}">
     &mdash;
 <label class="visually-hidden" for="event-end-time-1">To</label>
-    <input ${isDisabled ? `disabled`:``} class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${finishTime}">
+    <input ${isDisabled ? `disabled` : ``} class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${finishTime}">
     </div>`;
 };
 
@@ -28,9 +28,9 @@ const createTripEventEditForm = (dataItem, routePointTypes, pointDestinations) =
   const editFormOffers = routePointTypes.slice();
   const allPointDestinations = pointDestinations;
 
-  const getDestinations = (destinations)=>{
+  const getDestinations = (destinations) => {
     const nameDestinations = [];
-    for(let item of destinations){
+    for (let item of destinations) {
       nameDestinations.push(item.name)
     }
     return nameDestinations;
@@ -47,9 +47,9 @@ const createTripEventEditForm = (dataItem, routePointTypes, pointDestinations) =
   };
 
   // функция по получению массива типов точки
-  const getTypes = (pointTypes)=>{
+  const getTypes = (pointTypes) => {
     const types = [];
-    for(let item of pointTypes){
+    for (let item of pointTypes) {
       types.push(item.type)
     }
     return types
@@ -66,7 +66,7 @@ const createTripEventEditForm = (dataItem, routePointTypes, pointDestinations) =
 
   // добавление кнопки вверх
   const createEventRollupBtn = (isDisabled) => {
-    return `<button class="event__rollup-btn" type="button" ${isDisabled ? `disabled`:``}>
+    return `<button class="event__rollup-btn" type="button" ${isDisabled ? `disabled` : ``}>
          <span class="visually-hidden">Open event</span>
       </button>`;
   };
@@ -95,7 +95,7 @@ const createTripEventEditForm = (dataItem, routePointTypes, pointDestinations) =
       });
       if (element !== ``) {
         return total + `<div class="event__offer-selector">
-                        <input ${isDisabled ? `disabled`:``} class="event__offer-checkbox  visually-hidden" id="event-offer-luggage-${element.title}" type="checkbox" name="event-offer-luggage"  
+                        <input ${isDisabled ? `disabled` : ``} class="event__offer-checkbox  visually-hidden" id="event-offer-luggage-${element.title}" type="checkbox" name="event-offer-luggage"  
 ${isActive ? `checked` : ``}>
                             <label class="event__offer-label" for="event-offer-luggage-${element.title}">
                           <span class="event__offer-title">${element.title}</span>
@@ -114,12 +114,12 @@ ${isActive ? `checked` : ``}>
 
   // код рисут список type
   const getEditType = (types, isDisabled) => {
-    return types.reduce((total, element)=>{
+    return types.reduce((total, element) => {
       const isActiveType = [type].some((el) => {
         return el === element;
       });
       return total + `<div class="event__type-item">
-                          <input ${isDisabled ? `disabled`:``} ${isActiveType ? `checked` : ``}  id="event-type-${element.toLowerCase()}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${element.toLowerCase()}" >
+                          <input ${isDisabled ? `disabled` : ``} ${isActiveType ? `checked` : ``}  id="event-type-${element.toLowerCase()}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${element.toLowerCase()}" >
                           <label class="event__type-label  event__type-label--${element.toLowerCase()}" for="event-type-${element.toLowerCase()}-1">${element}</label>
                         </div>`;
     }, ``);
@@ -134,7 +134,7 @@ ${isActive ? `checked` : ``}>
                       <span class="visually-hidden">Choose event type</span>
                       <img class="event__type-icon" width="17" height="17" src="img/icons/${type.toLowerCase()}.png" alt="Event type icon">
                     </label>
-                    <input ${isDisabled ? `disabled`:``}  class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox">
+                    <input ${isDisabled ? `disabled` : ``}  class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox">
 
                     <div class="event__type-list">
                                 <fieldset class="event__type-group">
@@ -147,7 +147,7 @@ ${isActive ? `checked` : ``}>
 
                   <div class="event__field-group  event__field-group--destination">
                     <label class="event__label  event__type-output" for="event-destination-1">${type}</label>
-                    <input ${isDisabled ? `disabled`:``} class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" 
+                    <input ${isDisabled ? `disabled` : ``} class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" 
                     value="${he.encode(destination.name)}" list="destination-list-1" >
                     <datalist id="destination-list-1">
      ${createDestinationsTemplate(getDestinations(allPointDestinations))}
@@ -162,10 +162,10 @@ ${isActive ? `checked` : ``}>
                       <span class="visually-hidden">Price</span>
                       &euro; 
                     </label>
-                    <input ${isDisabled ? `disabled`:``} class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${he.encode(basePrice.toString())}" onkeypress="return (event.charCode >= 48 && event.charCode <= 57)"   onkeyup="this.value = this.value.replace(/^0+(?=\\d)/,'');">
+                    <input ${isDisabled ? `disabled` : ``} class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${he.encode(basePrice.toString())}" onkeypress="return (event.charCode >= 48 && event.charCode <= 57)"   onkeyup="this.value = this.value.replace(/^0+(?=\\d)/,'');">
                   </div>
-                  <button ${isDisabled ? `disabled`:``} class="event__save-btn  btn  btn--blue" type="submit">${isSaving ? `Saving...` : `Save`}</button>
-<button ${isDisabled ? `disabled`:``} class="event__reset-btn" type="reset"> ${isDeleting ? `Deleting...` : `Delete`}</button>  
+                  <button ${isDisabled ? `disabled` : ``} class="event__save-btn  btn  btn--blue" type="submit">${isSaving ? `Saving...` : `Save`}</button>
+<button ${isDisabled ? `disabled` : ``} class="event__reset-btn" type="reset"> ${isDeleting ? `Deleting...` : `Delete`}</button>  
     ${createEventRollupBtn(isDisabled)}
                 </header>
                 <section class="event__details">
@@ -226,17 +226,21 @@ export default class TripEventEditFormView extends SmartView { // AbstractView
     this._setDatepickerFinish(); // 4 устанавливаем _setDatepicker с помощью пакета flatpickr
 
   }
+
   // 0.1
   // парсим типа, создаем копию данных с дополниетельным данными
   static parseDataItemToData(dataItem) { // offers
     return Object.assign(
-        {},
-        dataItem,
-      {  isDisabled: false,
+      {},
+      dataItem,
+      {
+        isDisabled: false,
         isSaving: false,
-        isDeleting: false,}
+        isDeleting: false,
+      }
     );
   }
+
   // 0.2 берем все данные которые накликал пользователь в форме редоктирвоания event. Далее эти данные отправим на перерисовку event.
   static parseDataToDataItem(data) {
     data = Object.assign({}, data);
@@ -324,7 +328,7 @@ export default class TripEventEditFormView extends SmartView { // AbstractView
 
       const groupOffersElement = this.getElement().querySelector(`.event__available-offers`); // нашел группу где все оферы
       const inputOfOffersElement = groupOffersElement.querySelectorAll(`input`); // выташил из нее все инпуты по оферам
-      inputOfOffersElement.forEach((item)=>{ // обхожу все инпуты
+      inputOfOffersElement.forEach((item) => { // обхожу все инпуты
         if (item.attributes.checked) { // если чекнут
           idCheckOffers.push(item.attributes.id.textContent.slice(this._TEXT_LIMIT)); // то добавляем title офера в массив
         }
@@ -337,16 +341,16 @@ export default class TripEventEditFormView extends SmartView { // AbstractView
       // будем сравнивать title из общего массива оферров конкретного этого объекта с его выделеными оферами из idCheckOffers
       for (let itemEmpty of allEmptyOffers) { // проходим по пустому массиву
 
-        if(eventType === itemEmpty.type){
+        if (eventType === itemEmpty.type) {
           typeEmptyOffers.push(itemEmpty)
         }
-          }
+      }
 
 
       // будем сравнивать title из общего массива оферров конкретного этого объекта с его выделеными оферами из idCheckOffers
       for (let itemEmpty of typeEmptyOffers) { // проходим по пустому массиву
-        idCheckOffers.some((item)=>{ // проходим по массиву где названия чеков
-          for(let itemEmptyOffer of itemEmpty.offers){
+        idCheckOffers.some((item) => { // проходим по массиву где названия чеков
+          for (let itemEmptyOffer of itemEmpty.offers) {
             if (item === itemEmptyOffer.title) { // если название чека совпадает с заголовком пустого офера
               newOffers.push(itemEmptyOffer); // то добавляем это объект в массив
             } // получили массив чекнутых обектов для оферов
@@ -379,8 +383,8 @@ export default class TripEventEditFormView extends SmartView { // AbstractView
   // код обнуляет данные до стартовых которые пришли в tripBoard
   reset(tripItem) {
     this.updateData(
-        tripItem,
-    );
+      tripItem,
+    )
   }
 
   // обработчик который вызывает сохраннеый колбек на отправку формы
@@ -453,13 +457,13 @@ export default class TripEventEditFormView extends SmartView { // AbstractView
       // flatpickr есть смысл инициализировать только в случае,
       // если поле выбора даты доступно для заполнения
       this._datepickerStart = flatpickr( // инициализируем это просто передаем элемент где вызывать datepickr
-          this.getElement().querySelector(`#event-start-time-1`), // вставляем поле куда нужно вставить datepicker
-          {
-            enableTime: true, // добавлена настройка времени
-            dateFormat: `d/m/y H:i`, // формат даты и времени
-            defaultDate: this._dataItem.dateFrom, // конечная дата со временем
-            onChange: this._dueStartDateChangeHandler, // На событие flatpickr передаём наш колбэк. типа addEventListner на datePicker. Пользоваетель в календаре выберет дату и мы ее сюда запишем
-          }
+        this.getElement().querySelector(`#event-start-time-1`), // вставляем поле куда нужно вставить datepicker
+        {
+          enableTime: true, // добавлена настройка времени
+          dateFormat: `d/m/y H:i`, // формат даты и времени
+          defaultDate: this._dataItem.dateFrom, // конечная дата со временем
+          onChange: this._dueStartDateChangeHandler, // На событие flatpickr передаём наш колбэк. типа addEventListner на datePicker. Пользоваетель в календаре выберет дату и мы ее сюда запишем
+        }
       );
     }
   }
@@ -478,13 +482,13 @@ export default class TripEventEditFormView extends SmartView { // AbstractView
       // flatpickr есть смысл инициализировать только в случае,
       // если поле выбора даты доступно для заполнения
       this._datepickerFinish = flatpickr( // инициализируем это просто передаем элемент где вызывать datepickr
-          this.getElement().querySelector(`#event-end-time-1`), // вставляем поле куда нужно вставить datepicker
-          {
-            enableTime: true, // добавлена настройка времени
-            dateFormat: `d/m/y H:i`, // формат даты и времени
-            defaultDate: this._dataItem.dateTo, // startTime,
-            onChange: this._dueFinishDateChangeHandler, // На событие flatpickr передаём наш колбэк. типа addEventListner на datePicker. Пользоваетель в календаре выберет дату и мы ее сюда запишем
-          }
+        this.getElement().querySelector(`#event-end-time-1`), // вставляем поле куда нужно вставить datepicker
+        {
+          enableTime: true, // добавлена настройка времени
+          dateFormat: `d/m/y H:i`, // формат даты и времени
+          defaultDate: this._dataItem.dateTo, // startTime,
+          onChange: this._dueFinishDateChangeHandler, // На событие flatpickr передаём наш колбэк. типа addEventListner на datePicker. Пользоваетель в календаре выберет дату и мы ее сюда запишем
+        }
       );
     }
   }
@@ -530,16 +534,16 @@ export default class TripEventEditFormView extends SmartView { // AbstractView
 
   _handleOfferClick() {
     this._changeData( // и после замены сообщаем в changeData
-        UserAction.UPDATE_POINT, // 22 это говорит, что мы  только обновляем, а не удаляем или что-то добавляем.
-        UpdateType.MINOR, // 23 точка никуда не девается, а только помечается меняется или нет, так что это минор.
-        Object.assign(
-            {},
-            this._tripItem, // берем текущий объект описывающий задачу
-            {
-              isFavorite: !this._tripItem.isFavorite // и меняем в нем признак избранности. isFavorite
-              // и сообщить этот новый объект в _changeData
-            }
-        )
+      UserAction.UPDATE_POINT, // 22 это говорит, что мы  только обновляем, а не удаляем или что-то добавляем.
+      UpdateType.MINOR, // 23 точка никуда не девается, а только помечается меняется или нет, так что это минор.
+      Object.assign(
+        {},
+        this._tripItem, // берем текущий объект описывающий задачу
+        {
+          isFavorite: !this._tripItem.isFavorite // и меняем в нем признак избранности. isFavorite
+          // и сообщить этот новый объект в _changeData
+        }
+      )
     );
   }
 
