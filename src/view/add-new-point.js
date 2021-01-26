@@ -91,6 +91,23 @@ const createTripEventEditForm = (dataItem, routePointTypes, pointDestinations) =
   const emptyFormOffers = routePointTypes;
   const allPointDestinations = pointDestinations.slice();
 
+const getDestinations = (allPointDestinations)=>{
+  const destinations = [];
+  for(let item of allPointDestinations){
+    destinations.push(item.name)
+  }
+  return destinations;
+};
+
+// код рисут список type
+  const createDestinationsTemplate = (destinations) => {
+    return destinations.reduce((total, element) => {
+      const isActiveDestinations = [destination].some((el) => {
+        return el === element;
+      });
+      return total + `<option value="${element}" ${isActiveDestinations ? `checked` : ``} ></option>`;
+    }, ``);
+  };
 
   // функция по получению массива типов точки
   const getTypes = (pointTypes)=>{
@@ -186,9 +203,8 @@ ${isActive ? `checked` : ``} ${isDisabled ? `disabled`:``}>
                     <label class="event__label  event__type-output" for="event-destination-1">${type}</label>
                     <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${he.encode(destination.name)}" list="destination-list-1" ${isDisabled ? `disabled`:``}>
                     <datalist id="destination-list-1">
-                      <option value="Amsterdam"></option>
-                      <option value="Geneva"></option>
-                      <option value="Chamonix"></option>
+                    ${createDestinationsTemplate(getDestinations(allPointDestinations))}
+           
                     </datalist>
                   </div>
 
@@ -535,6 +551,5 @@ export default class AddNewPointView extends SmartView { // AbstractView
       this._datepicker = null;
     }
   }
-
 
 }

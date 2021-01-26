@@ -26,7 +26,25 @@ const createFieldTime = (dateStart, dateFinish, isDisabled) => {
 const createTripEventEditForm = (dataItem, routePointTypes, pointDestinations) => { // destinations сюда попадают данные и запоняется шаблон
   const {dateFrom, dateTo, destination, basePrice, type, offers, isDisabled, isSaving, isDeleting} = dataItem;
   const editFormOffers = routePointTypes.slice();
-  const allPointDestinations = pointDestinations.slice();
+  const allPointDestinations = pointDestinations;
+
+  const getDestinations = (destinations)=>{
+    const nameDestinations = [];
+    for(let item of destinations){
+      nameDestinations.push(item.name)
+    }
+    return nameDestinations;
+  };
+
+// код рисут список type
+  const createDestinationsTemplate = (destinations) => {
+    return destinations.reduce((total, element) => {
+      const isActiveDestinations = [destination].some((el) => {
+        return el === element;
+      });
+      return total + `<option value="${element}" ${isActiveDestinations ? `checked` : ``} ></option>`;
+    }, ``);
+  };
 
   // функция по получению массива типов точки
   const getTypes = (pointTypes)=>{
@@ -36,8 +54,6 @@ const createTripEventEditForm = (dataItem, routePointTypes, pointDestinations) =
     }
     return types
   };
-
-
 
 
   // генерирует разметку фоток
@@ -134,9 +150,8 @@ ${isActive ? `checked` : ``}>
                     <input ${isDisabled ? `disabled`:``} class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" 
                     value="${he.encode(destination.name)}" list="destination-list-1" >
                     <datalist id="destination-list-1">
-                      <option value="Amsterdam"></option>
-                      <option value="Geneva"></option>
-                      <option value="Chamonix"></option>
+     ${createDestinationsTemplate(getDestinations(allPointDestinations))}
+
                     </datalist>
                   </div>
 
