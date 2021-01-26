@@ -209,7 +209,7 @@ export default class TripEventEditFormView extends SmartView { // AbstractView
     this._addBtn = document.querySelector(`.trip-main__event-add-btn`);
 
     this._submitHandler = this._submitHandler.bind(this);
-    this._cancelClickHandler = this._cancelClickHandler.bind(this);
+    // this._cancelClickHandler = this._cancelClickHandler.bind(this);
     // 4
     this._changePriceHandler = this._changePriceHandler.bind(this); // бинд по замене price
     this._changeDestinationHandler = this._changeDestinationHandler.bind(this);
@@ -261,7 +261,7 @@ export default class TripEventEditFormView extends SmartView { // AbstractView
   restoreHandlers() {
     this._setInnerHandlers(); // востанавливаем приватные обработчики
     this.setSubmitHandler(this._callback.submit); // востанавливаем внешние обработчики. вызвали обработчик который был сохранен в объекте.
-    this.setCancelHandler(this._callback.cancel);
+    // this.setCancelHandler(this._callback.cancel);
     this.setRollupBtnHandler(this._callback.rollupBtn);
     this._setDatepickerFinish(); // 5 востанавливаем обработчик
     this._setDatepickerStart(); // 5 востанавливаем обработчик
@@ -304,11 +304,14 @@ export default class TripEventEditFormView extends SmartView { // AbstractView
       for (let item of this._pointDestinations) { // прохождение по массиву всех объектов. destinations передали импортом
         if (target === item.name) { // когда найдется выбор пользователя в нашем массиве
           this.updateData(this._dataItem.destination = item); // то заменить прошлые данные на новый объект
+          evt.target.setCustomValidity(``);
+        } else if(target !== item.name){
+          evt.target.setCustomValidity(`Данной точки маршрута не существует. Выберите из спииска.`);
         }
       }
     };
     getChangeDestination(evt.target.value);
-    this._checkDate()
+    this._checkDate();
   }
 
   // метод по замене активных оферов
@@ -383,7 +386,7 @@ export default class TripEventEditFormView extends SmartView { // AbstractView
   // код обнуляет данные до стартовых которые пришли в tripBoard
   reset(tripItem) {
     this.updateData(
-      tripItem,
+      tripItem
     )
   }
 
@@ -401,19 +404,19 @@ export default class TripEventEditFormView extends SmartView { // AbstractView
     formEditEvent.addEventListener(`submit`, this._submitHandler);
   }
 
-  // обработчик который вызывает сохранненый колбек при клике на cencel
-  _cancelClickHandler(evt) {
-    evt.preventDefault();
-// debugger
-    this._callback.cancel();
-  }
+//   // обработчик который вызывает сохранненый колбек при клике на cencel
+//   _cancelClickHandler(evt) {
+//     evt.preventDefault();
+// // debugger
+//     this._callback.cancel();
+//   }
 
-  // установим публичный обработчик на cansel и стрелку вниз
-  setCancelHandler(callback) {
-    this._callback.cancel = callback;
-    const eventResetBtn = this.getElement().querySelector(`.event__reset-btn`);
-    eventResetBtn.addEventListener(`click`, this._cancelClickHandler);
-  }
+  // // установим публичный обработчик на cansel и стрелку вниз
+  // setCancelHandler(callback) {
+  //   this._callback.cancel = callback;
+  //   const eventResetBtn = this.getElement().querySelector(`.event__reset-btn`);
+  //   eventResetBtn.addEventListener(`click`, this._cancelClickHandler);
+  // }
 
   _rollupBtnClickHandler(evt) {
     evt.preventDefault();

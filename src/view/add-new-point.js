@@ -4,6 +4,7 @@ import SmartView from "./smart.js";
 
 import flatpickr from "flatpickr";
 import "../../node_modules/flatpickr/dist/flatpickr.min.css";
+import {UpdateType, UserAction} from "../const";
 
 const BLANK_POINT = {
   "type": `flight`,
@@ -11,7 +12,7 @@ const BLANK_POINT = {
   "dateTo": new Date(),
   "isFavorite": false,
   "destination": {
-    "name": `Geneva`,
+    "name": ``, // Geneva
     "description": `Geneva, in a middle of Europe, for those who value comfort and coziness, with an embankment of a mighty river as a centre of attraction, famous for its crowded street markets with the best street food in Asia.`,
     "pictures": [
       {
@@ -84,6 +85,9 @@ const createFieldTime = (dateStart, dateFinish, isDisabled) => {
     </div>`;
 };
 
+
+
+
 // функция по отрисовке всей формы
 const createTripEventEditForm = (dataItem, routePointTypes, pointDestinations) => { // сюда попадают данные и запоняется шаблон dataItem
   const {dateFrom, dateTo, destination, basePrice, type, offers, isDisabled, isSaving} = dataItem;
@@ -120,9 +124,9 @@ const createTripEventEditForm = (dataItem, routePointTypes, pointDestinations) =
 
   // генерирует разметку фоток
   const createEventPhotoTemplate = () => {
-    return destination.pictures.reduce((total, element) => { // перебрал все элементы photos и присоединил их в total
-      return total + `<img class="event__photo" src="${element.src}" alt="${element.description}">`;
-    }, ``);
+      return destination.pictures.reduce((total, element) => { // перебрал все элементы photos и присоединил их в total
+        return total + `<img class="event__photo" src="${element.src}" alt="${element.description}">`;
+      }, ``);
   };
 
 
@@ -230,7 +234,8 @@ ${isActive ? `checked` : ``} ${isDisabled ? `disabled` : ``}>
                     </div>
                   </section>
 
-                  <section class="event__section  event__section--destination">
+                  <section  
+                  class="event__section  event__section--destination  ${destination.name ? `` :`visually-hidden`}">
                     <h3 class="event__section-title  event__section-title--destination">Destination</h3>
                     <p class="event__destination-description">${destination.description}</p>
 
@@ -341,12 +346,19 @@ export default class AddNewPointView extends SmartView { // AbstractView
       for (let item of this._pointDestinations) { // прохождение по массиву всех объектов. destinations передали импортом
         if (target === item.name) { // когда найдется выбор пользователя в нашем массиве
           this.updateData(this._dataItem.destination = item); // то заменить прошлые данные на новый объект
+          evt.target.setCustomValidity(``);
+        } else if(target !== item.name){
+          evt.target.setCustomValidity(`Данной точки маршрута не существует. Выберите из спииска.`);
         }
       }
     };
     getChangeDestination(evt.target.value);
     this._checkDate();
   }
+
+
+
+
 
   // метод по замене активных оферов
   _eventChangeOfferHandler(evt) {
@@ -550,5 +562,7 @@ export default class AddNewPointView extends SmartView { // AbstractView
       this._datepicker = null;
     }
   }
+
+
 
 }

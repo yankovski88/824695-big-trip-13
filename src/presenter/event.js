@@ -56,11 +56,11 @@ export default class EventPresenter {
       this._tripEventEditComponent.reset(this._tripItem); // код для удаления не сохраненных данных в форме
       this._replaceFormToItem();
     });
-    // код который скрывает форму при клике на кенсел
-    this._tripEventEditComponent.setCancelHandler(() => {
-      this._tripEventEditComponent.reset(this._tripItem); // код для удаления не сохраненных данных в форме
-      this._replaceFormToItem();
-    });
+    // // код который скрывает форму при клике на кенсел
+    // this._tripEventEditComponent.setCancelHandler(() => {
+    //   this._tripEventEditComponent.reset(this._tripItem); // код для удаления не сохраненных данных в форме
+    //   this._replaceFormToItem();
+    // });
     // передали эти обработчики в соответствующие вьюхи
     this._tripEventItemComponent.setFavoriteClickHandler(this._handleFavoriteClick); // нужно сделать клик по favorite
 
