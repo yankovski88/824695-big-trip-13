@@ -1,14 +1,9 @@
 import dayjs from "dayjs";
 import he from "he"; // импортировал библиотеку по экранированию тегов от хакеров
 import SmartView from "./smart.js";
-// import {destinations, dataOffers} from "../mock/mock-trip-event-item.js";
 import flatpickr from "flatpickr";
 import "../../node_modules/flatpickr/dist/flatpickr.min.css";
 import {UpdateType, UserAction, TYPES} from "../const";
-// import {getRandomInteger} from "../util/common";
-// import {getTripEventItem} from "../mock/mock-trip-event-item";
-import Api from "../api.js";
-import OffersModel from "../model/offers.js"
 
 
 // функция по установке времени в форме
@@ -28,42 +23,10 @@ const createFieldTime = (dateStart, dateFinish, isDisabled) => {
 
 
 // функция по отрисовке всей формы
-const createTripEventEditForm = (dataItem, routePointTypes, pointDestinations) => { // destinations сюда попадают данные и запоняется шаблон
-  const {dateFrom, dateTo, destination, basePrice, type, offers, isDisabled, isSaving, isDeleting} = dataItem; // editFormOffers
+const createTripEventEditForm = (dataItem, routePointTypes) => { // destinations сюда попадают данные и запоняется шаблон
+  const {dateFrom, dateTo, destination, basePrice, type, offers, isDisabled, isSaving, isDeleting} = dataItem;
   const editFormOffers = routePointTypes;
-  const allPointDestinations = pointDestinations;
 
-
-
-
-  // const editFormOffers = [
-  //   {
-  //     "title": `Add luggage`,
-  //     "price": 50,
-  //   },
-  //   {
-  //     "title": `Switch to comfort class`,
-  //     "price": 80,
-  //   },
-  //   {
-  //     "title": `Add meal`,
-  //     "price": 15,
-  //   },
-  //   {
-  //     "title": `Choose seats`,
-  //     "price": 5,
-  //   },
-  //   {
-  //     "title": `Travel by train`,
-  //     "price": 40,
-  //   },
-  // ];
-
-  // const tripItems = new Array(dataItem.length).fill().map(getTripEventItem);
-
-  // const isDateValid = ()=>{
-  //   return dateFrom < dateTo
-  // };
 
   // генерирует разметку фоток
   const createEventPhotoTemplate = () => {
@@ -74,7 +37,7 @@ const createTripEventEditForm = (dataItem, routePointTypes, pointDestinations) =
   };
 
   // добавление кнопки вверх
-  const createEventRollupBtn = (isDeleting) => {
+  const createEventRollupBtn = (isDisabled) => {
     return `<button class="event__rollup-btn" type="button" ${isDisabled ? `disabled`:``}>
          <span class="visually-hidden">Open event</span>
       </button>`;
@@ -96,7 +59,6 @@ const createTripEventEditForm = (dataItem, routePointTypes, pointDestinations) =
       return typeOffers;
     };
     const formOffers = getOffersByType(type, editFormOffers);
-// const formOffers = pointOffers;
     return formOffers.reduce((total, element) => {
 
       // // код который сравнивает два массива и если совподающие объекты, то возвращает true
@@ -175,11 +137,8 @@ ${isActive ? `checked` : ``}>
                     </label>
                     <input ${isDisabled ? `disabled`:``} class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${he.encode(basePrice.toString())}" onkeypress="return (event.charCode >= 48 && event.charCode <= 57)"   onkeyup="this.value = this.value.replace(/^0+(?=\\d)/,'');">
                   </div>
-<!--{isDateValid() ?  : disabled}-->
                   <button ${isDisabled ? `disabled`:``} class="event__save-btn  btn  btn--blue" type="submit">${isSaving ? `Saving...` : `Save`}</button>
-<button ${isDisabled ? `disabled`:``} class="event__reset-btn" type="reset"> ${isDeleting ? `Deleting...` : `Delete`}</button>
-  
-                  <!--<button class="event__reset-btn" type="reset"> Cancel</button>-->
+<button ${isDisabled ? `disabled`:``} class="event__reset-btn" type="reset"> ${isDeleting ? `Deleting...` : `Delete`}</button>  
     ${createEventRollupBtn(isDisabled)}
                 </header>
                 <section class="event__details">
@@ -187,7 +146,6 @@ ${isActive ? `checked` : ``}>
                     <h3 class="event__section-title  event__section-title--offers">Offers</h3>
 
                     <div class="event__available-offers">
-                    <!--pointOffers-->
      ${getOffersTemplate(isDisabled)}
                     </div>
                   </section>
@@ -215,16 +173,11 @@ export default class TripEventEditFormView extends SmartView { // AbstractView
   constructor(dataItem, offers, pointDestinations) {
 
     super();
-    // this._destinations = destinations;
     this._dataItem = TripEventEditFormView.parseDataItemToData(dataItem); // 0 превращаем объект dataItem в объект data т.к. он более полный, было this._dataItem = dataItem;
     this._offers = offers;
     this._pointDestinations = pointDestinations;
     this._datepickerFinish = null; // 1 здесь будем хранить экземпляр _datepicker т.е. открытый показанный _datepicker. Это нужно для того чтобы потом можно после закрытия формы удалить.
     this._datepickerStart = null;
-    // this._dateFrom = this._dataItem.dateFrom;
-    // this._dateTo = this._dataItem.dateTo;
-    // this._editFormOffers = this._dataItem.editFormOffers
-    this._saveBtnElement = this.getElement().querySelector(`.event__save-btn`);
     this._TEXT_LIMIT = 20;
     this._addBtn = document.querySelector(`.trip-main__event-add-btn`);
 
@@ -255,16 +208,11 @@ export default class TripEventEditFormView extends SmartView { // AbstractView
       {  isDisabled: false,
         isSaving: false,
         isDeleting: false,}
-      // editFormOffers: this._offers},
-        // {isDueDate: task.dueDate !== null,}
     );
   }
   // 0.2 берем все данные которые накликал пользователь в форме редоктирвоания event. Далее эти данные отправим на перерисовку event.
   static parseDataToDataItem(data) {
     data = Object.assign({}, data);
-    // if (!data.isDueDate) {
-    //   data.dueDate = null;
-    // }
     delete data.isDisabled;
     delete data.isSaving;
     delete data.isDeleting;
@@ -359,7 +307,6 @@ export default class TripEventEditFormView extends SmartView { // AbstractView
       // находим тип точки и по нему находим все его пустые оферы
       const typeEmptyOffers = [];
       const eventType = this.getElement().querySelector(`.event__type-output`).textContent.toLowerCase();
-      // const eventType = this._dataItem.type;
       // будем сравнивать title из общего массива оферров конкретного этого объекта с его выделеными оферами из idCheckOffers
       for (let itemEmpty of allEmptyOffers) { // проходим по пустому массиву
 
@@ -377,19 +324,6 @@ export default class TripEventEditFormView extends SmartView { // AbstractView
               newOffers.push(itemEmptyOffer); // то добавляем это объект в массив
             } // получили массив чекнутых обектов для оферов
           }
-
-
-
-
-      // // будем сравнивать title из общего массива оферров конкретного этого объекта с его выделеными оферами из idCheckOffers
-      // for (let itemEmpty of allEmptyOffers) { // проходим по пустому массиву
-      //   idCheckOffers.some((item)=>{ // проходим по массиву где названия чеков
-      //     for(let itemEmptyOffer of itemEmpty.offers){
-      //       if (item === itemEmptyOffer.title) { // если название чека совпадает с заголовком пустого офера
-      //         newOffers.push(itemEmptyOffer); // то добавляем это объект в массив
-      //       } // получили массив чекнутых обектов для оферов
-      //     }
-
         });
       }
       this.updateData(this._dataItem.offers = newOffers); // + заменяем старые чекнутые оферы на новые
@@ -407,9 +341,6 @@ export default class TripEventEditFormView extends SmartView { // AbstractView
       for (let item of this._offers) { // прохождение по массиву всех объектов. offers массив всех доп предложений
         if (target === item.type.toLowerCase()) { // когда найдется выбор пользователя в нашем массиве
           this.updateData(this._dataItem.type = item.type);
-          // this.updateData(this._offers = item.offers);
-
-          // this.updateData(this._dataItem.offers = item.offers); // код который перерисует, что выбрал ползьвавтель из offer в event
         }
       }
     };
@@ -533,11 +464,6 @@ export default class TripEventEditFormView extends SmartView { // AbstractView
 
 
   _dueStartDateChangeHandler(userDate) {
-    // if ((dayjs(userDate).toDate() > this._dataItem.dateTo)) {
-    //   this._saveBtnElement.setAttribute(`disabled`, true);
-    // } else if ((dayjs(userDate).toDate() < this._dataItem.dateTo)) {
-    //   this._saveBtnElement.removeAttribute(`disabled`);
-    // }
     this.updateData({
       dateFrom: dayjs(userDate).toDate() // .hour(23).minute(59).second(59).toDate()
     }, true);
@@ -546,11 +472,6 @@ export default class TripEventEditFormView extends SmartView { // AbstractView
 
   // 4
   _dueFinishDateChangeHandler([userDate]) {
-    // if (dayjs(userDate).toDate() > this._dataItem.dateFrom) {
-    //   this._saveBtnElement.removeAttribute(`disabled`);
-    // } else if ((dayjs(userDate).toDate() < this._dataItem.dateFrom)) {
-    //   this._saveBtnElement.setAttribute(`disabled`, true);
-    // }
     this.updateData({
       dateTo: dayjs(userDate).toDate() // .hour(23).minute(59).second(59).toDate()
     }, true);
@@ -568,10 +489,6 @@ export default class TripEventEditFormView extends SmartView { // AbstractView
     }
   }
 
-  // _formDeleteClickHandler(evt){ // 3del вызывается колбек
-  //   evt.preventDefault();
-  //   this._callback.delete()
-  // }
   _formDeleteClickHandler(evt) { // 3del вызывается колбек. ЭТО МЕТОД.
     evt.preventDefault();
     this._callback.deleteClick(this._dataItem); // НЕ знаю что выбрать этот или нижний вариант

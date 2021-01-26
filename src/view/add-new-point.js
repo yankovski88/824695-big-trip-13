@@ -86,10 +86,9 @@ const createFieldTime = (dateStart, dateFinish, isDisabled) => {
 };
 
 // функция по отрисовке всей формы
-const createTripEventEditForm = (dataItem, routePointTypes, pointDestinations) => { // сюда попадают данные и запоняется шаблон dataItem
-  const {dateFrom, dateTo, destination, basePrice, type, offers, isDisabled, isSaving} = dataItem; // editFormOffers additionalOffers, photos,
+const createTripEventEditForm = (dataItem, routePointTypes) => { // сюда попадают данные и запоняется шаблон dataItem
+  const {dateFrom, dateTo, destination, basePrice, type, offers, isDisabled, isSaving} = dataItem;
   const emptyFormOffers = routePointTypes;
-  const allPointDestinations = pointDestinations;
 
   // генерирует разметку фоток
   const createEventPhotoTemplate = () => {
@@ -102,7 +101,6 @@ const createTripEventEditForm = (dataItem, routePointTypes, pointDestinations) =
   // функция по отрисовке фрагмента всех преимуществ
   const getOffersTemplate = (isDisabled) => { // formOffers
 
-
     // код на получение всех оферсов по типу
     const getOffersByType = (type, allOffers) => {
       let typeOffers;
@@ -114,8 +112,7 @@ const createTripEventEditForm = (dataItem, routePointTypes, pointDestinations) =
       return typeOffers;
     };
 
-    const formOffers = getOffersByType(type, emptyFormOffers); // editFormOffers
-    // const formOffers = pointOffers;
+    const formOffers = getOffersByType(type, emptyFormOffers);
     return formOffers.reduce((total, element) => {
 
       // // код который сравнивает два массива и если совподающие объекты, то возвращает true
@@ -192,19 +189,16 @@ ${isActive ? `checked` : ``} ${isDisabled ? `disabled`:``}>
                     </label>
                     <input ${isDisabled ? `disabled`:``} class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${he.encode(basePrice.toString())}" onkeypress="return (event.charCode >= 48 && event.charCode <= 57)"   onkeyup="this.value = this.value.replace(/^0+(?=\\d)/,'');">
                   </div>
-<!--{isDateValid() ?  : disabled}-->
                   <button class="event__save-btn  btn  btn--blue" type="submit" ${isDisabled ? `disabled`:``}>${isSaving ? `Saving...` : `Save`}</button>
 <button class="event__reset-btn" type="reset" ${isDisabled ? `disabled`:``}>Cansel</button>
   
-                  <!--<button class="event__reset-btn" type="reset"> Cancel</button>-->
-    <!--{createEventRollupBtn()}-->
+    
                 </header>
                 <section class="event__details">
                   <section class="event__section  event__section--offers">
                     <h3 class="event__section-title  event__section-title--offers">Offers</h3>
 
                     <div class="event__available-offers">
-                    <!--editFormOffers-->
      ${getOffersTemplate(isDisabled)}
                     </div>
                   </section>
@@ -236,14 +230,10 @@ export default class AddNewPointView extends SmartView { // AbstractView
 
     this._datepickerFinish = null; // 1 здесь будем хранить экземпляр _datepicker т.е. открытый показанный _datepicker. Это нужно для того чтобы потом можно после закрытия формы удалить.
     this._datepickerStart = null;
-    // this._dateFrom = this._dataItem.dateFrom;
-    // this._dateTo = this._dataItem.dateTo;
-    // this._saveBtnElement = this.getElement().querySelector(`.event__save-btn`);
     this._TEXT_LIMIT = 20;
 
     this._submitHandler = this._submitHandler.bind(this);
     this._cancelClickHandler = this._cancelClickHandler.bind(this);
-    // 4
     this._changePriceHandler = this._changePriceHandler.bind(this); // бинд по замене price
     this._changeDestinationHandler = this._changeDestinationHandler.bind(this);
     this._eventChangeOfferHandler = this._eventChangeOfferHandler.bind(this);
@@ -257,7 +247,6 @@ export default class AddNewPointView extends SmartView { // AbstractView
 
   }
 
-  // 0.1
   // парсим типа, создаем копию данных с дополниетельным данными
   static parseDataItemToData(dataItem) {
     return Object.assign(
@@ -266,20 +255,15 @@ export default class AddNewPointView extends SmartView { // AbstractView
       {  isDisabled: false,
         isSaving: false,
         isDeleting: false}
-        // {isDueDate: task.dueDate !== null,}
     );
   }
 
   // 0.2 берем все данные которые накликал пользователь в форме редоктирвоания event. Далее эти данные отправим на перерисовку event.
   static parseDataToDataItem(data) {
     data = Object.assign({}, data);
-    // if (!data.isDueDate) {
-    //   data.dueDate = null;
-    // }
     delete data.isDisabled;
     delete data.isSaving;
     delete data.isDeleting;
-
     return data;
   }
 
@@ -303,7 +287,6 @@ export default class AddNewPointView extends SmartView { // AbstractView
   _setInnerHandlers() {
     this._eventInputPrice = this.getElement().querySelector(`.event__input--price`);
     this._eventInputPrice.addEventListener(`input`, this._changePriceHandler);
-    // this.getElement() это класс с itema c формой редоктирования в внутри
 
     this._eventInputDestination = this.getElement().querySelector(`.event__input--destination`);
     this._eventInputDestination.addEventListener(`change`, this._changeDestinationHandler);
@@ -319,7 +302,7 @@ export default class AddNewPointView extends SmartView { // AbstractView
   _changePriceHandler(evt) { // оброботчик в котором будем менять данные по цене
     evt.preventDefault();
     this.updateData({ // передаем только одну строчку которую хотим обновить т.к. assign создано выше
-      basePrice: parseInt(evt.target.value, 10) // 12 // this._dataItem.price
+      basePrice: parseInt(evt.target.value, 10)
     }, true); // при нажатии enter закрывается форма
   }
 
@@ -337,40 +320,6 @@ export default class AddNewPointView extends SmartView { // AbstractView
     getChangeDestination(evt.target.value);
     this._checkDate();
   }
-
-  // _eventChangeOfferHandler(evt) {
-  //   evt.preventDefault();
-  //   if (evt.target.attributes.checked) { // если был чекнут,
-  //     evt.target.removeAttribute(`checked`); // то удаляем чек
-  //   } else {
-  //     evt.target.setAttribute(`checked`, true); // если не был чекнут, то чекаем
-  //   }
-  //
-  //   // код по замене всех данных объекта активных offers
-  //   const getActiveOffers = () => { // target цель выбора пользователя
-  //     const newOffers = []; // массив со всеми активными объектами оферов
-  //     const idCheckOffers = []; // массив с чекнутыми офферами
-  //     const allEmptyOffers = this._dataItem.editFormOffers; // все не чекнутые офферы
-  //     const groupOffersElement = this.getElement().querySelector(`.event__available-offers`); // нашел группу где все оферы
-  //     const inputOfOffersElement = groupOffersElement.querySelectorAll(`input`); // выташил из нее все инпуты по оферам
-  //     inputOfOffersElement.forEach((item)=>{ // обхожу все инпуты
-  //       if (item.attributes.checked) { // если чекнут
-  //         idCheckOffers.push(item.attributes.id.textContent.slice(this._TEXT_LIMIT)); // то добавляем title офера в массив
-  //       }
-  //     });
-  //
-  //     // будем сравнивать title из общего массива оферров конкретного этого объекта с его выделеными оферами из idCheckOffers
-  //     for (let itemEmpty of allEmptyOffers) { // проходим по пустому массиву
-  //       idCheckOffers.some((item)=>{ // проходим по массиву где названия чеков
-  //         if (item === itemEmpty.title) { // если название чека совпадает с заголовком пустого офера
-  //           newOffers.push(itemEmpty); // то добавляем это объект в массив
-  //         } // получили массив чекнутых обектов для оферов
-  //       });
-  //     }
-  //     this.updateData(this._dataItem.offers = newOffers); // заменяем старые чекнутые оферы на новые
-  //   };
-  //   getActiveOffers(); // вызов функции по замене старых чекнутых оферов на новые
-  // }
 
   // метод по замене активных оферов
   _eventChangeOfferHandler(evt) {
@@ -415,8 +364,6 @@ export default class AddNewPointView extends SmartView { // AbstractView
         if (target === item.type.toLowerCase()) { // когда найдется выбор пользователя в нашем массиве
           this.updateData(this._dataItem.type = item.type);
           this.updateData(this._dataItem.editFormOffers = item.offers);
-
-          // this.updateData(this._dataItem.offers = item.offers); // код который перерисует, что выбрал ползьвавтель из offer в event
         }
       }
     };
@@ -437,13 +384,13 @@ export default class AddNewPointView extends SmartView { // AbstractView
   }
 
 
-  // 8
-  // код обнуляет данные до стартовых которые пришли в tripBoard
-  reset(tripItem) {
-    this.updateData(
-        tripItem
-    );
-  }
+  // // 8
+  // // код обнуляет данные до стартовых которые пришли в tripBoard
+  // reset(tripItem) {
+  //   this.updateData(
+  //       tripItem
+  //   );
+  // }
 
   // обработчик который вызывает сохраннеый колбек на отправку формы
   _submitHandler(evt) {
@@ -551,11 +498,6 @@ export default class AddNewPointView extends SmartView { // AbstractView
 
 
   _dueStartDateChangeHandler(userDate) {
-    // if ((dayjs(userDate).toDate() > this._dataItem.dateTo)) {
-    //   this._saveBtnElement.setAttribute(`disabled`, true);
-    // } else if ((dayjs(userDate).toDate() < this._dataItem.dateTo)) {
-    //   this._saveBtnElement.removeAttribute(`disabled`);
-    // }
     this.updateData({
       dateFrom: dayjs(userDate).toDate() // .hour(23).minute(59).second(59).toDate()
     }, true);
@@ -564,11 +506,6 @@ export default class AddNewPointView extends SmartView { // AbstractView
 
   // 4
   _dueFinishDateChangeHandler([userDate]) {
-    // if (dayjs(userDate).toDate() > this._dataItem.dateFrom) {
-    //   this._saveBtnElement.removeAttribute(`disabled`);
-    // } else if ((dayjs(userDate).toDate() < this._dataItem.dateFrom)) {
-    //   this._saveBtnElement.setAttribute(`disabled`, true);
-    // }
     this.updateData({
       dateTo: dayjs(userDate).toDate() // .hour(23).minute(59).second(59).toDate()
     }, true);
