@@ -13,7 +13,7 @@ import TripMenuView from "./view/trip-menu.js";
 import Api from "./api.js";
 import {MenuItem, UpdateType, FilterType} from "./const.js";
 
-const AUTHORIZATION = `Basic skuile`; // строка авторизации
+const AUTHORIZATION = `Basic skuilee`; // строка авторизации
 const END_POINT = `https://13.ecmascript.pages.academy/big-trip`; // зафиксированный адрес сервера
 const api = new Api(END_POINT, AUTHORIZATION); // создаем экземпляр нашего Api
 
@@ -115,6 +115,7 @@ Promise.all([
   api.getDestinations(),
 ])
   .then(([formOffers, points, pointDestinations]) => { // destinations в случае успешного запроса
+    console.log(points)
     offersModel.setOffers(formOffers);
     pointsModel.setPoints(UpdateType.INIT, points); // передать точки с типом обновления INIT
     destinationsModel.setDestinations(pointDestinations);

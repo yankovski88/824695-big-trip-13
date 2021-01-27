@@ -86,7 +86,8 @@ const createFieldTime = (dateStart, dateFinish, isDisabled) => {
 
 // функция по отрисовке всей формы
 const createTripEventEditForm = (dataItem, routePointTypes, pointDestinations) => { // сюда попадают данные и запоняется шаблон dataItem
-  const {dateFrom, dateTo, destination, basePrice, type, offers, isDisabled, isSaving} = dataItem;
+  const {dateFrom, dateTo, destination, basePrice, type, offers, isDisabled, isSaving, editFormOffers} = dataItem;
+  console.log(dataItem)
   const emptyFormOffers = routePointTypes;
   const allPointDestinations = pointDestinations.slice();
   const getDestinations = (allDestinations)=>{
@@ -252,6 +253,7 @@ export default class AddNewPointView extends SmartView { // AbstractView
   constructor(offers, pointDestinations) {
     super();
     this._dataItem = AddNewPointView.parseDataItemToData(BLANK_POINT); // dataItem 0 превращаем объект dataItem в объект data т.к. он более полный, было this._dataItem = dataItem;
+    console.log(this._dataItem)
     this._offers = offers;
     this._pointDestinations = pointDestinations;
 
@@ -282,7 +284,6 @@ export default class AddNewPointView extends SmartView { // AbstractView
         {isDisabled: false,
           isSaving: false,
           isDeleting: false,
-          isHidden: false,
         }
     );
   }
@@ -293,7 +294,6 @@ export default class AddNewPointView extends SmartView { // AbstractView
     delete data.isDisabled;
     delete data.isSaving;
     delete data.isDeleting;
-    delete data.isHidden;
 
     return data;
   }
@@ -337,14 +337,22 @@ export default class AddNewPointView extends SmartView { // AbstractView
 
   _changeDestinationHandler(evt) {
     evt.preventDefault();
+    // const nameDestinations = this._pointDestinations.reduce((acc, current) => {
+    //   return [...acc, current.name];
+    // }, []);
+    // if (!nameDestinations.includes(evt.target.value)) {
+    //   evt.target.setCustomValidity(`Данной точки маршрута не существует. Попробуйте выбрать из предложенного списка`);
+    // }
+
 
     // код по замене всех данных объекта destination на тот который выбрал пользователь
     const getChangeDestination = (target) => { // target цель выбора пользователя
       for (let item of this._pointDestinations) { // прохождение по массиву всех объектов. destinations передали импортом
         if (target === item.name) { // когда найдется выбор пользователя в нашем массиве
-          this.updateData(this._dataItem.destination = item); // то заменить прошлые данные на новый объект
+          this.updateData({destination: item}); // то заменить прошлые данные на новый объект
           evt.target.setCustomValidity(``);
-        } else if ((target !== item.name) || target === ``) {
+        }
+        else if ((target !== item.name) || target === ``) {
           evt.target.setCustomValidity(`Данной точки маршрута не существует. Выберите из спииска.`);
         }
       }
@@ -383,7 +391,9 @@ export default class AddNewPointView extends SmartView { // AbstractView
           } // получили массив чекнутых обектов для оферов
         });
       }
-      this.updateData(this._dataItem.offers = newOffers); // + заменяем старые чекнутые оферы на новые
+
+      this.updateData({offers: newOffers}); // + заменяем старые чекнутые оферы на новые
+
     };
     getActiveOffers(); //  вызов функции по замене старых чекнутых оферов на новые
     this._checkDate();
@@ -391,8 +401,12 @@ export default class AddNewPointView extends SmartView { // AbstractView
 
   // код по замене всех данных объекта offers на тот который выбрал пользователь
   _eventChangeTypeHandler(evt) {
+    this.updateData(this._dataItem.offers = []);
     evt.preventDefault();
     const getChangeOffers = (target) => { // target цель выбора пользователя
+      console.log(target)
+      console.log(this._offers)
+
       for (let item of this._offers) { // прохождение по массиву всех объектов. offers массив всех доп предложений
         if (target === item.type.toLowerCase()) { // когда найдется выбор пользователя в нашем массиве
           this.updateData(this._dataItem.type = item.type);

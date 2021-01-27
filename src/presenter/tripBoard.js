@@ -138,6 +138,7 @@ export default class TripBoard {
         this._eventPresenter[update.id].setViewState(State.SAVING); // 8mod event прзеентеру по определенному id добавили флаг SAVING
         // делаем связь с сервером
         this._api.updatePoint(update).then((response) => { // сперва обновляем точку на сервере и если там ок
+          console.log(update);
           this._pointsModel.updatePoint(updateType, response); // то обновляем точку локально
         }).catch(() => {
           this._eventPresenter[update.id].setViewState(State.ABORTING);

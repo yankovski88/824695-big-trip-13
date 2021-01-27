@@ -294,7 +294,7 @@ export default class TripEventEditFormView extends SmartView {
     const getChangeDestination = (target) => { // target цель выбора пользователя
       for (let item of this._pointDestinations) { // прохождение по массиву всех объектов. destinations передали импортом
         if (target === item.name) { // когда найдется выбор пользователя в нашем массиве
-          this.updateData(this._dataItem.destination = item); // то заменить прошлые данные на новый объект
+          this.updateData({destination: item}); // то заменить прошлые данные на новый объект
           evt.target.setCustomValidity(``);
         } else if (target !== item.name) {
           evt.target.setCustomValidity(`Данной точки маршрута не существует. Выберите из спииска.`);
@@ -351,7 +351,7 @@ export default class TripEventEditFormView extends SmartView {
           }
         });
       }
-      this.updateData(this._dataItem.offers = newOffers); // + заменяем старые чекнутые оферы на новые
+      this.updateData({offers: newOffers}); // + заменяем старые чекнутые оферы на новые
     };
     getActiveOffers(this._offers); //  вызов функции по замене старых чекнутых оферов на новые
     this._checkDate();
@@ -361,6 +361,8 @@ export default class TripEventEditFormView extends SmartView {
 
   _eventChangeTypeHandler(evt) {
     evt.preventDefault();
+    this.updateData(this._dataItem.offers = []);
+
     // код по замене всех данных объекта offers на тот который выбрал пользователь
     const getChangeOffers = (target) => { // target цель выбора пользователя
       for (let item of this._offers) { // прохождение по массиву всех объектов. offers массив всех доп предложений
@@ -383,6 +385,7 @@ export default class TripEventEditFormView extends SmartView {
   // обработчик который вызывает сохраннеый колбек на отправку формы
   _submitHandler(evt) {
     evt.preventDefault();
+    debugger
     this._callback.submit(this._dataItem);
   }
 
