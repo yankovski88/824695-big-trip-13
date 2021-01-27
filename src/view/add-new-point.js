@@ -401,16 +401,14 @@ export default class AddNewPointView extends SmartView { // AbstractView
 
   // код по замене всех данных объекта offers на тот который выбрал пользователь
   _eventChangeTypeHandler(evt) {
-    this.updateData(this._dataItem.offers = []);
+    this.updateData({offers: []});
     evt.preventDefault();
     const getChangeOffers = (target) => { // target цель выбора пользователя
-      console.log(target)
-      console.log(this._offers)
 
       for (let item of this._offers) { // прохождение по массиву всех объектов. offers массив всех доп предложений
         if (target === item.type.toLowerCase()) { // когда найдется выбор пользователя в нашем массиве
-          this.updateData(this._dataItem.type = item.type);
-          this.updateData(this._dataItem.editFormOffers = item.offers);
+          this.updateData({type: item.type});
+          this.updateData({editFormOffers: item.offers});
         }
       }
     };
@@ -440,6 +438,7 @@ export default class AddNewPointView extends SmartView { // AbstractView
 
   // обработчик который вызывает сохраннеый колбек на отправку формы
   _submitHandler(evt) {
+    debugger
     evt.preventDefault();
     this._callback.submit(this._dataItem);
   }

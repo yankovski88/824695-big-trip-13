@@ -13,7 +13,7 @@ import TripMenuView from "./view/trip-menu.js";
 import Api from "./api.js";
 import {MenuItem, UpdateType, FilterType} from "./const.js";
 
-const AUTHORIZATION = `Basic skuilee`; // строка авторизации
+const AUTHORIZATION = `Basic skuileee`; // строка авторизации
 const END_POINT = `https://13.ecmascript.pages.academy/big-trip`; // зафиксированный адрес сервера
 const api = new Api(END_POINT, AUTHORIZATION); // создаем экземпляр нашего Api
 

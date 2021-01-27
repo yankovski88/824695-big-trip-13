@@ -361,13 +361,13 @@ export default class TripEventEditFormView extends SmartView {
 
   _eventChangeTypeHandler(evt) {
     evt.preventDefault();
-    this.updateData(this._dataItem.offers = []);
+    this.updateData({offers: []});
 
     // код по замене всех данных объекта offers на тот который выбрал пользователь
     const getChangeOffers = (target) => { // target цель выбора пользователя
       for (let item of this._offers) { // прохождение по массиву всех объектов. offers массив всех доп предложений
         if (target === item.type.toLowerCase()) { // когда найдется выбор пользователя в нашем массиве
-          this.updateData(this._dataItem.type = item.type);
+          this.updateData({type: item.type});
         }
       }
     };
