@@ -89,7 +89,6 @@ const createTripEventEditForm = (dataItem, routePointTypes, pointDestinations) =
   const {dateFrom, dateTo, destination, basePrice, type, offers, isDisabled, isSaving} = dataItem;
   const emptyFormOffers = routePointTypes;
   const allPointDestinations = pointDestinations.slice();
-
   const getDestinations = (allDestinations)=>{
     const destinations = [];
     for (let item of allDestinations) {
@@ -219,10 +218,10 @@ ${isActive ? `checked` : ``} ${isDisabledElement ? `disabled` : ``}>
                   <button class="event__save-btn  btn  btn--blue" type="submit" ${isDisabled ? `disabled` : ``}>${isSaving ? `Saving...` : `Save`}</button>
 <button class="event__reset-btn" type="reset" ${isDisabled ? `disabled` : ``}>Cansel</button>
   
-    
                 </header>
                 <section class="event__details">
-                  <section class="event__section  event__section--offers">
+                
+                  <section class="event__section  event__section--offers  ${type === `sightseeing` || type === `transport` ? `visually-hidden` : ``}">
                     <h3 class="event__section-title  event__section-title--offers">Offers</h3>
 
                     <div class="event__available-offers">
@@ -282,7 +281,9 @@ export default class AddNewPointView extends SmartView { // AbstractView
         dataItem,
         {isDisabled: false,
           isSaving: false,
-          isDeleting: false}
+          isDeleting: false,
+          isHidden: false,
+        }
     );
   }
 
@@ -292,6 +293,8 @@ export default class AddNewPointView extends SmartView { // AbstractView
     delete data.isDisabled;
     delete data.isSaving;
     delete data.isDeleting;
+    delete data.isHidden;
+
     return data;
   }
 
@@ -398,6 +401,7 @@ export default class AddNewPointView extends SmartView { // AbstractView
       }
     };
 
+    // код который меняет флаг на спрятать элемент
     getChangeOffers(evt.target.value);
     this._checkDate();
   }
