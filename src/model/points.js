@@ -19,7 +19,7 @@ export default class PointsModel extends Observer {
   }
 
 
-  // 28 обновить точку
+  // обновить точку
   updatePoint(updateType, update) {
     const index = this._points.findIndex((point) => point.id === update.id);
 

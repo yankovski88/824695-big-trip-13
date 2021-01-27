@@ -6,14 +6,14 @@ export default class PointNewPresenter {
   // changeData поддерживаем получение колбека _handleViewAction который приходит с наружи
   constructor(eventContainer, changeData, offers, destinations) { // поддерживаем колбек который приходит с наружи, 5 наблюдатель changeMode
     this._eventContainer = eventContainer; // куда рендерить
-    this._changeData = changeData; // 3 нов. записываем в свойства класса
+    this._changeData = changeData; // нов. записываем в свойства класса
     this._offers = offers;
     this._destinations = destinations;
     this._addNewPointComponent = null;
 
     this._handleFormSubmit = this._handleFormSubmit.bind(this);
     this._onEscKeyPress = this._onEscKeyPress.bind(this);
-    this._handleCanselClick = this._handleCanselClick.bind(this); // 7del
+    this._handleCanselClick = this._handleCanselClick.bind(this);
     this._addBtn = document.querySelector(`.trip-main__event-add-btn`);
   }
 

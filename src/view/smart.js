@@ -7,7 +7,7 @@ export default class SmartView extends AbstractView {
   }
 
   // метод updateData, который будет обновлять данные в свойстве dataItem
-  updateData(update, justDataUpdating) { // метод принимает то (update), что нужно в этом dataItem обновить // justDataUpdating
+  updateData(update, justDataUpdating) { // метод принимает то (update), что нужно в этом dataItem обновить
     if (!update) { // если нет обновлений
       return; // то прекратить выполнение функции
     }
@@ -17,7 +17,7 @@ export default class SmartView extends AbstractView {
     this._dataItem = Object.assign(
         {},
         this._dataItem,
-        update, // и заменяем новыми
+        update // и заменяем новыми
     );
 
     if (justDataUpdating) { // флаг который говорит не нужно перерисовывать, а просто обнови данные(сохрани их). Это нужно исключительно для полей ввода т.к. они умеют сами себя перерисовывать.

@@ -36,7 +36,7 @@ export default class TripEventsSortView extends AbstractView {
   constructor(currentSortType) {
     super();
     this._currentSortType = currentSortType;
-    this._sortTypeChangeHandler = this._sortTypeChangeHandler.bind(this); // 7 bind колбека
+    this._sortTypeChangeHandler = this._sortTypeChangeHandler.bind(this); // bind колбека
   }
 
   getTemplate() {

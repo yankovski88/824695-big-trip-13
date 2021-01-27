@@ -2,10 +2,8 @@ import dayjs from "dayjs";
 import EventListEmptyMessageView from "../view/trip-event-msg.js";
 import TripEventsList from "../view/trip-events-list.js";
 import EventPresenter from "./event.js";
-
 import TripEventsSortView from "../view/trip-events-sort-view";
-import PointNewPresenter from "./point-new.js"; // 3add импортируем прзентер добавления точки
-
+import PointNewPresenter from "./point-new.js"; // импортируем прзентер добавления точки
 import {filter} from "../util/filter.js";
 import {renderElement, RenderPosition, remove} from "../util/render";
 import {SortType, UpdateType, UserAction, State} from "../const.js";
@@ -55,7 +53,7 @@ export default class TripBoard {
 
     // модели передали в инициализацию пока не знаю зачем
     this._pointsModel.addObserver(this._handleModelEvent); // stat  В модель точек с помощью обсерверов передали колбек который будет вызывать модель.
-    this._filterModel.addObserver(this._handleModelEvent); //
+    this._filterModel.addObserver(this._handleModelEvent);
     this._renderBoard();
   }
 
@@ -65,7 +63,7 @@ export default class TripBoard {
   }
 
   // метод уничтожения
-  destroy() { // stat
+  destroy() {
     this._clearBoard({resetSortType: true});
     remove(this._tripEventsListComponent); // удаляем куда список куда вставляются точки и статистика
 
@@ -103,9 +101,9 @@ export default class TripBoard {
     // теперь любое получение данных из модели будет учитывать любую выбраную пользователем сортировку
     switch (this._currentSortType) {
       case SortType.DAY:
-        return filtredPoints.slice().sort((a, b) => dayjs(a.dateFrom).diff(dayjs(b.dateFrom))); // 69
+        return filtredPoints.slice().sort((a, b) => dayjs(a.dateFrom).diff(dayjs(b.dateFrom)));
       case SortType.PRICE:
-        return filtredPoints.slice().sort((a, b) => b.basePrice - a.basePrice); // 70
+        return filtredPoints.slice().sort((a, b) => b.basePrice - a.basePrice);
       case SortType.TIME:
         return filtredPoints.slice().sort((a, b) => {
           const timeDurationFirst = a.dateTo - a.dateFrom; // итерируемся по каждому значению разницы времени
@@ -125,7 +123,7 @@ export default class TripBoard {
   }
 
   // обработать действие просмотра
-  _handleViewAction(actionType, updateType, update) { // 20 на основании того что хочет пользователь обновить модель
+  _handleViewAction(actionType, updateType, update) { // на основании того что хочет пользователь обновить модель
     // Здесь обрабатываем, что моедель изменилась и сходя из event(changeData)
     // Здесь будем вызывать обновление модели.
     // actionType - действие пользователя, нужно чтобы понять, какой метод модели вызвать. Нужен только для сообщения
@@ -135,10 +133,9 @@ export default class TripBoard {
     switch (actionType) {
       case UserAction.UPDATE_POINT: // на действие пользователя по обновлению точки
 
-        this._eventPresenter[update.id].setViewState(State.SAVING); // 8mod event прзеентеру по определенному id добавили флаг SAVING
+        this._eventPresenter[update.id].setViewState(State.SAVING); // event прзеентеру по определенному id добавили флаг SAVING
         // делаем связь с сервером
         this._api.updatePoint(update).then((response) => { // сперва обновляем точку на сервере и если там ок
-          console.log(update);
           this._pointsModel.updatePoint(updateType, response); // то обновляем точку локально
         }).catch(() => {
           this._eventPresenter[update.id].setViewState(State.ABORTING);
@@ -170,7 +167,7 @@ export default class TripBoard {
   // это колбек в котором модель вызывает его по обсерверу. Передаем его как налюдателя
   // этот метод передается как колбек observera. Он должен обработать что модель изменилась. И понять, что перерисовать берем updateType
   _handleModelEvent(updateType, data) { // В зависимости от типа изменений решаем, что делать
-    switch (updateType) { // 33
+    switch (updateType) {
       case UpdateType.PATCH:
         // - обновить часть списка (например, когда поменялось описание)
 
@@ -205,7 +202,6 @@ export default class TripBoard {
     this._eventPresenter = {}; // перезаписываем объект чтобы убить все ссылки на event презентеры
 
     // очищаем доску полностью
-
     remove(this._tripEventsSortComponent); // сортировка
     remove(this._eventListEmptyMessageComponent); // заглушка если нет точек
 
@@ -238,7 +234,7 @@ export default class TripBoard {
 
 
   // метод который сортирует, удаляет старые item и рендерит новые отсортированные item
-  _handleSortTypeChange(sortType) { // 13 получаем сигнал из вьюхи что был клик и теперь надо обработать его
+  _handleSortTypeChange(sortType) { // получаем сигнал из вьюхи что был клик и теперь надо обработать его
     if (this._currentSortType === sortType) {
       return;
     }
@@ -267,11 +263,11 @@ export default class TripBoard {
 
   // рендарим одну точку маршрута
   _renderItem(tripItem) {
-    const eventPresenter = new EventPresenter(this._tripEventsListComponent.getElement(), this._handleViewAction, this._handleModeChange, this._getOffers(), this._getDestinations()); //  27 this._handleEventChange,
+    const eventPresenter = new EventPresenter(this._tripEventsListComponent.getElement(), this._handleViewAction, this._handleModeChange, this._getOffers(), this._getDestinations());
     const offers = this._getOffers();
 
     const destinations = this._getDestinations();
-    // 3 наблюдатель
+    // наблюдатель
     this._eventPresenter[tripItem.id] = eventPresenter; // в объект записываем id с сылкой на этот event презентер
     // this._eventPresenter[tripItem.id] это 1608250670855: Event {…}
     eventPresenter.init(tripItem, offers, destinations); // .init(tripItem) презентер с id в котором были изменения перерисовывается

@@ -64,14 +64,14 @@ export default class EventPresenter {
       return; // Идет прерывание функции init чтобы дальше не выполнялась
     }
 
-    if (this._mode === Mode.DEFAULT) { // 8 наблюдатель
+    if (this._mode === Mode.DEFAULT) { // наблюдатель
       prevTripEventItemComponent.getElement().replaceWith(this._tripEventItemComponent.getElement());
     }
 
     if (this._mode === Mode.EDITING) { // наблюдатель
       prevTripEventEditComponent.getElement().replaceWith(this._tripEventItemComponent.getElement());
 
-      this._mode = Mode.DEFAULT; // 8mod в местах где используем мод не завбываем его сбрасывать
+      this._mode = Mode.DEFAULT; // в местах где используем мод не завбываем его сбрасывать
     }
 
     // нужно удалить ссылку на предыдущий item
@@ -85,14 +85,14 @@ export default class EventPresenter {
     remove(this._tripEventEditComponent);
   }
 
-  // 10 наблюдатель
+  // наблюдатель
   resetView() {
     if (this._mode !== Mode.DEFAULT) {
       this._replaceFormToItem();
     }
   }
 
-  // 8mod задача этого компонента взять и засетить компоненту все эти флаги
+  // задача этого компонента взять и засетить компоненту все эти флаги
   setViewState(state) {
     const resetFormState = () => {
       this._tripEventEditComponent.updateData({
@@ -136,7 +136,7 @@ export default class EventPresenter {
   _replaceFormToItem() {
     this._tripEventEditComponent.getElement().replaceWith(this._tripEventItemComponent.getElement());
 
-    this._mode = Mode.DEFAULT; // 13 наблюдатель. Текущий режим по умолчанию
+    this._mode = Mode.DEFAULT; // наблюдатель. Текущий режим по умолчанию
   }
 
 

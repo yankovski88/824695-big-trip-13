@@ -37,7 +37,7 @@ const renderMenu = () => {
 };
 
 // передаем экземпляр модели в конструктор
-const tripBoardPresenter = new TripBoard(tripEventElement, pointsModel, filterModel, api, offersModel, destinationsModel); //  61 создал призентер с контейнером в который вставим все
+const tripBoardPresenter = new TripBoard(tripEventElement, pointsModel, filterModel, api, offersModel, destinationsModel); // создал призентер с контейнером в который вставим все
 tripBoardPresenter.init(); // элементы доски
 
 const filterPresenter = new FilterPresenter(tripControlsElement, filterModel);
@@ -64,17 +64,17 @@ addBtn.addEventListener(`click`, (evt) => { // нашли кноку созда�
   filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING); // передаем в модель фильтра чтобы он обновился по умолчанию
   tripBoardPresenter.init(); // рисуем заново доску
 
-  tripBoardPresenter.createPoint(); // BLANK_POINT в борд презентере вызовем метод который показывает форму создания точки tripItems[0]
+  tripBoardPresenter.createPoint();
 });
 
 let statisticsComponent = null;
 
-// 1stat - Опишем обработчик перехода (пока пустой)
+// Опишем обработчик перехода (пока пустой)
 const handleSiteMenuClick = (menuItem) => {
   if (currentMenuActive === menuItem) {
     return;
   }
-  currentMenuActive = menuItem; //
+  currentMenuActive = menuItem;
 
   switch (currentMenuActive) {
     case MenuItem.ADD_NEW_POINT: // если пользователь кликнул добавить точку
@@ -115,7 +115,6 @@ Promise.all([
   api.getDestinations(),
 ])
   .then(([formOffers, points, pointDestinations]) => { // destinations в случае успешного запроса
-    console.log(points)
     offersModel.setOffers(formOffers);
     pointsModel.setPoints(UpdateType.INIT, points); // передать точки с типом обновления INIT
     destinationsModel.setDestinations(pointDestinations);

@@ -218,8 +218,8 @@ export default class TripEventEditFormView extends SmartView {
 
 
     this._setInnerHandlers(); // обновляем внутренние обработчики
-    this._setDatepickerStart(); // 4 устанавливаем _setDatepicker с помощью пакета flatpickr
-    this._setDatepickerFinish(); // 4 устанавливаем _setDatepicker с помощью пакета flatpickr
+    this._setDatepickerStart(); // устанавливаем _setDatepicker с помощью пакета flatpickr
+    this._setDatepickerFinish(); // устанавливаем _setDatepicker с помощью пакета flatpickr
   }
 
   // парсим типа, создаем копию данных с дополниетельным данными
@@ -256,9 +256,9 @@ export default class TripEventEditFormView extends SmartView {
     this.setSubmitHandler(this._callback.submit); // востанавливаем внешние обработчики. вызвали обработчик который был сохранен в объекте.
     // this.setCancelHandler(this._callback.cancel);
     this.setRollupBtnHandler(this._callback.rollupBtn);
-    this._setDatepickerFinish(); // 5 востанавливаем обработчик
-    this._setDatepickerStart(); // 5 востанавливаем обработчик
-    this.setDeleteClickHandler(this._callback.deleteClick); // 5del
+    this._setDatepickerFinish(); // востанавливаем обработчик
+    this._setDatepickerStart(); // востанавливаем обработчик
+    this.setDeleteClickHandler(this._callback.deleteClick);
   }
 
   // обработчик который заново навешивает внутрение обработчики
@@ -318,7 +318,7 @@ export default class TripEventEditFormView extends SmartView {
     const getActiveOffers = (editFormOffers) => { //  target цель выбора пользователя
       const newOffers = []; // массив со всеми активными объектами оферов
       const idCheckOffers = []; // массив с чекнутыми офферами
-      const allEmptyOffers = editFormOffers.slice(); // this._dataItem.editFormOffers; // все не чекнутые офферы
+      const allEmptyOffers = editFormOffers.slice(); // все не чекнутые офферы
 
       const groupOffersElement = this.getElement().querySelector(`.event__available-offers`); // нашел группу где все оферы
       const inputOfOffersElement = groupOffersElement.querySelectorAll(`input`); // выташил из нее все инпуты по оферам
@@ -385,7 +385,6 @@ export default class TripEventEditFormView extends SmartView {
   // обработчик который вызывает сохраннеый колбек на отправку формы
   _submitHandler(evt) {
     evt.preventDefault();
-    debugger
     this._callback.submit(this._dataItem);
   }
 
@@ -447,7 +446,7 @@ export default class TripEventEditFormView extends SmartView {
   }
 
 
-  // 3 обработчик устанавливаем setDatepicker
+  // обработчик устанавливаем setDatepicker
   _setDatepickerFinish() {
     if (this._datepickerFinish) { // если был ранее _datepicker
       // В случае обновления компонента удаляем вспомогательные DOM-элементы,
@@ -479,7 +478,7 @@ export default class TripEventEditFormView extends SmartView {
     this._checkDate();
   }
 
-  // 4
+
   _dueFinishDateChangeHandler([userDate]) {
     this.updateData({
       dateTo: dayjs(userDate).toDate()

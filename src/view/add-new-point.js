@@ -87,7 +87,6 @@ const createFieldTime = (dateStart, dateFinish, isDisabled) => {
 // функция по отрисовке всей формы
 const createTripEventEditForm = (dataItem, routePointTypes, pointDestinations) => { // сюда попадают данные и запоняется шаблон dataItem
   const {dateFrom, dateTo, destination, basePrice, type, offers, isDisabled, isSaving, editFormOffers} = dataItem;
-  console.log(dataItem)
   const emptyFormOffers = routePointTypes;
   const allPointDestinations = pointDestinations.slice();
   const getDestinations = (allDestinations)=>{
@@ -127,21 +126,9 @@ const createTripEventEditForm = (dataItem, routePointTypes, pointDestinations) =
 
 
   // функция по отрисовке фрагмента всех преимуществ
-  const getOffersTemplate = (isDisabledElement) => { // formOffers
+  const getOffersTemplate = (isDisabledElement) => {
 
-    // код на получение всех оферсов по типу
-    const getOffersByType = (itemType, allOffers) => {
-      let typeOffers;
-      for (let item of allOffers) {
-        if (itemType.toLowerCase() === item.type) {
-          typeOffers = item.offers;
-        }
-      }
-      return typeOffers;
-    };
-
-    const formOffers = getOffersByType(type, emptyFormOffers);
-    return formOffers.reduce((total, element) => {
+    return editFormOffers.reduce((total, element) => {
 
       // код который сравнивает два массива и если совподающие объекты, то возвращает true
       const isActive = offers.some((el) => {
@@ -249,15 +236,14 @@ ${isActive ? `checked` : ``} ${isDisabledElement ? `disabled` : ``}>
 };
 
 
-export default class AddNewPointView extends SmartView { // AbstractView
+export default class AddNewPointView extends SmartView {
   constructor(offers, pointDestinations) {
     super();
     this._dataItem = AddNewPointView.parseDataItemToData(BLANK_POINT); // dataItem 0 превращаем объект dataItem в объект data т.к. он более полный, было this._dataItem = dataItem;
-    console.log(this._dataItem)
     this._offers = offers;
     this._pointDestinations = pointDestinations;
 
-    this._datepickerFinish = null; // 1 здесь будем хранить экземпляр _datepicker т.е. открытый показанный _datepicker. Это нужно для того чтобы потом можно после закрытия формы удалить.
+    this._datepickerFinish = null; // здесь будем хранить экземпляр _datepicker т.е. открытый показанный _datepicker. Это нужно для того чтобы потом можно после закрытия формы удалить.
     this._datepickerStart = null;
     this._TEXT_LIMIT = 20;
 
@@ -267,8 +253,8 @@ export default class AddNewPointView extends SmartView { // AbstractView
     this._changeDestinationHandler = this._changeDestinationHandler.bind(this);
     this._eventChangeOfferHandler = this._eventChangeOfferHandler.bind(this);
     this._eventChangeTypeHandler = this._eventChangeTypeHandler.bind(this);
-    this._dueFinishDateChangeHandler = this._dueFinishDateChangeHandler.bind(this); // 2 заведем обработчик на _datepicker
-    this._dueStartDateChangeHandler = this._dueStartDateChangeHandler.bind(this); // 2 заведем обработчик на _datepicker
+    this._dueFinishDateChangeHandler = this._dueFinishDateChangeHandler.bind(this); // заведем обработчик на _datepicker
+    this._dueStartDateChangeHandler = this._dueStartDateChangeHandler.bind(this); // заведем обработчик на _datepicker
 
     this._setInnerHandlers(); // обновляем внутренние обработчики
     this._setDatepickerStart(); // устанавливаем _setDatepicker с помощью пакета flatpickr
@@ -288,7 +274,7 @@ export default class AddNewPointView extends SmartView { // AbstractView
     );
   }
 
-  // 0.2 берем все данные которые накликал пользователь в форме редоктирвоания event. Далее эти данные отправим на перерисовку event.
+  // берем все данные которые накликал пользователь в форме редоктирвоания event. Далее эти данные отправим на перерисовку event.
   static parseDataToDataItem(data) {
     data = Object.assign({}, data);
     delete data.isDisabled;
@@ -337,22 +323,13 @@ export default class AddNewPointView extends SmartView { // AbstractView
 
   _changeDestinationHandler(evt) {
     evt.preventDefault();
-    // const nameDestinations = this._pointDestinations.reduce((acc, current) => {
-    //   return [...acc, current.name];
-    // }, []);
-    // if (!nameDestinations.includes(evt.target.value)) {
-    //   evt.target.setCustomValidity(`Данной точки маршрута не существует. Попробуйте выбрать из предложенного списка`);
-    // }
-
-
     // код по замене всех данных объекта destination на тот который выбрал пользователь
     const getChangeDestination = (target) => { // target цель выбора пользователя
       for (let item of this._pointDestinations) { // прохождение по массиву всех объектов. destinations передали импортом
         if (target === item.name) { // когда найдется выбор пользователя в нашем массиве
           this.updateData({destination: item}); // то заменить прошлые данные на новый объект
           evt.target.setCustomValidity(``);
-        }
-        else if ((target !== item.name) || target === ``) {
+        } else if ((target !== item.name) || target === ``) {
           evt.target.setCustomValidity(`Данной точки маршрута не существует. Выберите из спииска.`);
         }
       }
@@ -438,7 +415,6 @@ export default class AddNewPointView extends SmartView { // AbstractView
 
   // обработчик который вызывает сохраннеый колбек на отправку формы
   _submitHandler(evt) {
-    debugger
     evt.preventDefault();
     this._callback.submit(this._dataItem);
   }
@@ -517,7 +493,7 @@ export default class AddNewPointView extends SmartView { // AbstractView
   }
 
 
-  // 3 обработчик устанавливаем setDatepicker
+  // обработчик устанавливаем setDatepicker
   _setDatepickerFinish() {
     if (this._datepickerFinish) { // если был ранее _datepicker
       // В случае обновления компонента удаляем вспомогательные DOM-элементы,
@@ -544,14 +520,14 @@ export default class AddNewPointView extends SmartView { // AbstractView
 
   _dueStartDateChangeHandler(userDate) {
     this.updateData({
-      dateFrom: dayjs(userDate).toDate() // .hour(23).minute(59).second(59).toDate()
+      dateFrom: dayjs(userDate).toDate()
     }, true);
     this._checkDate();
   }
 
   _dueFinishDateChangeHandler([userDate]) {
     this.updateData({
-      dateTo: dayjs(userDate).toDate() // .hour(23).minute(59).second(59).toDate()
+      dateTo: dayjs(userDate).toDate()
     }, true);
     this._checkDate();
   }
@@ -559,13 +535,19 @@ export default class AddNewPointView extends SmartView { // AbstractView
 
   // Перегружаем метод родителя removeElement,
   // чтобы при удалении удалялся более ненужный календарь
-  removeElement() { // 4del назвали метод удаления также как и родителя
+  removeElement() { // назвали метод удаления также как и родителя
     super.removeElement(); // вызывали родительский метод удаления
 
-    if (this._datepicker) { // и если есть datepicker
-      this._datepicker.destroy(); // то удаляем его
-      this._datepicker = null;
+    if (this._datepickerStart) {
+      this._datepickerStart.destroy();
+      this._datepickerStart = null;
     }
+
+    if (this._datepickerFinish) {
+      this._datepickerFinish.destroy();
+      this._datepickerFinish = null;
+    }
+
   }
 
 
