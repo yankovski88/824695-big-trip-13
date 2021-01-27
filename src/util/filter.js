@@ -2,7 +2,7 @@ import {FilterType} from "../const";
 
 const date = new Date();
 
-export const filter = { // 57
+export const filter = {
   [FilterType.EVERYTHING]: (points) => {
     return points;
   },
