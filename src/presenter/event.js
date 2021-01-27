@@ -43,8 +43,6 @@ export default class EventPresenter {
 
     this._tripEventEditComponent.setDeleteClickHandler(this._handleDeleteClick); // 6del установили обработчик на удаление
     this._tripEventEditComponent.setSubmitHandler(this._handleFormSubmit);
-    // редоктируемая точка
-    // this._replaceFormToItem(); // замена формы на точку маршрута
 
     this._tripEventItemComponent.setClickHandler(() => {
       this._replaceItemToForm();
@@ -127,13 +125,7 @@ export default class EventPresenter {
 
   // функция которая заменяет item маршрута на форму редоктирования
   _replaceItemToForm() {
-    // this._tripEventItemComponent.getElement().replaceWith(this._tripEventEditComponent.getElement());
-
-    // replace(this._tripEventEditComponent.getElement(), this._tripEventItemComponent.getElement());
-    // replace(this._tripEventItemComponent, this._tripEventEditComponent);
-
     replace(this._tripEventEditComponent, this._tripEventItemComponent);
-
 
     document.addEventListener(`keydown`, this._onEscKeyPress);
 
@@ -143,15 +135,7 @@ export default class EventPresenter {
 
   // функция которая из формы редоктирования делает предложение Item
   _replaceFormToItem() {
-    // this._tripEventEditComponent.getElement().replaceWith(this._tripEventItemComponent.getElement());
-
-    // replace(this._tripEventItemComponent.getElement(), this._tripEventEditComponent.getElement());
-
-    // replace(this._tripEventEditComponent, this._tripEventItemComponent);
     replace(this._tripEventItemComponent, this._tripEventEditComponent);
-
-
-    // replace(this._filterComponent, prevFilterComponent); // сделать
 
     this._mode = Mode.DEFAULT; // наблюдатель. Текущий режим по умолчанию
   }
