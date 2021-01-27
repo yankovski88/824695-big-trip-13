@@ -36,7 +36,7 @@ const BLANK_POINT = {
     ]
   },
   "basePrice": ``,
-  "editFormOffers": [
+  "allPointOffers": [
     {
       "title": `Choose meal`,
       "price": 120
@@ -86,7 +86,7 @@ const createFieldTime = (dateStart, dateFinish, isDisabled) => {
 
 // функция по отрисовке всей формы
 const createTripEventEditForm = (dataItem, routePointTypes, pointDestinations) => { // сюда попадают данные и запоняется шаблон dataItem
-  const {dateFrom, dateTo, destination, basePrice, type, offers, isDisabled, isSaving, editFormOffers} = dataItem;
+  const {dateFrom, dateTo, destination, basePrice, type, offers, isDisabled, isSaving, allPointOffers} = dataItem;
   const emptyFormOffers = routePointTypes;
   const allPointDestinations = pointDestinations.slice();
   const getDestinations = (allDestinations)=>{
@@ -128,7 +128,7 @@ const createTripEventEditForm = (dataItem, routePointTypes, pointDestinations) =
   // функция по отрисовке фрагмента всех преимуществ
   const getOffersTemplate = (isDisabledElement) => {
 
-    return editFormOffers.reduce((total, element) => {
+    return allPointOffers.reduce((total, element) => {
 
       // код который сравнивает два массива и если совподающие объекты, то возвращает true
       const isActive = offers.some((el) => {
@@ -361,7 +361,7 @@ export default class AddNewPointView extends SmartView {
       });
 
       // будем сравнивать title из общего массива оферров конкретного этого объекта с его выделеными оферами из idCheckOffers
-      for (let itemEmpty of this._dataItem.editFormOffers) { // проходим по пустому массиву
+      for (let itemEmpty of this._dataItem.allPointOffers) { // проходим по пустому массиву
         idCheckOffers.some((item) => { // проходим по массиву где названия чеков
           if (item === itemEmpty.title) { // если название чека совпадает с заголовком пустого офера
             newOffers.push(itemEmpty); // то добавляем это объект в массив
@@ -385,7 +385,7 @@ export default class AddNewPointView extends SmartView {
       for (let item of this._offers) { // прохождение по массиву всех объектов. offers массив всех доп предложений
         if (target === item.type.toLowerCase()) { // когда найдется выбор пользователя в нашем массиве
           this.updateData({type: item.type});
-          this.updateData({editFormOffers: item.offers});
+          this.updateData({allPointOffers: item.offers});
         }
       }
     };

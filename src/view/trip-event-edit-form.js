@@ -23,7 +23,7 @@ const createFieldTime = (dateStart, dateFinish, isDisabled) => {
 // функция по отрисовке всей формы
 const createTripEventEditForm = (dataItem, routePointTypes, pointDestinations) => { // destinations сюда попадают данные и запоняется шаблон
   const {dateFrom, dateTo, destination, basePrice, type, offers, isDisabled, isSaving, isDeleting} = dataItem;
-  const editFormOffers = routePointTypes.slice();
+  const allPointOffers = routePointTypes.slice();
   const allPointDestinations = pointDestinations;
 
   const getDestinations = (destinations) => {
@@ -84,7 +84,7 @@ const createTripEventEditForm = (dataItem, routePointTypes, pointDestinations) =
       }
       return typeOffers;
     };
-    const formOffers = getOffersByType(type, editFormOffers);
+    const formOffers = getOffersByType(type, allPointOffers);
     return formOffers.reduce((total, element) => {
 
       // код который сравнивает два массива и если совподающие объекты, то возвращает true
@@ -138,7 +138,7 @@ ${isActive ? `checked` : ``}>
                                 <fieldset class="event__type-group">
                         <legend class="visually-hidden">Event type</legend>
 
-       ${getEditType(getTypes(editFormOffers), isDisabled)}
+       ${getEditType(getTypes(allPointOffers), isDisabled)}
                       </fieldset>
                     </div>
                   </div>
@@ -315,10 +315,10 @@ export default class TripEventEditFormView extends SmartView {
     }
 
     // код по замене всех данных объекта активных offers
-    const getActiveOffers = (editFormOffers) => { //  target цель выбора пользователя
+    const getActiveOffers = (allPointOffers) => { //  target цель выбора пользователя
       const newOffers = []; // массив со всеми активными объектами оферов
       const idCheckOffers = []; // массив с чекнутыми офферами
-      const allEmptyOffers = editFormOffers.slice(); // все не чекнутые офферы
+      const allEmptyOffers = allPointOffers.slice(); // все не чекнутые офферы
 
       const groupOffersElement = this.getElement().querySelector(`.event__available-offers`); // нашел группу где все оферы
       const inputOfOffersElement = groupOffersElement.querySelectorAll(`input`); // выташил из нее все инпуты по оферам
