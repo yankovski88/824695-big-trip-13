@@ -1,7 +1,8 @@
-import {remove, renderElement, RenderPosition} from "../util/render";
+import {remove, renderElement, RenderPosition, replace} from "../util/render";
 import TripEventEditFormView from "../view/trip-event-edit-form";
 import TripEventItemView from "../view/trip-event-item";
 import {UserAction, UpdateType, State} from "../const.js";
+
 
 // 4 наблюдатель
 const Mode = {
@@ -28,6 +29,7 @@ export default class EventPresenter {
     this._handleFavoriteClick = this._handleFavoriteClick.bind(this);
     this._handleDeleteClick = this._handleDeleteClick.bind(this);
   }
+
   init(tripItem, offers, pointDestinations) {
     this._tripItem = tripItem;
     this._offers = offers;
@@ -135,6 +137,7 @@ export default class EventPresenter {
   // функция которая из формы редоктирования делает предложение Item
   _replaceFormToItem() {
     this._tripEventEditComponent.getElement().replaceWith(this._tripEventItemComponent.getElement());
+    replace(this._tripEventEditComponent.getElement(), this._tripEventItemComponent.getElement());
 
     this._mode = Mode.DEFAULT; // наблюдатель. Текущий режим по умолчанию
   }

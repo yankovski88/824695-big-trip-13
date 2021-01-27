@@ -32,7 +32,6 @@ export default class SmartView extends AbstractView {
     const parent = prevElement.parentElement; // сохранили родительский элементе формы edite
     this.removeElement(); // удаляем элемент Edit который сейчас создан данными
     const newElement = this.getElement(); // получаем новый элемент с новыми данными
-
     parent.replaceChild(newElement, prevElement); // заменяем старый элемент Edit на новый
 
     this.restoreHandlers(); // вызвали публичную функцию по востонавлению всех обработчиков
