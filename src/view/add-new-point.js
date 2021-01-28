@@ -1,126 +1,122 @@
 import dayjs from "dayjs";
 import he from "he"; // импортировал библиотеку по экранированию тегов от хакеров
 import SmartView from "./smart.js";
-import {destinations, dataOffers, TYPES} from "../mock/mock-trip-event-item.js";
 import flatpickr from "flatpickr";
 import "../../node_modules/flatpickr/dist/flatpickr.min.css";
-import {generateId} from "../mock/mock-trip-event-item";
-import {getRandomInteger} from "../util/common";
 
 const BLANK_POINT = {
-  "type": `Flight`,
+  "type": `flight`,
   "dateFrom": new Date(),
   "dateTo": new Date(),
-  "id": generateId(),
-  "isFavorite": getRandomInteger(0, 0),
+  "isFavorite": false,
   "destination": {
-    "description": `Lorem ipsum dolor sit amet, consectetur adipiscing…quet varius magna, non porta ligula feugiat eget.`,
-    "name": `Geneva`,
+    "name": ``,
+    "description": `Geneva, in a middle of Europe, for those who value comfort and coziness, with an embankment of a mighty river as a centre of attraction, famous for its crowded street markets with the best street food in Asia.`,
     "pictures": [
       {
-        "src": `http://picsum.photos/248/152?r=0.1689645545216163`,
-        "description": `event Geneva`
+        "src": `http://picsum.photos/300/200?r=0.2711095928296725`,
+        "description": `Geneva biggest supermarket`
+      },
+      {
+        "src": `http://picsum.photos/300/200?r=0.37260096662238484`,
+        "description": `Geneva zoo`
+      },
+      {
+        "src": `http://picsum.photos/300/200?r=0.24136485619435555`,
+        "description": `Geneva parliament building`
+      },
+      {
+        "src": `http://picsum.photos/300/200?r=0.020111608522429103`,
+        "description": `Geneva city centre`
+      },
+      {
+        "src": `http://picsum.photos/300/200?r=0.7188000886995232`,
+        "description": `Geneva parliament building`
       }
     ]
   },
   "basePrice": ``,
-  "editFormOffers": [
+  "allPointOffers": [
     {
-      "title": `Add luggage`,
-      "price": 50,
-    },
-    {
-      "title": `Switch to comfort class`,
-      "price": 80,
-    },
-    {
-      "title": `Add meal`,
-      "price": 15,
+      "title": `Choose meal`,
+      "price": 120
     },
     {
       "title": `Choose seats`,
-      "price": 5,
+      "price": 90
     },
     {
-      "title": `Travel by train`,
-      "price": 40,
+      "title": `Upgrade to comfort class`,
+      "price": 120
     },
+    {
+      "title": `Upgrade to business class`,
+      "price": 120
+    },
+    {
+      "title": `Add luggage`,
+      "price": 170
+    },
+    {
+      "title": `Business lounge`,
+      "price": 160
+    }
   ],
 
-  "offers": [{
-    "title": ``,
-    "price": ``,
-  }]
+  "offers": []
 };
 
+
 // функция по установке времени в форме
-const createFieldTime = (dateStart, dateFinish) => {
-  // if(dateStart === `` && dateFinish === ``){
-  //   const dateStart = new Date();
-  //   const dateFinish = new Date();
-  // }
+const createFieldTime = (dateStart, dateFinish, isDisabled) => {
+
   // установка формата времени
   const startTime = dayjs(dateStart).format(`DD/MM/YY HH:mm`);
   const finishTime = dayjs(dateFinish).format(`DD/MM/YY HH:mm`);
 
   return `<div class="event__field-group  event__field-group--time">
     <label class="visually-hidden" for="event-start-time-1">From</label>
-    <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${startTime}">
+    <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${startTime}" ${isDisabled ? `disabled` : ``}>
     &mdash;
 <label class="visually-hidden" for="event-end-time-1">To</label>
-    <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${finishTime}">
+    <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${finishTime}" ${isDisabled ? `disabled` : ``}>
     </div>`;
 };
 
+
 // функция по отрисовке всей формы
-const createTripEventEditForm = (dataItem) => { // сюда попадают данные и запоняется шаблон dataItem
-//   const type = `Flight`;
-//   const destination =  {"description": `Lorem ipsum dolor sit amet, consectetur adipiscing…quet varius magna, non porta ligula feugiat eget.`,
-//     "name": `Geneva`,
-//     "pictures": [
-//     {
-//       "src": `http://picsum.photos/248/152?r=0.1689645545216163`,
-//       "description": `event Geneva`
-//     }
-//   ]
-// }
-//   const basePrice = ``;
-//
-//   const editFormOffers = [
-//    {
-//      "title": `Add luggage`,
-//      "price": 50,
-//    },
-//    {
-//      "title": `Switch to comfort class`,
-//      "price": 80,
-//    },
-//    {
-//      "title": `Add meal`,
-//      "price": 15,
-//    },
-//    {
-//      "title": `Choose seats`,
-//      "price": 5,
-//    },
-//    {
-//      "title": `Travel by train`,
-//      "price": 40,
-//    },
-//  ];
-//
-//   const offers = [ {
-//     "title": ``,
-//     "price": ``,
-//   },];
+const createTripEventEditForm = (dataItem, routePointTypes, pointDestinations) => { // сюда попадают данные и запоняется шаблон dataItem
+  const {dateFrom, dateTo, destination, basePrice, type, offers, isDisabled, isSaving, allPointOffers} = dataItem;
+  const emptyFormOffers = routePointTypes;
+  const allPointDestinations = pointDestinations.slice();
+  const getDestinations = (allDestinations)=>{
+    const destinations = [];
+    for (let item of allDestinations) {
+      destinations.push(item.name);
+    }
+    return destinations;
+  };
 
-  const {dateFrom, dateTo, destination, basePrice, type, offers, editFormOffers} = dataItem; // additionalOffers, photos,
+  // код рисут список type
+  const createDestinationsTemplate = (destinations) => {
+    return destinations.reduce((total, element) => {
+      const isActiveDestinations = [destination].some((el) => {
+        return el === element;
+      });
+      return total + `<option value="${element}" ${isActiveDestinations ? `checked` : ``} ></option>`;
+    }, ``);
+  };
+
+  // функция по получению массива типов точки
+  const getTypes = (pointTypes)=>{
+    const types = [];
+    for (let item of pointTypes) {
+      types.push(item.type);
+    }
+    return types;
+  };
 
 
-  // const isDateValid = ()=>{
-  //   return dateFrom < dateTo
-  // };
-  // console.log(BLANK_POINT);
   // генерирует разметку фоток
   const createEventPhotoTemplate = () => {
     return destination.pictures.reduce((total, element) => { // перебрал все элементы photos и присоединил их в total
@@ -130,18 +126,18 @@ const createTripEventEditForm = (dataItem) => { // сюда попадают д�
 
 
   // функция по отрисовке фрагмента всех преимуществ
-  const getOffersTemplate = (formOffers) => {
+  const getOffersTemplate = (isDisabledElement) => {
 
-    return formOffers.reduce((total, element) => {
+    return allPointOffers.reduce((total, element) => {
 
-      // // код который сравнивает два массива и если совподающие объекты, то возвращает true
+      // код который сравнивает два массива и если совподающие объекты, то возвращает true
       const isActive = offers.some((el) => {
-        return el === element;
+        return el.title === element.title;
       });
-      if (element.title !== ``) {
+      if (element !== ``) {
         return total + `<div class="event__offer-selector">
                         <input class="event__offer-checkbox  visually-hidden" id="event-offer-luggage-${element.title}" type="checkbox" name="event-offer-luggage"  
-${isActive ? `checked` : ``}>
+${isActive ? `checked` : ``} ${isDisabledElement ? `disabled` : ``}>
                             <label class="event__offer-label" for="event-offer-luggage-${element.title}">
                           <span class="event__offer-title">${element.title}</span>
                           &plus;&euro;&nbsp;
@@ -154,17 +150,16 @@ ${isActive ? `checked` : ``}>
     }, ``);
   };
 
-  const createTime = createFieldTime(dateFrom, dateTo);
-
+  const createTime = createFieldTime(dateFrom, dateTo, isDisabled);
 
   // код рисут список type
-  const getEditType = (types) => {
+  const getEditType = (types, isDisabledElement) => {
     return types.reduce((total, element) => {
       const isActiveType = [type].some((el) => {
         return el === element;
       });
       return total + `<div class="event__type-item">
-                          <input ${isActiveType ? `checked` : ``}  id="event-type-${element.toLowerCase()}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${element.toLowerCase()}" >
+                          <input ${isActiveType ? `checked` : ``} ${isDisabledElement ? `disabled` : ``}  id="event-type-${element.toLowerCase()}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${element.toLowerCase()}" >
                           <label class="event__type-label  event__type-label--${element.toLowerCase()}" for="event-type-${element.toLowerCase()}-1">${element}</label>
                         </div>`;
     }, ``);
@@ -179,27 +174,23 @@ ${isActive ? `checked` : ``}>
                       <span class="visually-hidden">Choose event type</span>
                       <img class="event__type-icon" width="17" height="17" src="img/icons/${type.toLowerCase()}.png" alt="Event type icon">
                     </label>
-                    <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox">
+                    <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox" ${isDisabled ? `disabled` : ``}>
 
                     <div class="event__type-list">
                                 <fieldset class="event__type-group">
                         <legend class="visually-hidden">Event type</legend>
 
-       ${getEditType(TYPES)}
+       ${getEditType(getTypes(emptyFormOffers), isDisabled)}
                       </fieldset>
                     </div>
                   </div>
 
                   <div class="event__field-group  event__field-group--destination">
-                    <label class="event__label  event__type-output" for="event-destination-1">
-                      ${type}
-                      <!--? type : \`Flight\`-->
-                    </label>
-                    <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${he.encode(destination.name)}" list="destination-list-1">
+                    <label class="event__label  event__type-output" for="event-destination-1">${type}</label>
+                    <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${he.encode(destination.name)}" list="destination-list-1" ${isDisabled ? `disabled` : ``}>
                     <datalist id="destination-list-1">
-                      <option value="Amsterdam"></option>
-                      <option value="Geneva"></option>
-                      <option value="Chamonix"></option>
+                    ${createDestinationsTemplate(getDestinations(allPointDestinations))}
+           
                     </datalist>
                   </div>
 
@@ -210,26 +201,24 @@ ${isActive ? `checked` : ``}>
                       <span class="visually-hidden">Price</span>
                       &euro; 
                     </label>
-                    <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${he.encode(basePrice.toString())}" onkeypress="return (event.charCode >= 48 && event.charCode <= 57)"   onkeyup="this.value = this.value.replace(/^0+(?=\\d)/,'');">
+                    <input ${isDisabled ? `disabled` : ``} class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${he.encode(basePrice.toString())}" onkeypress="return (event.charCode >= 48 && event.charCode <= 57)"   onkeyup="this.value = this.value.replace(/^0+(?=\\d)/,'');">
                   </div>
-<!--{isDateValid() ?  : disabled}-->
-                  <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-<button class="event__reset-btn" type="reset">Cansel</button>
+                  <button class="event__save-btn  btn  btn--blue" type="submit" ${isDisabled ? `disabled` : ``}>${isSaving ? `Saving...` : `Save`}</button>
+<button class="event__reset-btn" type="reset" ${isDisabled ? `disabled` : ``}>Cansel</button>
   
-                  <!--<button class="event__reset-btn" type="reset"> Cancel</button>-->
-    <!--{createEventRollupBtn()}-->
                 </header>
                 <section class="event__details">
-                  <section class="event__section  event__section--offers">
+                
+                  <section class="event__section  event__section--offers  ${type === `sightseeing` || type === `transport` ? `visually-hidden` : ``}">
                     <h3 class="event__section-title  event__section-title--offers">Offers</h3>
 
                     <div class="event__available-offers">
-                    
-     ${getOffersTemplate(editFormOffers)}
+     ${getOffersTemplate(isDisabled)}
                     </div>
                   </section>
 
-                  <section class="event__section  event__section--destination">
+                  <section  
+                  class="event__section  event__section--destination  ${destination.name ? `` : `visually-hidden`}">
                     <h3 class="event__section-title  event__section-title--destination">Destination</h3>
                     <p class="event__destination-description">${destination.description}</p>
 
@@ -247,74 +236,72 @@ ${isActive ? `checked` : ``}>
 };
 
 
-export default class AddNewPointView extends SmartView { // AbstractView
-  constructor(dataItem = BLANK_POINT) {
+export default class AddNewPointView extends SmartView {
+  constructor(offers, pointDestinations) {
     super();
-    this._destinations = destinations;
-    this._dataItem = AddNewPointView.parseDataItemToData(dataItem); // 0 превращаем объект dataItem в объект data т.к. он более полный, было this._dataItem = dataItem;
-    this._datepickerFinish = null; // 1 здесь будем хранить экземпляр _datepicker т.е. открытый показанный _datepicker. Это нужно для того чтобы потом можно после закрытия формы удалить.
+    this._dataItem = AddNewPointView.parseDataItemToData(BLANK_POINT); // dataItem 0 превращаем объект dataItem в объект data т.к. он более полный, было this._dataItem = dataItem;
+    this._offers = offers;
+    this._pointDestinations = pointDestinations;
+
+    this._datepickerFinish = null; // здесь будем хранить экземпляр _datepicker т.е. открытый показанный _datepicker. Это нужно для того чтобы потом можно после закрытия формы удалить.
     this._datepickerStart = null;
-    this._dateFrom = this._dataItem.dateFrom;
-    this._dateTo = this._dataItem.dateTo;
-    this._saveBtnElement = this.getElement().querySelector(`.event__save-btn`);
-    this._spamText = 20;
+    this._TEXT_LIMIT = 20;
 
     this._submitHandler = this._submitHandler.bind(this);
     this._cancelClickHandler = this._cancelClickHandler.bind(this);
-    // 4
     this._changePriceHandler = this._changePriceHandler.bind(this); // бинд по замене price
     this._changeDestinationHandler = this._changeDestinationHandler.bind(this);
     this._eventChangeOfferHandler = this._eventChangeOfferHandler.bind(this);
     this._eventChangeTypeHandler = this._eventChangeTypeHandler.bind(this);
-    this._dueFinishDateChangeHandler = this._dueFinishDateChangeHandler.bind(this); // 2 заведем обработчик на _datepicker
-    this._dueStartDateChangeHandler = this._dueStartDateChangeHandler.bind(this); // 2 заведем обработчик на _datepicker
+    this._dueFinishDateChangeHandler = this._dueFinishDateChangeHandler.bind(this); // заведем обработчик на _datepicker
+    this._dueStartDateChangeHandler = this._dueStartDateChangeHandler.bind(this); // заведем обработчик на _datepicker
 
     this._setInnerHandlers(); // обновляем внутренние обработчики
-    this._setDatepickerStart(); // 4 устанавливаем _setDatepicker с помощью пакета flatpickr
-    this._setDatepickerFinish(); // 4 устанавливаем _setDatepicker с помощью пакета flatpickr
+    this._setDatepickerStart(); // устанавливаем _setDatepicker с помощью пакета flatpickr
+    this._setDatepickerFinish(); // устанавливаем _setDatepicker с помощью пакета flatpickr
 
   }
 
-  // 0.1
   // парсим типа, создаем копию данных с дополниетельным данными
   static parseDataItemToData(dataItem) {
     return Object.assign(
         {},
-        dataItem
-        // {isDueDate: task.dueDate !== null,}
+        dataItem,
+        {isDisabled: false,
+          isSaving: false,
+          isDeleting: false,
+        }
     );
   }
 
-  // 0.2 берем все данные которые накликал пользователь в форме редоктирвоания event. Далее эти данные отправим на перерисовку event.
+  // берем все данные которые накликал пользователь в форме редоктирвоания event. Далее эти данные отправим на перерисовку event.
   static parseDataToDataItem(data) {
     data = Object.assign({}, data);
-    // if (!data.isDueDate) {
-    //   data.dueDate = null;
-    // }
+    delete data.isDisabled;
+    delete data.isSaving;
+    delete data.isDeleting;
+
     return data;
   }
 
 
   getTemplate() {
-    return createTripEventEditForm(this._dataItem);
+    return createTripEventEditForm(this._dataItem, this._offers, this._pointDestinations);
   }
 
-  // 5
   // публичный метод который заново навешивает обработчики
   restoreHandlers() {
     this._setInnerHandlers(); // востанавливаем приватные обработчики
     this.setSubmitHandler(this._callback.submit); // востанавливаем внешние обработчики. вызвали обработчик который был сохранен в объекте.
     this.setCancelHandler(this._callback.cancel);
-    this._setDatepickerFinish(); // 5 востанавливаем обработчик
-    this._setDatepickerStart(); // 5 востанавливаем обработчик
+    this._setDatepickerFinish(); // востанавливаем обработчик
+    this._setDatepickerStart(); // востанавливаем обработчик
   }
 
-  // 3
   // обработчик который заново навешивает внутрение обработчики
   _setInnerHandlers() {
     this._eventInputPrice = this.getElement().querySelector(`.event__input--price`);
     this._eventInputPrice.addEventListener(`input`, this._changePriceHandler);
-    // this.getElement() это класс с itema c формой редоктирования в внутри
 
     this._eventInputDestination = this.getElement().querySelector(`.event__input--destination`);
     this._eventInputDestination.addEventListener(`change`, this._changeDestinationHandler);
@@ -326,26 +313,30 @@ export default class AddNewPointView extends SmartView { // AbstractView
     this._eventTypeGroup.addEventListener(`input`, this._eventChangeTypeHandler);
   }
 
-  // 3.1.
+
   _changePriceHandler(evt) { // оброботчик в котором будем менять данные по цене
     evt.preventDefault();
     this.updateData({ // передаем только одну строчку которую хотим обновить т.к. assign создано выше
-      basePrice: evt.target.value // 12 // this._dataItem.price
+      basePrice: parseInt(evt.target.value, 10)
     }, true); // при нажатии enter закрывается форма
   }
 
   _changeDestinationHandler(evt) {
     evt.preventDefault();
-
     // код по замене всех данных объекта destination на тот который выбрал пользователь
     const getChangeDestination = (target) => { // target цель выбора пользователя
-      for (let item of destinations) { // прохождение по массиву всех объектов. destinations передали импортом
+      for (let item of this._pointDestinations) { // прохождение по массиву всех объектов. destinations передали импортом
         if (target === item.name) { // когда найдется выбор пользователя в нашем массиве
-          this.updateData(this._dataItem.destination = item); // то заменить прошлые данные на новый объект
+          this.updateData({destination: item}); // то заменить прошлые данные на новый объект
+          evt.target.setCustomValidity(``);
+        } else if ((target !== item.name) || target === ``) {
+          evt.target.setCustomValidity(`Данной точки маршрута не существует. Выберите из спииска.`);
         }
       }
+
     };
     getChangeDestination(evt.target.value);
+    this._checkDate();
   }
 
   // метод по замене активных оферов
@@ -358,52 +349,63 @@ export default class AddNewPointView extends SmartView { // AbstractView
     }
 
     // код по замене всех данных объекта активных offers
-    const getActiveOffers = () => { // target цель выбора пользователя
+    const getActiveOffers = () => { //  target цель выбора пользователя
       const newOffers = []; // массив со всеми активными объектами оферов
       const idCheckOffers = []; // массив с чекнутыми офферами
-      const allEmptyOffers = this._dataItem.editFormOffers; // все не чекнутые офферы
       const groupOffersElement = this.getElement().querySelector(`.event__available-offers`); // нашел группу где все оферы
       const inputOfOffersElement = groupOffersElement.querySelectorAll(`input`); // выташил из нее все инпуты по оферам
-      inputOfOffersElement.forEach((item)=>{ // обхожу все инпуты
+      inputOfOffersElement.forEach((item) => { // обхожу все инпуты
         if (item.attributes.checked) { // если чекнут
-          idCheckOffers.push(item.attributes.id.textContent.slice(this._spamText)); // то добавляем title офера в массив
+          idCheckOffers.push(item.attributes.id.textContent.slice(this._TEXT_LIMIT)); // то добавляем title офера в массив
         }
       });
 
       // будем сравнивать title из общего массива оферров конкретного этого объекта с его выделеными оферами из idCheckOffers
-      for (let itemEmpty of allEmptyOffers) { // проходим по пустому массиву
-        idCheckOffers.some((item)=>{ // проходим по массиву где названия чеков
+      for (let itemEmpty of this._dataItem.allPointOffers) { // проходим по пустому массиву
+        idCheckOffers.some((item) => { // проходим по массиву где названия чеков
           if (item === itemEmpty.title) { // если название чека совпадает с заголовком пустого офера
             newOffers.push(itemEmpty); // то добавляем это объект в массив
           } // получили массив чекнутых обектов для оферов
         });
       }
-      this.updateData(this._dataItem.offers = newOffers); // заменяем старые чекнутые оферы на новые
+
+      this.updateData({offers: newOffers}); // + заменяем старые чекнутые оферы на новые
+
     };
-    getActiveOffers(); // вызов функции по замене старых чекнутых оферов на новые
+    getActiveOffers(); //  вызов функции по замене старых чекнутых оферов на новые
+    this._checkDate();
   }
 
-
+  // код по замене всех данных объекта offers на тот который выбрал пользователь
   _eventChangeTypeHandler(evt) {
+    this.updateData({offers: []});
     evt.preventDefault();
-
-    // код по замене всех данных объекта offers на тот который выбрал пользователь
     const getChangeOffers = (target) => { // target цель выбора пользователя
 
-      for (let item of dataOffers) { // прохождение по массиву всех объектов. offers массив всех доп предложений
-
+      for (let item of this._offers) { // прохождение по массиву всех объектов. offers массив всех доп предложений
         if (target === item.type.toLowerCase()) { // когда найдется выбор пользователя в нашем массиве
-
-          this.updateData(this._dataItem.type = item.type);
-          this.updateData(this._dataItem.editFormOffers = item.offers);
-          // this.updateData(this._dataItem.offers = item.offers); // код который перерисует, что выбрал ползьвавтель из offer в event
+          this.updateData({type: item.type});
+          this.updateData({allPointOffers: item.offers});
         }
       }
     };
+
+    // код который меняет флаг на спрятать элемент
     getChangeOffers(evt.target.value);
+    this._checkDate();
   }
 
-  // 8
+  // метод который после обновления проверяет дату и вводит disabled
+  _checkDate() {
+    if (this._dataItem.dateTo < this._dataItem.dateFrom) {
+      const saveBtnElement1 = this.getElement().querySelector(`.event__save-btn`);
+      saveBtnElement1.setAttribute(`disabled`, true);
+    } else if (this._dataItem.dateTo > this._dataItem.dateFrom) {
+      const saveBtnElement2 = this.getElement().querySelector(`.event__save-btn`);
+      saveBtnElement2.removeAttribute(`disabled`);
+    }
+  }
+
   // код обнуляет данные до стартовых которые пришли в tripBoard
   reset(tripItem) {
     this.updateData(
@@ -465,7 +467,33 @@ export default class AddNewPointView extends SmartView { // AbstractView
   }
 
 
-  // 3 обработчик устанавливаем setDatepicker
+  _setDatepickerStart() {
+    // код на удаление _datepicker если он был открыт ранее
+    if (this._datepickerStart) { // если был ранее _datepicker
+      // В случае обновления компонента удаляем вспомогательные DOM-элементы,
+      // которые создает flatpickr при инициализации
+      this._datepickerStart.destroy(); // то удаляем его
+      this._datepickerStart = null; // и зануляем его
+    }
+
+
+    if (this._dataItem) { // проверка или нужно вообще покаывать поле datepicker, вдруг пользователь скрыл
+      // flatpickr есть смысл инициализировать только в случае,
+      // если поле выбора даты доступно для заполнения
+      this._datepickerStart = flatpickr( // инициализируем это просто передаем элемент где вызывать datepickr
+          this.getElement().querySelector(`#event-start-time-1`), // вставляем поле куда нужно вставить datepicker
+          {
+            enableTime: true, // добавлена настройка времени
+            dateFormat: `d/m/y H:i`, // формат даты и времени
+            defaultDate: this._dataItem.dateFrom, // конечная дата со временем
+            onChange: this._dueStartDateChangeHandler, // На событие flatpickr передаём наш колбэк. типа addEventListner на datePicker. Пользоваетель в календаре выберет дату и мы ее сюда запишем
+          }
+      );
+    }
+  }
+
+
+  // обработчик устанавливаем setDatepicker
   _setDatepickerFinish() {
     if (this._datepickerFinish) { // если был ранее _datepicker
       // В случае обновления компонента удаляем вспомогательные DOM-элементы,
@@ -491,37 +519,35 @@ export default class AddNewPointView extends SmartView { // AbstractView
 
 
   _dueStartDateChangeHandler(userDate) {
-    if ((dayjs(userDate).toDate() > this._dateTo)) {
-      this._saveBtnElement.setAttribute(`disabled`, true);
-    } else if ((dayjs(userDate).toDate() < this._dateTo)) {
-      this._saveBtnElement.removeAttribute(`disabled`);
-    }
     this.updateData({
-      dateFrom: dayjs(userDate).toDate() // .hour(23).minute(59).second(59).toDate()
+      dateFrom: dayjs(userDate).toDate()
     }, true);
+    this._checkDate();
   }
 
-  // 4
   _dueFinishDateChangeHandler([userDate]) {
-    if (dayjs(userDate).toDate() > this._dateFrom) {
-      this._saveBtnElement.removeAttribute(`disabled`);
-    } else if ((dayjs(userDate).toDate() < this._dateFrom)) {
-      this._saveBtnElement.setAttribute(`disabled`, true);
-    }
     this.updateData({
-      dateTo: dayjs(userDate).toDate() // .hour(23).minute(59).second(59).toDate()
+      dateTo: dayjs(userDate).toDate()
     }, true);
+    this._checkDate();
   }
+
 
   // Перегружаем метод родителя removeElement,
   // чтобы при удалении удалялся более ненужный календарь
-  removeElement() { // 4del назвали метод удаления также как и родителя
+  removeElement() { // назвали метод удаления также как и родителя
     super.removeElement(); // вызывали родительский метод удаления
 
-    if (this._datepicker) { // и если есть datepicker
-      this._datepicker.destroy(); // то удаляем его
-      this._datepicker = null;
+    if (this._datepickerStart) {
+      this._datepickerStart.destroy();
+      this._datepickerStart = null;
     }
+
+    if (this._datepickerFinish) {
+      this._datepickerFinish.destroy();
+      this._datepickerFinish = null;
+    }
+
   }
 
 

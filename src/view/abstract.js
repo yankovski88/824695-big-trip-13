@@ -2,6 +2,7 @@ import {createElement} from "../util/render";
 
 // - Опишем компонент меню как класс, который уже возвращает готовый элемент, а не шаблон
 // компонент должен как-то собраться и сгененировать дом узлы, потом эти узлы получить и их отрендорить
+const SHAKE_ANIMATION_TIMEOUT = 600;
 
 export default class AbstractView {
   constructor() {
@@ -32,6 +33,14 @@ export default class AbstractView {
 
   removeElement() {
     this._element = null;
+  }
+
+  shake(callback) {
+    this.getElement().style.animation = `shake ${SHAKE_ANIMATION_TIMEOUT / 1000}s`;
+    setTimeout(() => {
+      this.getElement().style.animation = ``;
+      callback();
+    }, SHAKE_ANIMATION_TIMEOUT);
   }
 }
 

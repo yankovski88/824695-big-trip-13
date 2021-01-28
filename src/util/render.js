@@ -4,7 +4,7 @@ import AbstractView from "../view/abstract";
 const duration = require(`dayjs/plugin/duration`);
 dayjs.extend(duration); // это нужно чтобы работало вычетание дат
 
-// добавляет 0
+// добавляет
 const addZeroToNumber = (number) => {
   return (number < 10) ? `0${number}` : number;
 };
@@ -72,7 +72,7 @@ const createElement = (template) => {
 
 
 const remove = (component) => {
-  if (component === null) { // 43
+  if (component === null) {
     return;
   }
 

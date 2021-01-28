@@ -1,4 +1,4 @@
-// 2 реализуем класс паттерн наблиюдатель
+// реализуем класс паттерн наблиюдатель
 export default class Observer {
   constructor() {
     this._observers = []; // храним все колбеки

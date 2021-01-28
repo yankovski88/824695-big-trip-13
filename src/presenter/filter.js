@@ -1,24 +1,18 @@
 import TripFilterView from "../view/trip-filter.js";
-import {renderElement, RenderPosition, remove, replace} from "../util/render.js"; // replace
-// import {filter} from "../util/filter.js";
+import {renderElement, RenderPosition, remove, replace} from "../util/render.js";
 import {FilterType, UpdateType} from "../const.js";
 
-export default class FilterPresenter { // 59
-  constructor(filterContainer, filterModel) { // презентер должен уметь получать в себя 3 вещи pointsModel
+export default class FilterPresenter {
+  constructor(filterContainer, filterModel) { // презентер должен уметь получать в себя 2 вещи
     // filterContainer контейнер куда рисовать фильтры
     // filterModel модель откуда он будет брать данные для фильтра это флиьтр модель. Это текущий фильтр.
-    // pointsModel нужно чтобы по текущему фильтру посчитать колличество точек
     this._filterContainer = filterContainer;
     this._filterModel = filterModel;
-    // this._tasksModel = tasksModel;
     this._currentFilter = null;
-
     this._filterComponent = null;
 
     this._handleModelEvent = this._handleModelEvent.bind(this);
     this._handleFilterTypeChange = this._handleFilterTypeChange.bind(this);
-
-    // this._tasksModel.addObserver(this._handleModelEvent);
     this._filterModel.addObserver(this._handleModelEvent);
   }
 
@@ -30,7 +24,6 @@ export default class FilterPresenter { // 59
 
     this._filterComponent = new TripFilterView(filters, this._currentFilter);
     this._filterComponent.setFilterTypeChangeHandler(this._handleFilterTypeChange);
-    // renderElement(this._filterContainer, this._filterComponent, RenderPosition.BEFOREEND);
 
     if (prevFilterComponent === null) {
       renderElement(this._filterContainer, this._filterComponent, RenderPosition.BEFOREEND); // рендер фильтр
@@ -38,10 +31,8 @@ export default class FilterPresenter { // 59
     }
 
     replace(this._filterComponent, prevFilterComponent); // сделать
-    // this._filterComponent.replaceWith(prevFilterComponent); // ЧТО ЕСТЬ ЧТО НЕТУ
-    // prevFilterComponent.replaceWith(this._filterComponent); // ЧТО ЕСТЬ ЧТО НЕТУ
 
-    remove(prevFilterComponent); // ЧТО ЕСТЬ ЧТО НЕТУ
+    remove(prevFilterComponent);
   }
 
   _handleFilterTypeChange(filterType) {
@@ -58,22 +49,18 @@ export default class FilterPresenter { // 59
   }
 
   _getFilters() {
-    // const tasks = this._tasksModel.getTasks();
     return [
       {
         type: FilterType.EVERYTHING,
         name: `everything`,
-        // count: filter[FilterType.ALL](tasks).length
       },
       {
         type: FilterType.FUTURE,
         name: `future`,
-        // count: filter[FilterType.OVERDUE](tasks).length
       },
       {
         type: FilterType.PAST,
         name: `past`,
-        // count: filter[FilterType.TODAY](tasks).length
       },
     ];
   }

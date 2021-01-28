@@ -16,10 +16,11 @@ export const UserAction = {
 export const UpdateType = {
   PATCH: `PATCH`, // это требует самого минимального изменения юай
   MINOR: `MINOR`, // это изменение списка точек маршрута
-  MAJOR: `MAJOR` // это требуют перерисовки всей доски
+  MAJOR: `MAJOR`, // это требуют перерисовки всей доски
+  INIT: `INIT` // это нужно чтобы инициализировать проект когда данные придут с сревера
 };
 
-export const FilterType = { // 46 типы фильтров
+export const FilterType = { // типы фильтров
   EVERYTHING: `everything`,
   FUTURE: `future`,
   PAST: `past`,
@@ -30,4 +31,11 @@ export const MenuItem = {
   ADD_NEW_POINT: `ADD_NEW_POINT`,
   POINTS: `POINTS`,
   STATISTICS: `STATISTICS`
+};
+
+// состояние задачи могут быть сохранения или удаления
+export const State = {
+  SAVING: `SAVING`,
+  DELETING: `DELETING`,
+  ABORTING: `ABORTING`
 };

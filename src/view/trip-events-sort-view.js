@@ -1,7 +1,7 @@
 import AbstractView from "./abstract";
 import {SortType} from "../const.js";
 
-const createTripEventsSort = (currentSortType) => { // 45 ${currentSortType === SortType.DEFAULT ? `board__filter--active` : ``}
+const createTripEventsSort = (currentSortType) => {
   return `<form class="trip-events__trip-sort  trip-sort" action="#" method="get" >
             <div class="trip-sort__item  trip-sort__item--day">
               <input id="sort-day" class="trip-sort__input  visually-hidden" type="radio" name="trip-sort" value="sort-day" data-sort-type="${SortType.DAY}" checked ${currentSortType === SortType.DAY ? `checked` : ``}>
@@ -36,25 +36,24 @@ export default class TripEventsSortView extends AbstractView {
   constructor(currentSortType) {
     super();
     this._currentSortType = currentSortType;
-    this._sortTypeChangeHandler = this._sortTypeChangeHandler.bind(this); // 7 bind колбека
+    this._sortTypeChangeHandler = this._sortTypeChangeHandler.bind(this); // bind колбека
   }
 
   getTemplate() {
-    // return createTripEventsSort(); // this._dataItem
-    return createTripEventsSort(this._currentSortType); // 44
+    return createTripEventsSort(this._currentSortType);
   }
 
-  _sortTypeChangeHandler(evt) { // 4 создаем колбек по вызову сохраненного колбека
+  _sortTypeChangeHandler(evt) { // создаем колбек по вызову сохраненного колбека
     evt.preventDefault();
     // это обработчик отрисовки новый сортировки
-    this._callback.sortTypeChange(evt.path[0].dataset.sortType); // 6 если цель тег  A то  .SortType
+    this._callback.sortTypeChange(evt.path[0].dataset.sortType); // если цель тег  A то  .SortType
     // читаем дата сет атрибута evt.path[0].dataset.sortType по которому был клик
     // sortType это название которое идет сразу после data- Например data-sort-type
     // и вызваем сохраненный колбек
   }
 
   setSortTypeChangeHandler(callback) {
-    this._callback.sortTypeChange = callback; // 1 запись колбека из prezenter tripBoard
+    this._callback.sortTypeChange = callback; // запись колбека из prezenter tripBoard
     this.getElement().addEventListener(`change`, this._sortTypeChangeHandler);
     // this.getElement() этот елемент, 2 находим элемент для подписки
     // .addEventListener(`click`, 3 подписываемся на событие

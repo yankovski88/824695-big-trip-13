@@ -4,19 +4,14 @@ import {getDateDiff} from "../util/render.js";
 import AbstractView from "./abstract.js";
 
 const createTripEventItem = (dataItems) => {
-  const {id, type, basePrice, dateFrom, dateTo, destination, isFavorite, offers} = dataItems; // favorite
-
+  const {id, type, basePrice, dateFrom, dateTo, destination, isFavorite, offers} = dataItems;
   // код который определяет favorite или нет и если да то добовляет active
   const getFavorite = (favoriteItem) => {
-    if (favoriteItem) {
-      return `event__favorite-btn--active`;
-    }
-    return ``;
+    return favoriteItem ? `event__favorite-btn--active` : ``;
   };
 
   // код в котором получаем offers в точку event
   const getOffers = (dataOffers) => {
-    // console.log(dataOffers);
     return dataOffers.reduce((total, element) => { // перебрал все элементы photos и присоединил их в total
       if (element.title !== ``) {
         return total + `<li class="event__offer">
@@ -99,7 +94,6 @@ export default class TripEventItemView extends AbstractView {
   // в колбеке пишем код который был в колбеке
   _clickHandler(evt) {
     evt.preventDefault();
-    // console.log(this); // контекстом стала кнопка если закоментировать bind
     // а если не комментировать bind, то контекстом становится объект TripEventItem и уже из конструктора из объекта
     // {click: callback} уже вызовится наш сохраненый колбек
     this._callback.click();

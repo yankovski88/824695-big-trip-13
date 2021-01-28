@@ -1,8 +1,7 @@
-// импортируем вью для event
-import {remove, renderElement, RenderPosition} from "../util/render";
+import {remove, renderElement, RenderPosition, replace} from "../util/render";
 import TripEventEditFormView from "../view/trip-event-edit-form";
 import TripEventItemView from "../view/trip-event-item";
-import {UserAction, UpdateType} from "../const.js"; // 24
+import {UserAction, UpdateType, State} from "../const.js";
 
 
 // 4 наблюдатель
@@ -13,67 +12,66 @@ const Mode = {
 
 export default class EventPresenter {
   // changeData поддерживаем получение колбека _handleViewAction который приходит с наружи
-  constructor(eventContainer, changeData, changeMode) { // поддерживаем колбек который приходит с наружи   // 5 наблюдатель
+  constructor(eventContainer, changeData, changeMode) { // поддерживаем колбек который приходит с наружи 5 наблюдатель
     this._eventContainer = eventContainer; // куда рендерить
-    this._changeData = changeData; // 3 нов. записываем в свойства класса
-    this._changeMode = changeMode; // 6 наблюдатель
+    this._changeData = changeData; // нов. записываем в свойства класса
+    this._changeMode = changeMode; // наблюдатель
 
     this._tripEventItemComponent = null;
     this._tripEventEditComponent = null;
-    this._mode = Mode.DEFAULT; // 7 наблюдатель. Изначально говорим режим дефолт
+    this._mode = Mode.DEFAULT; // наблюдатель. Изначально говорим режим дефолт
 
-    this._totalPriceItem = 0;
     this._destinations = [];
-    this._startDateInfo = [];
 
     this._handleFormSubmit = this._handleFormSubmit.bind(this);
     this._onEscKeyPress = this._onEscKeyPress.bind(this);
     this._onEventRollupBtnClick = this._onEventRollupBtnClick.bind(this);
     this._handleFavoriteClick = this._handleFavoriteClick.bind(this);
-    this._handleDeleteClick = this._handleDeleteClick.bind(this); // 7del
+    this._handleDeleteClick = this._handleDeleteClick.bind(this);
   }
-  init(tripItem) {
+
+  init(tripItem, offers, pointDestinations) {
     this._tripItem = tripItem;
+    this._offers = offers;
+    this._pointDestinations = pointDestinations;
     // предыдущие компоненты будут null
     const prevTripEventItemComponent = this._tripEventItemComponent;
     const prevTripEventEditComponent = this._tripEventEditComponent;
+
     this._tripEventItemComponent = new TripEventItemView(this._tripItem); // виюха для item
-    this._tripEventEditComponent = new TripEventEditFormView(this._tripItem); // вьюха для формы редоктирования
+    this._tripEventEditComponent = new TripEventEditFormView(this._tripItem, this._offers, this._pointDestinations); // вьюха для формы редоктирования
 
     this._tripEventEditComponent.setDeleteClickHandler(this._handleDeleteClick); // 6del установили обработчик на удаление
     this._tripEventEditComponent.setSubmitHandler(this._handleFormSubmit);
-    // редоктируемый task
-    this._replaceFormToItem(); // замена формы на точку маршрута
-    // код который рендерит форму при клике на стрелку вниз в item
+
     this._tripEventItemComponent.setClickHandler(() => {
       this._replaceItemToForm();
       // при удалении элемента из дом обработчик можно не удалять. удалять на document и нов элемент обработчиком
-      // this._handleFormSubmit(tripItem);
     });
+
     // код который скрывает форму если кликнуть в форме редоктирования кнопку треугольник
     this._tripEventEditComponent.setRollupBtnHandler(() => {
       this._tripEventEditComponent.reset(this._tripItem); // код для удаления не сохраненных данных в форме
       this._replaceFormToItem();
     });
-    // код который скрывает форму при клике на кенсел
-    this._tripEventEditComponent.setCancelHandler(() => {
-      this._tripEventEditComponent.reset(this._tripItem); // код для удаления не сохраненных данных в форме
-      this._replaceFormToItem();
-    });
+
     // передали эти обработчики в соответствующие вьюхи
     this._tripEventItemComponent.setFavoriteClickHandler(this._handleFavoriteClick); // нужно сделать клик по favorite
 
     if (prevTripEventItemComponent === null || prevTripEventEditComponent === null) { // то компоненты не создавались
+
       renderElement(this._eventContainer, this._tripEventItemComponent, RenderPosition.BEFOREEND);
       return; // Идет прерывание функции init чтобы дальше не выполнялась
     }
 
-    if (this._mode === Mode.DEFAULT) { // 8 наблюдатель
+    if (this._mode === Mode.DEFAULT) { // наблюдатель
       prevTripEventItemComponent.getElement().replaceWith(this._tripEventItemComponent.getElement());
     }
 
-    if (this._mode === Mode.EDITING) { // 9 наблюдатель
-      prevTripEventEditComponent.getElement().replaceWith(this._tripEventEditComponent.getElement());
+    if (this._mode === Mode.EDITING) { // наблюдатель
+      prevTripEventEditComponent.getElement().replaceWith(this._tripEventItemComponent.getElement());
+
+      this._mode = Mode.DEFAULT; // в местах где используем мод не завбываем его сбрасывать
     }
 
     // нужно удалить ссылку на предыдущий item
@@ -87,41 +85,68 @@ export default class EventPresenter {
     remove(this._tripEventEditComponent);
   }
 
-  // 10 наблюдатель
+  // наблюдатель
   resetView() {
     if (this._mode !== Mode.DEFAULT) {
       this._replaceFormToItem();
     }
   }
 
+  // задача этого компонента взять и засетить компоненту все эти флаги
+  setViewState(state) {
+    const resetFormState = () => {
+      this._tripEventEditComponent.updateData({
+        isDisabled: false,
+        isSaving: false,
+        isDeleting: false
+      });
+    };
+
+    switch (state) {
+      case State.SAVING:
+        this._tripEventEditComponent.updateData({
+          isDisabled: true,
+          isSaving: true,
+        });
+        break;
+      case State.DELETING:
+        this._tripEventEditComponent.updateData({
+          isDisabled: true,
+          isDeleting: true
+        });
+        break;
+      case State.ABORTING:
+        this._tripEventItemComponent.shake(resetFormState);
+        this._tripEventEditComponent.shake(resetFormState);
+        break;
+    }
+  }
+
+
   // функция которая заменяет item маршрута на форму редоктирования
   _replaceItemToForm() {
-    this._tripEventItemComponent.getElement().replaceWith(this._tripEventEditComponent.getElement());
+    replace(this._tripEventEditComponent, this._tripEventItemComponent);
+
     document.addEventListener(`keydown`, this._onEscKeyPress);
 
-    this._changeMode(); // 11 наблюдатель. Сначала закрой везде Edit
-    this._mode = Mode.EDITING; // 12 наблюдатель. Потом добавь режим EDITING. Этот режим в init откроет редактирование
+    this._changeMode(); // наблюдатель. Сначала закрой везде Edit
+    this._mode = Mode.EDITING; // наблюдатель. Потом добавь режим EDITING. Этот режим в init откроет редактирование
   }
 
   // функция которая из формы редоктирования делает предложение Item
   _replaceFormToItem() {
-    this._tripEventEditComponent.getElement().replaceWith(this._tripEventItemComponent.getElement());
-    // document.removeEventListener(`keydown`, this._onEscKeyPress);
-    // document.removeEventListener(`submit`, this._handleFormSubmit);
-    // document.removeEventListener(`click`, this._onEventRollupBtnClick);
+    replace(this._tripEventItemComponent, this._tripEventEditComponent);
 
-    this._mode = Mode.DEFAULT; // 13 наблюдатель. Текущий режим по умолчанию
+    this._mode = Mode.DEFAULT; // наблюдатель. Текущий режим по умолчанию
   }
 
 
   // обраотчик сохранения формы
   _handleFormSubmit(update) {
-    this._changeData( // 10 Это обработчик с tripBoard this._handleEventChange в котором находится
-        UserAction.UPDATE_POINT, // 25
-        UpdateType.MINOR, // 26 идет обновление точки так что минор
+    this._changeData( // Это обработчик с tripBoard this._handleEventChange в котором находится
+        UserAction.UPDATE_POINT,
+        UpdateType.MINOR, // идет обновление точки так что минор
         update); // update это данные которые будут добавлены во вьюхе this._dataItem
-
-    this._replaceFormToItem(); // замена формы на точку маршрута
   }
 
   // обраотчик который закрывается без сохранения формы
@@ -142,10 +167,9 @@ export default class EventPresenter {
   // этот метод вызывает _changeData который пришел из tripBoard _handleEventChange который является тоже методом
   // для изменения данных. Этому методу нужно сообщить измененные данные. И здесь эти данные будем менять!!!
   _handleFavoriteClick() {
-    // debugger
     this._changeData( // и после замены сообщаем в changeData
-        UserAction.UPDATE_POINT, // 22 это говорит, что мы  только обновляем, а не удаляем или что-то добавляем.
-        UpdateType.MINOR, // 23 точка никуда не девается, а только помечается меняется или нет, так что это минор.
+        UserAction.UPDATE_POINT, // это говорит, что мы  только обновляем, а не удаляем или что-то добавляем.
+        UpdateType.MINOR, // точка никуда не девается, а только помечается меняется или нет, так что это минор.
         Object.assign(
             {},
             this._tripItem, // берем текущий объект описывающий задачу
@@ -157,8 +181,7 @@ export default class EventPresenter {
     );
   }
 
-
-  _handleDeleteClick(point) { // 8del
+  _handleDeleteClick(point) {
     this._changeData( // этот тот метод который вызовет изменения в модели
         UserAction.DELETE_POINT, // передаем что хотим удалить
         UpdateType.MINOR, // что изменения минор

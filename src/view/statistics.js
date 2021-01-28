@@ -58,7 +58,6 @@ const renderMoneyChart = (moneyCtx, labels, points) => {
             display: false,
             drawBorder: false
           },
-          // barThickness: 44,
         }],
         xAxes: [{
           ticks: {
@@ -69,7 +68,6 @@ const renderMoneyChart = (moneyCtx, labels, points) => {
             display: false,
             drawBorder: false
           },
-          // minBarLength: 50
         }],
       },
       legend: {
@@ -136,7 +134,6 @@ const renderTypeChart = (typeCtx, labels, points) => {
             display: false,
             drawBorder: false
           },
-          // barThickness: 44,
         }],
         xAxes: [{
           ticks: {
@@ -147,7 +144,6 @@ const renderTypeChart = (typeCtx, labels, points) => {
             display: false,
             drawBorder: false
           },
-          // minBarLength: 50
         }],
       },
       legend: {
@@ -218,7 +214,6 @@ const renderTimeChart = (timeCtx, labels, points) => {
             display: false,
             drawBorder: false
           },
-          // barThickness: 44,
         }],
         xAxes: [{
           ticks: {
@@ -229,7 +224,6 @@ const renderTimeChart = (timeCtx, labels, points) => {
             display: false,
             drawBorder: false
           },
-          // minBarLength: 50
         }],
       },
       legend: {
@@ -287,9 +281,9 @@ export default class statisticsView extends SmartView {
   // метод удаления всех
   removeElement() {
     super.removeElement();
-      this._moneyChart = null; // занулили изначальные типы сортировки
-      this._typeChart = null;
-      this._timeChart = null;
+    this._moneyChart = null; // занулили изначальные типы сортировки
+    this._typeChart = null;
+    this._timeChart = null;
   }
 
   // пока не знаю что код длеает
