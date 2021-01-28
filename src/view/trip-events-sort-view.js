@@ -32,7 +32,7 @@ const createTripEventsSort = (currentSortType) => {
 };
 
 
-export default class TripEventsSortView extends AbstractView {
+export default class TripEventsSort extends AbstractView {
   constructor(currentSortType) {
     super();
     this._currentSortType = currentSortType;

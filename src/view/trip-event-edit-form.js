@@ -193,12 +193,12 @@ ${isActive ? `checked` : ``}>
 };
 
 
-export default class TripEventEditFormView extends SmartView {
+export default class TripEventEditForm extends SmartView {
 
   constructor(dataItem, offers, pointDestinations) {
 
     super();
-    this._dataItem = TripEventEditFormView.parseDataItemToData(dataItem); // превращаем объект dataItem в объект data т.к. он более полный, было this._dataItem = dataItem;
+    this._dataItem = TripEventEditForm.parseDataItemToData(dataItem); // превращаем объект dataItem в объект data т.к. он более полный, было this._dataItem = dataItem;
     this._offers = offers;
     this._pointDestinations = pointDestinations;
     this._datepickerFinish = null;

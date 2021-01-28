@@ -236,7 +236,7 @@ ${isActive ? `checked` : ``} ${isDisabledElement ? `disabled` : ``}>
 };
 
 
-export default class AddNewPointView extends SmartView {
+export default class AddNewPoint extends SmartView {
   constructor(offers, pointDestinations) {
     super();
     this._dataItem = AddNewPointView.parseDataItemToData(BLANK_POINT); // dataItem 0 превращаем объект dataItem в объект data т.к. он более полный, было this._dataItem = dataItem;

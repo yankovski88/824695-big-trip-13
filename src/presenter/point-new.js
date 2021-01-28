@@ -2,7 +2,7 @@ import AddNewPointView from "../view/add-new-point.js";
 import {remove, renderElement, RenderPosition} from "../util/render";
 import {UserAction, UpdateType} from "../const.js";
 
-export default class PointNewPresenter {
+export default class PointNew {
   // changeData поддерживаем получение колбека _handleViewAction который приходит с наружи
   constructor(eventContainer, changeData, offers, destinations) { // поддерживаем колбек который приходит с наружи, 5 наблюдатель changeMode
     this._eventContainer = eventContainer; // куда рендерить

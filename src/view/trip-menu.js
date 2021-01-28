@@ -12,7 +12,7 @@ const createTripMenu = () => {
 };
 
 
-export default class TripMenuView extends AbstractView {
+export default class TripMenu extends AbstractView {
   constructor() {
     super();
 

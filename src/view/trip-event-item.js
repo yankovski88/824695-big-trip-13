@@ -70,7 +70,7 @@ const createTripEventItem = (dataItems) => {
             </li>`;
 };
 
-export default class TripEventItemView extends AbstractView {
+export default class TripEventItem extends AbstractView {
   constructor(dataItem) {
     super();
     this._dataItem = dataItem;

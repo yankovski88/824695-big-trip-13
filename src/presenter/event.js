@@ -10,7 +10,7 @@ const Mode = {
   EDITING: `EDITING`
 };
 
-export default class EventPresenter {
+export default class Event {
   // changeData поддерживаем получение колбека _handleViewAction который приходит с наружи
   constructor(eventContainer, changeData, changeMode) { // поддерживаем колбек который приходит с наружи 5 наблюдатель
     this._eventContainer = eventContainer; // куда рендерить
