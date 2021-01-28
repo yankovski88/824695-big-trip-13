@@ -28,7 +28,7 @@ export default class SmartView extends AbstractView {
 
   // Объявим метод updateElement, его задача удалить старый DOM элемент, вызвать генерацию нового и заменить один на другой
   updateElement() {
-    let prevElement = this.getElement(); // сохранили изначальную(предыдущую) форму редактирования
+    const prevElement = this.getElement(); // сохранили изначальную(предыдущую) форму редактирования
     const parent = prevElement.parentElement; // сохранили родительский элементе формы edite
     this.removeElement(); // удаляем элемент Edit который сейчас создан данными
     const newElement = this.getElement(); // получаем новый элемент с новыми данными
