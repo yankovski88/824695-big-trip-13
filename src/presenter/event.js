@@ -24,7 +24,7 @@ export default class EventPresenter {
     this._destinations = [];
 
     this._handleFormSubmit = this._handleFormSubmit.bind(this);
-    this._onEscKeyPress = this._onEscKeyPress.bind(this);
+    this._escKeyPressHandler = this._escKeyPressHandler.bind(this);
     this._onEventRollupBtnClick = this._onEventRollupBtnClick.bind(this);
     this._handleFavoriteClick = this._handleFavoriteClick.bind(this);
     this._handleDeleteClick = this._handleDeleteClick.bind(this);
@@ -127,7 +127,7 @@ export default class EventPresenter {
   _replaceItemToForm() {
     replace(this._tripEventEditComponent, this._tripEventItemComponent);
 
-    document.addEventListener(`keydown`, this._onEscKeyPress);
+    document.addEventListener(`keydown`, this._escKeyPressHandler);
 
     this._changeMode(); // наблюдатель. Сначала закрой везде Edit
     this._mode = Mode.EDITING; // наблюдатель. Потом добавь режим EDITING. Этот режим в init откроет редактирование
@@ -150,7 +150,7 @@ export default class EventPresenter {
   }
 
   // обраотчик который закрывается без сохранения формы
-  _onEscKeyPress(evt) {
+  _escKeyPressHandler(evt) {
     if (evt.key === `Escape` || evt.key === `Esc`) {
       evt.preventDefault();
       this._tripEventEditComponent.reset(this._tripItem); // код для удаления не сохраненных данных в форме
