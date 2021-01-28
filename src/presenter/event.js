@@ -70,7 +70,6 @@ export default class EventPresenter {
 
     if (this._mode === Mode.EDITING) { // наблюдатель
       prevTripEventEditComponent.getElement().replaceWith(this._tripEventItemComponent.getElement());
-
       this._mode = Mode.DEFAULT; // в местах где используем мод не завбываем его сбрасывать
     }
 
@@ -167,6 +166,9 @@ export default class EventPresenter {
   // этот метод вызывает _changeData который пришел из tripBoard _handleEventChange который является тоже методом
   // для изменения данных. Этому методу нужно сообщить измененные данные. И здесь эти данные будем менять!!!
   _handleFavoriteClick() {
+    const addBtn = document.querySelector(`.trip-main__event-add-btn`);
+    addBtn.removeAttribute(`disabled`);
+
     this._changeData( // и после замены сообщаем в changeData
         UserAction.UPDATE_POINT, // это говорит, что мы  только обновляем, а не удаляем или что-то добавляем.
         UpdateType.MINOR, // точка никуда не девается, а только помечается меняется или нет, так что это минор.
