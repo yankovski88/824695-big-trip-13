@@ -101,9 +101,9 @@ ${isActive ? `checked` : ``}>
                           <span class="event__offer-price">${element.price}</span>
                         </label>
                       </div>`;
-      } else {
-        return total + ``;
       }
+      return total + ``;
+
     }, ``);
   };
 

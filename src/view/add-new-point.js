@@ -89,7 +89,7 @@ const createTripEventEditForm = (dataItem, routePointTypes, pointDestinations) =
   const {dateFrom, dateTo, destination, basePrice, type, offers, isDisabled, isSaving, allPointOffers} = dataItem;
   const emptyFormOffers = routePointTypes;
   const allPointDestinations = pointDestinations.slice();
-  const getDestinations = (allDestinations)=>{
+  const getDestinations = (allDestinations) => {
     const destinations = [];
     for (const item of allDestinations) {
       destinations.push(item.name);
@@ -108,7 +108,7 @@ const createTripEventEditForm = (dataItem, routePointTypes, pointDestinations) =
   };
 
   // функция по получению массива типов точки
-  const getTypes = (pointTypes)=>{
+  const getTypes = (pointTypes) => {
     const types = [];
     for (const item of pointTypes) {
       types.push(item.type);
@@ -144,9 +144,9 @@ ${isActive ? `checked` : ``} ${isDisabledElement ? `disabled` : ``}>
                           <span class="event__offer-price">${element.price}</span>
                         </label>
                       </div>`;
-      } else {
-        return total + ``;
       }
+      return total + ``;
+
     }, ``);
   };
 
@@ -267,7 +267,8 @@ export default class AddNewPointView extends SmartView {
     return Object.assign(
         {},
         dataItem,
-        {isDisabled: false,
+        {
+          isDisabled: false,
           isSaving: false,
           isDeleting: false,
         }

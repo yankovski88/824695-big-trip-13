@@ -19,9 +19,9 @@ const createTripEventItem = (dataItems) => {
                       &plus;&euro;&nbsp;
                       <span class="event__offer-price">${element.price}</span>
                     </li>`;
-      } else {
-        return total + ``;
       }
+      return total + ``;
+
 
     }, ``);
   };
