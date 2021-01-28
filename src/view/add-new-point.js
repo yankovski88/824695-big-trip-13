@@ -91,7 +91,7 @@ const createTripEventEditForm = (dataItem, routePointTypes, pointDestinations) =
   const allPointDestinations = pointDestinations.slice();
   const getDestinations = (allDestinations)=>{
     const destinations = [];
-    for (let item of allDestinations) {
+    for (const item of allDestinations) {
       destinations.push(item.name);
     }
     return destinations;
@@ -110,7 +110,7 @@ const createTripEventEditForm = (dataItem, routePointTypes, pointDestinations) =
   // функция по получению массива типов точки
   const getTypes = (pointTypes)=>{
     const types = [];
-    for (let item of pointTypes) {
+    for (const item of pointTypes) {
       types.push(item.type);
     }
     return types;
@@ -325,7 +325,7 @@ export default class AddNewPointView extends SmartView {
     evt.preventDefault();
     // код по замене всех данных объекта destination на тот который выбрал пользователь
     const getChangeDestination = (target) => { // target цель выбора пользователя
-      for (let item of this._pointDestinations) { // прохождение по массиву всех объектов. destinations передали импортом
+      for (const item of this._pointDestinations) { // прохождение по массиву всех объектов. destinations передали импортом
         if (target === item.name) { // когда найдется выбор пользователя в нашем массиве
           this.updateData({destination: item}); // то заменить прошлые данные на новый объект
           evt.target.setCustomValidity(``);
@@ -361,7 +361,7 @@ export default class AddNewPointView extends SmartView {
       });
 
       // будем сравнивать title из общего массива оферров конкретного этого объекта с его выделеными оферами из idCheckOffers
-      for (let itemEmpty of this._dataItem.allPointOffers) { // проходим по пустому массиву
+      for (const itemEmpty of this._dataItem.allPointOffers) { // проходим по пустому массиву
         idCheckOffers.some((item) => { // проходим по массиву где названия чеков
           if (item === itemEmpty.title) { // если название чека совпадает с заголовком пустого офера
             newOffers.push(itemEmpty); // то добавляем это объект в массив
@@ -382,7 +382,7 @@ export default class AddNewPointView extends SmartView {
     evt.preventDefault();
     const getChangeOffers = (target) => { // target цель выбора пользователя
 
-      for (let item of this._offers) { // прохождение по массиву всех объектов. offers массив всех доп предложений
+      for (const item of this._offers) { // прохождение по массиву всех объектов. offers массив всех доп предложений
         if (target === item.type.toLowerCase()) { // когда найдется выбор пользователя в нашем массиве
           this.updateData({type: item.type});
           this.updateData({allPointOffers: item.offers});
