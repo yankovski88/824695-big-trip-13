@@ -11,7 +11,7 @@ const createEventMsg = ()=>{
       </div>`;
 };
 
-export default class EventListEmptyMessageView extends AbstractView {
+export default class TripEventMsg extends AbstractView {
 
   getTemplate() {
     return createEventMsg();

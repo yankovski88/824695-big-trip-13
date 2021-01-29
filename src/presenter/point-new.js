@@ -2,7 +2,7 @@ import AddNewPointView from "../view/add-new-point.js";
 import {remove, renderElement, RenderPosition} from "../util/render";
 import {UserAction, UpdateType} from "../const.js";
 
-export default class PointNewPresenter {
+export default class PointNew {
   // changeData поддерживаем получение колбека _handleViewAction который приходит с наружи
   constructor(eventContainer, changeData, offers, destinations) { // поддерживаем колбек который приходит с наружи, 5 наблюдатель changeMode
     this._eventContainer = eventContainer; // куда рендерить
@@ -12,7 +12,7 @@ export default class PointNewPresenter {
     this._addNewPointComponent = null;
 
     this._handleFormSubmit = this._handleFormSubmit.bind(this);
-    this._onEscKeyPress = this._onEscKeyPress.bind(this);
+    this._escKeyPressHandler = this._escKeyPressHandler.bind(this);
     this._handleCanselClick = this._handleCanselClick.bind(this);
     this._addBtn = document.querySelector(`.trip-main__event-add-btn`);
   }
@@ -28,7 +28,7 @@ export default class PointNewPresenter {
 
     renderElement(this._eventContainer, this._addNewPointComponent, RenderPosition.AFTERBEGIN);
 
-    document.addEventListener(`keydown`, this._onEscKeyPress);
+    document.addEventListener(`keydown`, this._escKeyPressHandler);
   }
 
   // метод по удалению event
@@ -40,7 +40,7 @@ export default class PointNewPresenter {
     remove(this._addNewPointComponent);
     this._addNewPointComponent = null;
 
-    document.removeEventListener(`keydown`, this._onEscKeyPress);
+    document.removeEventListener(`keydown`, this._escKeyPressHandler);
   }
 
   // засетить компоненту добавления задачи дизейблы
@@ -75,7 +75,7 @@ export default class PointNewPresenter {
   }
 
   // обраотчик который закрывается без сохранения формы
-  _onEscKeyPress(evt) {
+  _escKeyPressHandler(evt) {
     if (evt.key === `Escape` || evt.key === `Esc`) {
       evt.preventDefault();
       this._addBtn.removeAttribute(`disabled`);

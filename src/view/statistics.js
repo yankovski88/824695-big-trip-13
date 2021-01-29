@@ -256,7 +256,7 @@ const createStatisticsTemplate = () => {
 
 // - Заведём новый компонент, подключим в точку входа и отобразим по
 // умолчанию (временно)
-export default class statisticsView extends SmartView {
+export default class Statistics extends SmartView {
 // - Компонент статистики наследуем от умного компонента, потому что
 //   компонент статистики должен уметь сам себя перерисовывать по действию
 //   пользователя (выбор периода статистики)

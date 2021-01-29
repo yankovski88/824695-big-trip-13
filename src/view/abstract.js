@@ -4,10 +4,10 @@ import {createElement} from "../util/render";
 // компонент должен как-то собраться и сгененировать дом узлы, потом эти узлы получить и их отрендорить
 const SHAKE_ANIMATION_TIMEOUT = 600;
 
-export default class AbstractView {
+export default class Abstract {
   constructor() {
     // запрещаем создавать экземпляры классы абстракт напрямую
-    if (new.target === AbstractView) { // если класс abstract содрежит ссылку на конструткор
+    if (new.target === Abstract) { // если класс abstract содрежит ссылку на конструткор
       throw new Error(`class can not create from Abstract`);
     }
     this._element = null;

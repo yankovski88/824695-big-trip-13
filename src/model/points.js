@@ -1,7 +1,7 @@
 import Observer from "../util/observer.js";
 
 // создал модель
-export default class PointsModel extends Observer {
+export default class Points extends Observer {
   constructor() {
     super();
     this._points = []; // храним все точки маршрута

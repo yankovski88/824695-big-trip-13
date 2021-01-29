@@ -25,7 +25,7 @@ const createTripFilter = (filter, currentFilterType) => {
  </form>`;
 };
 
-export default class TripFilterView extends AbstractView {
+export default class TripFilter extends AbstractView {
   constructor(filters, currentFilterType) {
 
     super();

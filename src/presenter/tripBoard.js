@@ -1,5 +1,5 @@
 import dayjs from "dayjs";
-import EventListEmptyMessageView from "../view/trip-event-msg.js";
+import TripEventMsgView from "../view/trip-event-msg.js";
 import TripEventsList from "../view/trip-events-list.js";
 import EventPresenter from "./event.js";
 import TripEventsSortView from "../view/trip-events-sort-view";
@@ -21,7 +21,7 @@ export default class TripBoard {
     this._api = api;
     this._offersModel = offersModel;
 
-    this._eventListEmptyMessageComponent = new EventListEmptyMessageView();
+    this._eventListEmptyMessageComponent = new TripEventMsgView();
     this._tripEventsListComponent = new TripEventsList();
     this._loadingComponent = new LoadingView(); // спинер это вот этот компонент
     this._tripEventsSortComponent = null;

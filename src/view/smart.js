@@ -1,6 +1,6 @@
 import AbstractView from "./abstract.js";
 
-export default class SmartView extends AbstractView {
+export default class Smart extends AbstractView {
   constructor() {
     super();
     this._dataItem = {}; // не
@@ -15,9 +15,9 @@ export default class SmartView extends AbstractView {
 
     // изменяем данные которые пришли
     this._dataItem = Object.assign(
-        {},
-        this._dataItem,
-        update // и заменяем новыми
+      {},
+      this._dataItem,
+      update // и заменяем новыми
     );
 
     if (justDataUpdating) { // флаг который говорит не нужно перерисовывать, а просто обнови данные(сохрани их). Это нужно исключительно для полей ввода т.к. они умеют сами себя перерисовывать.
@@ -28,11 +28,14 @@ export default class SmartView extends AbstractView {
 
   // Объявим метод updateElement, его задача удалить старый DOM элемент, вызвать генерацию нового и заменить один на другой
   updateElement() {
-    let prevElement = this.getElement(); // сохранили изначальную(предыдущую) форму редактирования
+    const prevElement = this.getElement(); // сохранили изначальную(предыдущую) форму редактирования
     const parent = prevElement.parentElement; // сохранили родительский элементе формы edite
+
     this.removeElement(); // удаляем элемент Edit который сейчас создан данными
     const newElement = this.getElement(); // получаем новый элемент с новыми данными
-    parent.replaceChild(newElement, prevElement); // заменяем старый элемент Edit на новый
+    if (parent) {
+      parent.replaceChild(newElement, prevElement); // заменяем старый элемент Edit на новый
+    }
 
     this.restoreHandlers(); // вызвали публичную функцию по востонавлению всех обработчиков
   }

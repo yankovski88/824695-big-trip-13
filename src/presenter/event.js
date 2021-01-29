@@ -10,7 +10,7 @@ const Mode = {
   EDITING: `EDITING`
 };
 
-export default class EventPresenter {
+export default class Event {
   // changeData поддерживаем получение колбека _handleViewAction который приходит с наружи
   constructor(eventContainer, changeData, changeMode) { // поддерживаем колбек который приходит с наружи 5 наблюдатель
     this._eventContainer = eventContainer; // куда рендерить
@@ -24,7 +24,7 @@ export default class EventPresenter {
     this._destinations = [];
 
     this._handleFormSubmit = this._handleFormSubmit.bind(this);
-    this._onEscKeyPress = this._onEscKeyPress.bind(this);
+    this._escKeyPressHandler = this._escKeyPressHandler.bind(this);
     this._onEventRollupBtnClick = this._onEventRollupBtnClick.bind(this);
     this._handleFavoriteClick = this._handleFavoriteClick.bind(this);
     this._handleDeleteClick = this._handleDeleteClick.bind(this);
@@ -70,7 +70,6 @@ export default class EventPresenter {
 
     if (this._mode === Mode.EDITING) { // наблюдатель
       prevTripEventEditComponent.getElement().replaceWith(this._tripEventItemComponent.getElement());
-
       this._mode = Mode.DEFAULT; // в местах где используем мод не завбываем его сбрасывать
     }
 
@@ -127,7 +126,7 @@ export default class EventPresenter {
   _replaceItemToForm() {
     replace(this._tripEventEditComponent, this._tripEventItemComponent);
 
-    document.addEventListener(`keydown`, this._onEscKeyPress);
+    document.addEventListener(`keydown`, this._escKeyPressHandler);
 
     this._changeMode(); // наблюдатель. Сначала закрой везде Edit
     this._mode = Mode.EDITING; // наблюдатель. Потом добавь режим EDITING. Этот режим в init откроет редактирование
@@ -150,7 +149,7 @@ export default class EventPresenter {
   }
 
   // обраотчик который закрывается без сохранения формы
-  _onEscKeyPress(evt) {
+  _escKeyPressHandler(evt) {
     if (evt.key === `Escape` || evt.key === `Esc`) {
       evt.preventDefault();
       this._tripEventEditComponent.reset(this._tripItem); // код для удаления не сохраненных данных в форме
@@ -167,6 +166,9 @@ export default class EventPresenter {
   // этот метод вызывает _changeData который пришел из tripBoard _handleEventChange который является тоже методом
   // для изменения данных. Этому методу нужно сообщить измененные данные. И здесь эти данные будем менять!!!
   _handleFavoriteClick() {
+    const addBtn = document.querySelector(`.trip-main__event-add-btn`);
+    addBtn.removeAttribute(`disabled`);
+
     this._changeData( // и после замены сообщаем в changeData
         UserAction.UPDATE_POINT, // это говорит, что мы  только обновляем, а не удаляем или что-то добавляем.
         UpdateType.MINOR, // точка никуда не девается, а только помечается меняется или нет, так что это минор.

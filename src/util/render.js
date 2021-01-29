@@ -1,8 +1,8 @@
 import dayjs from "dayjs";
 import AbstractView from "../view/abstract";
-/* global require */
-const duration = require(`dayjs/plugin/duration`);
+import duration from "dayjs/plugin/duration";
 dayjs.extend(duration); // это нужно чтобы работало вычетание дат
+
 
 // добавляет
 const addZeroToNumber = (number) => {

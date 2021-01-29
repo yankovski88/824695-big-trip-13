@@ -28,7 +28,7 @@ const createTripEventEditForm = (dataItem, routePointTypes, pointDestinations) =
 
   const getDestinations = (destinations) => {
     const nameDestinations = [];
-    for (let item of destinations) {
+    for (const item of destinations) {
       nameDestinations.push(item.name);
     }
     return nameDestinations;
@@ -47,7 +47,7 @@ const createTripEventEditForm = (dataItem, routePointTypes, pointDestinations) =
   // функция по получению массива типов точки
   const getTypes = (pointTypes) => {
     const types = [];
-    for (let item of pointTypes) {
+    for (const item of pointTypes) {
       types.push(item.type);
     }
     return types;
@@ -77,7 +77,7 @@ const createTripEventEditForm = (dataItem, routePointTypes, pointDestinations) =
     const getOffersByType = (typePoint, formOffers) => {
 
       let typeOffers;
-      for (let item of formOffers) {
+      for (const item of formOffers) {
         if (typePoint.toLowerCase() === item.type) {
           typeOffers = item.offers;
         }
@@ -101,9 +101,9 @@ ${isActive ? `checked` : ``}>
                           <span class="event__offer-price">${element.price}</span>
                         </label>
                       </div>`;
-      } else {
-        return total + ``;
       }
+      return total + ``;
+
     }, ``);
   };
 
@@ -193,12 +193,12 @@ ${isActive ? `checked` : ``}>
 };
 
 
-export default class TripEventEditFormView extends SmartView {
+export default class TripEventEditForm extends SmartView {
 
   constructor(dataItem, offers, pointDestinations) {
 
     super();
-    this._dataItem = TripEventEditFormView.parseDataItemToData(dataItem); // превращаем объект dataItem в объект data т.к. он более полный, было this._dataItem = dataItem;
+    this._dataItem = TripEventEditForm.parseDataItemToData(dataItem); // превращаем объект dataItem в объект data т.к. он более полный, было this._dataItem = dataItem;
     this._offers = offers;
     this._pointDestinations = pointDestinations;
     this._datepickerFinish = null;
@@ -292,7 +292,7 @@ export default class TripEventEditFormView extends SmartView {
 
     // код по замене всех данных объекта destination на тот который выбрал пользователь
     const getChangeDestination = (target) => { // target цель выбора пользователя
-      for (let item of this._pointDestinations) { // прохождение по массиву всех объектов. destinations передали импортом
+      for (const item of this._pointDestinations) { // прохождение по массиву всех объектов. destinations передали импортом
         if (target === item.name) { // когда найдется выбор пользователя в нашем массиве
           this.updateData({destination: item}); // то заменить прошлые данные на новый объект
           evt.target.setCustomValidity(``);
@@ -333,7 +333,7 @@ export default class TripEventEditFormView extends SmartView {
       const typeEmptyOffers = [];
       const eventType = this.getElement().querySelector(`.event__type-output`).textContent.toLowerCase();
       // будем сравнивать title из общего массива оферров конкретного этого объекта с его выделеными оферами из idCheckOffers
-      for (let itemEmpty of allEmptyOffers) { // проходим по пустому массиву
+      for (const itemEmpty of allEmptyOffers) { // проходим по пустому массиву
 
         if (eventType === itemEmpty.type) {
           typeEmptyOffers.push(itemEmpty);
@@ -342,9 +342,9 @@ export default class TripEventEditFormView extends SmartView {
 
 
       // будем сравнивать title из общего массива оферров конкретного этого объекта с его выделеными оферами из idCheckOffers
-      for (let itemEmpty of typeEmptyOffers) { // проходим по пустому массиву
+      for (const itemEmpty of typeEmptyOffers) { // проходим по пустому массиву
         idCheckOffers.some((item) => { // проходим по массиву где названия чеков
-          for (let itemEmptyOffer of itemEmpty.offers) {
+          for (const itemEmptyOffer of itemEmpty.offers) {
             if (item === itemEmptyOffer.title) { // если название чека совпадает с заголовком пустого офера
               newOffers.push(itemEmptyOffer); // то добавляем это объект в массив
             } // получили массив чекнутых обектов для оферов
@@ -365,7 +365,7 @@ export default class TripEventEditFormView extends SmartView {
 
     // код по замене всех данных объекта offers на тот который выбрал пользователь
     const getChangeOffers = (target) => { // target цель выбора пользователя
-      for (let item of this._offers) { // прохождение по массиву всех объектов. offers массив всех доп предложений
+      for (const item of this._offers) { // прохождение по массиву всех объектов. offers массив всех доп предложений
         if (target === item.type.toLowerCase()) { // когда найдется выбор пользователя в нашем массиве
           this.updateData({type: item.type});
         }
