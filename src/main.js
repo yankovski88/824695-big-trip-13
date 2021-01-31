@@ -1,6 +1,6 @@
 import {renderElement, RenderPosition, remove} from "./util/render";
 
-import TripBoard from "./presenter/tripBoard";
+import TripBoard from "./presenter/trip-board.js";
 import PointsModel from "./model/points.js";
 import FilterModel from "./model/filter.js";
 import OffersModel from "./model/offers.js";
@@ -13,7 +13,7 @@ import TripMenuView from "./view/trip-menu.js";
 import Api from "./api.js";
 import {MenuItem, UpdateType, FilterType} from "./const.js";
 
-const AUTHORIZATION = `Basic skuileee3`; // строка авторизации
+const AUTHORIZATION = `Basic skuileee10`; // строка авторизации
 const END_POINT = `https://13.ecmascript.pages.academy/big-trip`; // зафиксированный адрес сервера
 const api = new Api(END_POINT, AUTHORIZATION); // создаем экземпляр нашего Api
 
