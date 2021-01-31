@@ -8,6 +8,8 @@ import {filter} from "../util/filter.js";
 import {renderElement, RenderPosition, remove} from "../util/render";
 import {SortType, UpdateType, UserAction, State} from "../const.js";
 import LoadingView from "../view/loading.js";
+import TripInfo from "./tripInfo";
+
 
 // класс который занимается отрисовкой всего того, что входит в борд
 export default class TripBoard {
@@ -88,6 +90,10 @@ export default class TripBoard {
     this._renderSort(); // или вызываем сортировку, и делаем ее по умолчанию
     this._renderList(); // рендерм список в который добавим точки маршрута
     this._renderEventItems(points); // вызываем рендер всех точек маршрута
+
+    const tripMainElement = document.querySelector(`.trip-main`);
+    const tripInfoPresenter = new TripInfo(tripMainElement, points);
+    tripInfoPresenter.init(points); // элемент info Нужно ИСАПРАВИТЬ т.к. у нас уже модель, а не просто данные tripItems
   }
 
   _getPoints() { // это и есть метод для хождения в модели. Также этот метод всегда возвращает актуальную сортировку
