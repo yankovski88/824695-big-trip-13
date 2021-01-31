@@ -1,5 +1,4 @@
 import {renderElement, RenderPosition, remove} from "./util/render";
-
 import TripBoard from "./presenter/tripBoard";
 import PointsModel from "./model/points.js";
 import FilterModel from "./model/filter.js";
@@ -10,12 +9,35 @@ import FilterPresenter from "./presenter/filter.js";
 import StatisticsView from "./view/statistics.js";
 import TripMenuView from "./view/trip-menu.js";
 
-import Api from "./api.js";
+import Api from "./api/api.js";
 import {MenuItem, UpdateType, FilterType} from "./const.js";
+import {isOnline} from "./util/common.js";
+import {toast} from "./util/toast/toast.js";
+import Store from "./api/store.js";
+import Provider from "./api/provider.js";
 
-const AUTHORIZATION = `Basic skuileee3`; // строка авторизации
+const AUTHORIZATION = `Basic skuileee4`; // строка авторизации
 const END_POINT = `https://13.ecmascript.pages.academy/big-trip`; // зафиксированный адрес сервера
+const STORAGE_TYPE = window.localStorage;
+const ScoreKeyType = {
+  POINTS: `points`,
+  OFFERS: `offers`,
+  DESTINATIONS: `destinations`
+};
+
+const STORE_PREFIX = `bigtrip-localstorage`;
+const STORE_VER = `v1`;
+const POINTS_STORE_NAME = `${STORE_PREFIX}-${ScoreKeyType.POINTS}-${STORE_VER}`;
+const OFFERS_STORE_NAME = `${STORE_PREFIX}-${ScoreKeyType.OFFERS}-${STORE_VER}`;
+const DESTINATIONS_STORE_NAME = `${STORE_PREFIX}-${ScoreKeyType.DESTINATIONS}-${STORE_VER}`;
+
+const pointsStore = new Store(POINTS_STORE_NAME, STORAGE_TYPE);
+const offersStore = new Store(OFFERS_STORE_NAME, STORAGE_TYPE);
+const destinationsStore = new Store(DESTINATIONS_STORE_NAME, STORAGE_TYPE);
+
 const api = new Api(END_POINT, AUTHORIZATION); // создаем экземпляр нашего Api
+const apiWithProvider = new Provider(api, pointsStore, offersStore, destinationsStore);
+
 
 let currentMenuActive = MenuItem.POINTS; // меню по умолчанию
 
@@ -37,7 +59,7 @@ const renderMenu = () => {
 };
 
 // передаем экземпляр модели в конструктор
-const tripBoardPresenter = new TripBoard(tripEventElement, pointsModel, filterModel, api, offersModel, destinationsModel); // создал призентер с контейнером в который вставим все
+const tripBoardPresenter = new TripBoard(tripEventElement, pointsModel, filterModel, apiWithProvider, offersModel, destinationsModel); // создал призентер с контейнером в который вставим все
 tripBoardPresenter.init(); // элементы доски
 
 const filterPresenter = new FilterPresenter(tripControlsElement, filterModel);
@@ -50,21 +72,26 @@ addBtn.addEventListener(`click`, (evt) => { // нашли кноку созда�
 
   addBtn.setAttribute(`disabled`, true);
   currentMenuActive = MenuItem.ADD_NEW_POINT;
+  if (!isOnline()) {
+    toast(`You can't create new point offline`);
 
-  const menuLinks = tripMenuComponent.getElement().querySelectorAll(`a`);
-  menuLinks.forEach((item) => {
-    item.classList.remove(`trip-tabs__btn--active`);
-    item.removeAttribute(`disabled`);
-    if (item.getAttribute(`value`) === `POINTS`) {
-      item.classList.add(`trip-tabs__btn--active`);
-    }
-  });
-  remove(statisticsComponent);
-  tripBoardPresenter.destroy(); // уничтожить бордпрезентер
-  filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING); // передаем в модель фильтра чтобы он обновился по умолчанию
-  tripBoardPresenter.init(); // рисуем заново доску
+  } else {
 
-  tripBoardPresenter.createPoint();
+    const menuLinks = tripMenuComponent.getElement().querySelectorAll(`a`);
+    menuLinks.forEach((item) => {
+      item.classList.remove(`trip-tabs__btn--active`);
+      item.removeAttribute(`disabled`);
+      if (item.getAttribute(`value`) === `POINTS`) {
+        item.classList.add(`trip-tabs__btn--active`);
+      }
+    });
+    remove(statisticsComponent);
+    tripBoardPresenter.destroy(); // уничтожить бордпрезентер
+    filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING); // передаем в модель фильтра чтобы он обновился по умолчанию
+    tripBoardPresenter.init(); // рисуем заново доску
+
+    tripBoardPresenter.createPoint();
+  }
 });
 
 let statisticsComponent = null;
@@ -83,7 +110,6 @@ const handleSiteMenuClick = (menuItem) => {
       // Показать доску
       // Показать форму добавления новой задачи
       // Убрать выделение с ADD NEW TASK после сохранения
-
       break;
     case MenuItem.POINTS:
       remove(statisticsComponent);
@@ -110,9 +136,9 @@ const handleSiteMenuClick = (menuItem) => {
 
 // код по запросу берет все данные
 Promise.all([
-  api.getOffers(),
-  api.getPoints(),
-  api.getDestinations(),
+  apiWithProvider.getOffers(),
+  apiWithProvider.getPoints(),
+  apiWithProvider.getDestinations(),
 ])
   .then(([formOffers, points, pointDestinations]) => { // destinations в случае успешного запроса
     offersModel.setOffers(formOffers);
@@ -133,3 +159,16 @@ Promise.all([
   });
 
 
+window.addEventListener(`load`, () => {
+  navigator.serviceWorker.register(`/sw.js`);
+});
+
+
+window.addEventListener(`online`, () => {
+  document.title = document.title.replace(` [offline]`, ``);
+  apiWithProvider.sync();
+});
+
+window.addEventListener(`offline`, () => {
+  document.title += ` [offline]`;
+});
