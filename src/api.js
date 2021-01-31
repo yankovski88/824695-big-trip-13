@@ -1,4 +1,4 @@
-import PointsModel from "../model/points.js";
+import PointsModel from "./model/points.js";
 
 const Method = { // методы для сервера
   GET: `GET`, // загрузить себе на комп
@@ -63,16 +63,6 @@ export default class Api {
     })
       .then(Api.toJSON)
       .then(PointsModel.adaptToClient);
-  }
-
-  sync(data) {
-    return this._load({
-      url: `points/sync`,
-      method: Method.POST,
-      body: JSON.stringify(data),
-      headers: new Headers({"Content-Type": `application/json`})
-    })
-      .then(Api.toJSON);
   }
 
   _load({
