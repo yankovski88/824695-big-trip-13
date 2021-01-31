@@ -2,11 +2,9 @@ import {remove, renderElement, RenderPosition, replace} from "../util/render";
 import TripEventEditFormView from "../view/trip-event-edit-form";
 import TripEventItemView from "../view/trip-event-item";
 import {UserAction, UpdateType, State} from "../const.js";
-import {isOnline} from "../util/common.js";
-import {toast} from "../util/toast/toast.js";
 
 
-// наблюдатель
+// 4 наблюдатель
 const Mode = {
   DEFAULT: `DEFAULT`,
   EDITING: `EDITING`
@@ -27,7 +25,7 @@ export default class Event {
 
     this._handleFormSubmit = this._handleFormSubmit.bind(this);
     this._escKeyPressHandler = this._escKeyPressHandler.bind(this);
-    this._eventRollupBtnClickHandler = this._eventRollupBtnClickHandler .bind(this);
+    this._onEventRollupBtnClick = this._onEventRollupBtnClick.bind(this);
     this._handleFavoriteClick = this._handleFavoriteClick.bind(this);
     this._handleDeleteClick = this._handleDeleteClick.bind(this);
   }
@@ -47,10 +45,6 @@ export default class Event {
     this._tripEventEditComponent.setSubmitHandler(this._handleFormSubmit);
 
     this._tripEventItemComponent.setClickHandler(() => {
-      if (!isOnline()) {
-        toast(`You can't edit task offline`);
-        return;
-      }
       this._replaceItemToForm();
       // при удалении элемента из дом обработчик можно не удалять. удалять на document и нов элемент обработчиком
     });
@@ -148,10 +142,6 @@ export default class Event {
 
   // обраотчик сохранения формы
   _handleFormSubmit(update) {
-    if (!isOnline()) {
-      toast(`You can't edit task offline`);
-      return;
-    }
     this._changeData( // Это обработчик с tripBoard this._handleEventChange в котором находится
         UserAction.UPDATE_POINT,
         UpdateType.MINOR, // идет обновление точки так что минор
@@ -167,12 +157,8 @@ export default class Event {
     }
   }
 
-  _eventRollupBtnClickHandler(evt) {
+  _onEventRollupBtnClick(evt) {
     evt.preventDefault();
-    if (!isOnline()) {
-      toast(`You can't edit task offline`);
-      return;
-    }
     this._tripEventEditComponent.reset(this._tripItem); // код для удаления не сохраненных данных в форме
     this._replaceFormToItem(); // замена формы на точку маршрута
   }
@@ -180,9 +166,9 @@ export default class Event {
   // этот метод вызывает _changeData который пришел из tripBoard _handleEventChange который является тоже методом
   // для изменения данных. Этому методу нужно сообщить измененные данные. И здесь эти данные будем менять!!!
   _handleFavoriteClick() {
-
     const addBtn = document.querySelector(`.trip-main__event-add-btn`);
     addBtn.removeAttribute(`disabled`);
+
     this._changeData( // и после замены сообщаем в changeData
         UserAction.UPDATE_POINT, // это говорит, что мы  только обновляем, а не удаляем или что-то добавляем.
         UpdateType.MINOR, // точка никуда не девается, а только помечается меняется или нет, так что это минор.
@@ -198,11 +184,6 @@ export default class Event {
   }
 
   _handleDeleteClick(point) {
-    if (!isOnline()) {
-      toast(`You can't edit task offline`);
-      return;
-    }
-
     this._changeData( // этот тот метод который вызовет изменения в модели
         UserAction.DELETE_POINT, // передаем что хотим удалить
         UpdateType.MINOR, // что изменения минор
