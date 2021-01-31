@@ -16,7 +16,7 @@ import {toast} from "./util/toast/toast.js";
 import Store from "./api/store.js";
 import Provider from "./api/provider.js";
 
-const AUTHORIZATION = `Basic skuileee4`; // строка авторизации
+const AUTHORIZATION = `Basic skuileee5`; // строка авторизации
 const END_POINT = `https://13.ecmascript.pages.academy/big-trip`; // зафиксированный адрес сервера
 const STORAGE_TYPE = window.localStorage;
 const ScoreKeyType = {
