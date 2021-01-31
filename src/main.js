@@ -1,6 +1,6 @@
 import {renderElement, RenderPosition, remove} from "./util/render";
 
-import TripBoard from "./presenter/tripBoard";
+import TripBoard from "./presenter/trip-board.js";
 import PointsModel from "./model/points.js";
 import FilterModel from "./model/filter.js";
 import OffersModel from "./model/offers.js";
