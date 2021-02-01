@@ -5,12 +5,7 @@ import AbstractView from "./abstract.js";
 
 const createTripEventItem = (dataItems) => {
   const {id, type, basePrice, dateFrom, dateTo, destination, isFavorite, offers} = dataItems;
-  let itemBasePrice = 0;
-
-  let itemBasePrice2 = basePrice;
-  if(!itemBasePrice2){
-    itemBasePrice2 = 0;
-  }
+  const itemBasePrice = 0;
 
   // код который определяет favorite или нет и если да то добовляет active
   const getFavorite = (favoriteItem) => {
@@ -57,7 +52,7 @@ const createTripEventItem = (dataItems) => {
                   <p class="event__duration">${getDateDiff(dayjs(dateFrom), dayjs(dateTo))}</p>
                 </div>
                 <p class="event__price">
-                  &euro;&nbsp;<span class="event__price-value">${he.encode(itemBasePrice2.toString())}</span> 
+                  &euro;&nbsp;<span class="event__price-value">${he.encode(basePrice === undefined ? itemBasePrice : basePrice.toString())}</span> 
                 </p>
                 <h4 class="visually-hidden">Offers:</h4>
                 <ul class="event__selected-offers">
